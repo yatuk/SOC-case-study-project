@@ -1,0 +1,66 @@
+name: New Device Login
+description: User authenticated from a previously unseen device, potentially indicating credential theft
+severity: medium
+confidence: medium
+
+detection_logic:
+  - Track devices used by each user (baseline period: 30 days)
+  - Alert when login occurs from unknown device
+  - Increase severity if combined with new geolocation or IOC match
+
+conditions:
+  - event_type: auth.login.success
+  - device_id: NOT IN user_known_devices_baseline
+  - exceptions:
+      - exclude_new_employees: baseline_period < 7 days
+
+false_positive_scenarios:
+  - New device provisioning (legitimate)
+  - BYOD enrollment
+  - Device ID reset or re-imaging
+  - Temporary device usage (e.g., conference room kiosk)
+
+tuning_recommendations:
+  - Adjust baseline period based on device turnover rate
+  - Create exception list for shared/kiosk devices
+  - Combine with MFA signals (higher confidence if MFA succeeded)
+  - Consider device fingerprinting beyond just device ID
+
+mitre_attack:
+  - tactic: Initial Access
+    technique: T1078.004
+    technique_name: Valid Accounts (Cloud Accounts)
+
+response_actions:
+  - Verify with user if new device login was authorized
+  - Review session activity for suspicious actions
+  - Consider enforcing MFA step-up authentication
+  - Monitor for follow-up suspicious activity
+
+tool_agnostic_query: |
+  # Pseudocode for new device detection
+  
+  # Step 1: Build baseline of known devices per user
+  known_devices AS (
+    SELECT DISTINCT
+      user,
+      device_id
+    FROM auth_logs
+    WHERE
+      timestamp >= NOW() - 30 days
+      AND timestamp < NOW() - 1 day
+      AND event_type = 'login.success'
+  )
+  
+  # Step 2: Find logins from unknown devices
+  SELECT
+    user,
+    timestamp,
+    device_id,
+    src_ip,
+    src_geo
+  FROM auth_logs
+  WHERE
+    event_type = 'login.success'
+    AND device_id NOT IN (SELECT device_id FROM known_devices WHERE user = auth_logs.user)
+    AND timestamp >= NOW() - 1 day

@@ -1,0 +1,62 @@
+{
+  "incident_id": "INC-2026-010-001",
+  "incident_date": "2026-01-10",
+  "status": "contained_eradicated",
+  "severity": "high",
+  "metrics": {
+    "total_events_analyzed": 47,
+    "total_alerts_generated": 4,
+    "alerts_by_severity": {
+      "critical": 2,
+      "high": 2,
+      "medium": 0,
+      "low": 0
+    },
+    "affected_users": 5,
+    "high_risk_users": 1,
+    "mitre_techniques_detected": 8,
+    "ioc_hits": 12
+  },
+  "timeline": {
+    "initial_access": "2026-01-10T08:15:23Z",
+    "compromise_confirmed": "2026-01-10T08:47:18Z",
+    "detection": "2026-01-10T09:35:00Z",
+    "containment": "2026-01-10T10:05:00Z",
+    "eradication": "2026-01-10T11:30:00Z",
+    "time_to_detect_minutes": 80,
+    "time_to_contain_minutes": 110
+  },
+  "attack_chain": [
+    "Initial Access (Phishing)",
+    "Credential Access (Phishing)",
+    "Persistence (Mailbox Rule)",
+    "Discovery (Mailbox Enumeration)",
+    "Collection (Email Search)",
+    "Containment (SOC Response)"
+  ],
+  "mitre_techniques": [
+    "T1078 - Valid Accounts",
+    "T1087 - Account Discovery",
+    "T1589.001 - Credentials from Password Stores",
+    "T1114.003 - Email Collection: Email Forwarding Rule",
+    "T1114.002 - Email Collection: Remote Email Collection",
+    "T1078.004 - Valid Accounts: Cloud Accounts",
+    "T1114 - Email Collection",
+    "T1566.002 - Phishing: Spearphishing Link"
+  ],
+  "affected_entities": {
+    "users": [
+      "sarah.chen@acmecorp.example.com",
+      "john.smith@acmecorp.example.com",
+      "marketing@partner.example.com",
+      "mike.jones@acmecorp.example.com",
+      "alerts@security-team.acmecorp.example.com"
+    ],
+    "high_risk_ips": [
+      "89.34.126.77"
+    ],
+    "compromised_devices": [
+      "Unknown Linux device"
+    ]
+  }
+}

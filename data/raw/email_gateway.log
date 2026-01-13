@@ -1,0 +1,11 @@
+timestamp,message_id,sender,recipient,subject,urls,spf_result,dkim_result,attachment_hashes,direction
+2026-01-10T08:15:23Z,MSG-20260110-001,noreply@micros0ft-secure.info,sarah.chen@acmecorp.example.com,Urgent: Verify your account,hxxp://login-microsoftonline.verify-account.top/auth,FAIL,NONE,,inbound
+2026-01-10T07:30:12Z,MSG-20260110-002,billing@vendor.com,sarah.chen@acmecorp.example.com,Invoice #4521 - Payment Due,https://vendor.com/invoices/4521,PASS,PASS,,inbound
+2026-01-10T07:45:33Z,MSG-20260110-003,marketing@partner.example.com,sarah.chen@acmecorp.example.com,Q1 Campaign Planning Meeting,,,PASS,PASS,,inbound
+2026-01-10T06:15:00Z,MSG-20260110-004,sarah.chen@acmecorp.example.com,team@acmecorp.example.com,Weekly marketing update,,,PASS,PASS,,outbound
+2026-01-10T09:20:15Z,MSG-20260110-005,hr@acmecorp.example.com,sarah.chen@acmecorp.example.com,Benefits Enrollment Reminder,https://hr-portal.acmecorp.example.com/benefits,PASS,PASS,,inbound
+2026-01-10T10:05:44Z,MSG-20260110-006,alerts@security-team.acmecorp.example.com,sarah.chen@acmecorp.example.com,Security Alert: Unusual Account Activity,,,PASS,PASS,,inbound
+2026-01-10T11:00:00Z,MSG-20260110-007,sarah.chen@acmecorp.example.com,john.smith@acmecorp.example.com,Re: Contract Review,,,PASS,PASS,abc123def456,outbound
+2026-01-09T16:30:20Z,MSG-20260109-089,newsletter@industry.com,sarah.chen@acmecorp.example.com,Industry Trends Weekly Digest,https://industry.com/digest/2026-01-09,PASS,PASS,,inbound
+2026-01-10T08:00:05Z,MSG-20260110-008,noreply@microsoft.com,sarah.chen@acmecorp.example.com,Your Microsoft 365 usage summary,https://portal.office.com,PASS,PASS,,inbound
+2026-01-10T11:30:22Z,MSG-20260110-009,support@vendor2.com,sarah.chen@acmecorp.example.com,Ticket #789 Updated,https://vendor2.com/support/789,PASS,PASS,,inbound

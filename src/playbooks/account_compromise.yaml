@@ -1,0 +1,162 @@
+name: Account Compromise Response Playbook
+version: 1.0
+trigger: High-confidence alert indicating unauthorized account access (impossible travel, credential theft, malicious activity)
+owner: SOC Tier-2 / Incident Response Team
+
+steps:
+  - id: 1
+    phase: Verification
+    action: Validate Alert
+    details: |
+      - Review alert evidence and confidence score
+      - Check for false positive indicators (VPN, travel schedule, authorized new device)
+      - Confirm abnormal behavior is present
+      - Escalate to Tier-2 if needed
+    owner: Tier-1 Analyst
+    estimated_time: 5-10 minutes
+    success_criteria:
+      - Alert validity confirmed (true positive) OR dismissed as false positive
+      - If confirmed, proceed to containment
+  
+  - id: 2
+    phase: Containment
+    action: Revoke Active Sessions
+    details: |
+      - Log into identity provider admin console
+      - Revoke ALL active sessions for affected user
+      - Document session IDs and device information before revocation
+      - Notify user via alternative channel (phone call, not email)
+    owner: Tier-2 Analyst
+    estimated_time: 5 minutes
+    commands:
+      - "Revoke-UserSession -User sarah.chen@acmecorp.example.com -All"
+      - "Get-UserSession -User sarah.chen@acmecorp.example.com | Export-Csv sessions_pre_revoke.csv"
+    success_criteria:
+      - All sessions revoked
+      - User cannot access systems
+  
+  - id: 3
+    phase: Containment
+    action: Force Password Reset
+    details: |
+      - Force immediate password reset for user
+      - Require MFA re-registration if MFA bypass suspected
+      - Temporarily disable account if user is unavailable or unresponsive
+      - Set flag for conditional access enforcement
+    owner: Tier-2 Analyst
+    estimated_time: 3 minutes
+    commands:
+      - "Set-UserPasswordReset -User sarah.chen@acmecorp.example.com -Force -RequireMFA"
+    success_criteria:
+      - Password reset enforced
+      - Old password no longer valid
+  
+  - id: 4
+    phase: Investigation
+    action: Review Account Activity
+    details: |
+      - Pull audit logs for all actions during suspicious sessions
+      - Identify which IP addresses and devices were used
+      - Create timeline of attacker actions
+      - Determine blast radius (what data was accessed, modified, exfiltrated)
+    owner: Tier-2 Analyst
+    estimated_time: 20-30 minutes
+    queries:
+      - "Get all mailbox operations for user where session_id IN compromised_sessions"
+      - "Get all file access events for user where timestamp BETWEEN compromise_start AND containment_time"
+      - "Search for data exfiltration indicators (large downloads, external shares)"
+    success_criteria:
+      - Complete activity timeline created
+      - Affected data/systems identified
+  
+  - id: 5
+    phase: Eradication
+    action: Remove Persistence Mechanisms
+    details: |
+      - Check for and remove malicious mailbox rules
+      - Review OAuth application consents and revoke suspicious grants
+      - Check for forwarding rules, delegates, or shared mailbox access
+      - Scan for backdoor accounts or service principals created by attacker
+    owner: Tier-2 Analyst / Security Engineer
+    estimated_time: 15-20 minutes
+    commands:
+      - "Get-InboxRule -Mailbox sarah.chen@acmecorp.example.com | Where-Object {$_.ForwardTo -ne $null}"
+      - "Remove-InboxRule -Identity 'Malicious Rule Name' -Confirm:$false"
+      - "Get-OAuth2PermissionGrants -User sarah.chen@acmecorp.example.com"
+    success_criteria:
+      - No malicious rules or persistence mechanisms remain
+      - All unauthorized access revoked
+  
+  - id: 6
+    phase: Recovery
+    action: Restore Account Access
+    details: |
+      - Confirm user identity via out-of-band verification (phone, in-person)
+      - Assist user with password reset and MFA re-enrollment
+      - Re-enable account with enhanced security controls
+      - Monitor account closely for 48-72 hours post-recovery
+    owner: Tier-2 Analyst / Help Desk
+    estimated_time: 10-15 minutes
+    success_criteria:
+      - User can access account with new credentials
+      - MFA  functioning properly
+      - User notified of security incident
+  
+  - id: 7
+    phase: Documentation
+    action: Create Incident Report
+    details: |
+      - Update incident ticket with full timeline, impact, and actions taken
+      - Document IOCs (IPs, domains, user agents)
+      - Assess data classification of accessed/exfiltrated information
+      - Determine if regulatory notification required (GDPR, HIPAA, etc.)
+      - Schedule lessons learned review
+    owner: Incident Commander / Tier-2 Lead
+    estimated_time: 30-45 minutes
+    outputs:
+      - Incident report (executive summary + technical details)
+      - IOC list for threat intelligence team
+      - Recommendations for future prevention
+    success_criteria:
+      - Complete incident documentation
+      - IOCs shared with security tools and partners
+  
+  - id: 8
+    phase: Post-Incident
+    action: Lessons Learned and Remediation
+    details: |
+      - Conduct lessons learned meeting within 5 business days
+      - Identify gaps in detection, prevention, or response
+      - Create remediation tasks (conditional access policies, MFA enforcement, training)
+      - Update playbooks based on findings
+      - Track remediation to completion
+    owner: Security Management / Incident Response Team
+    estimated_time: 1-2 hours (meeting + follow-up)
+    success_criteria:
+      - Lessons learned documented
+      - Remediation plan created and assigned
+
+escalation_triggers:
+  - Data exfiltration of classified/confidential information
+  - Compromise of privileged/admin account
+  - Evidence of lateral movement or additional compromised accounts
+  - Suspected nation-state or APT activity
+  - Regulatory notification threshold met
+
+dependencies:
+  - Access to identity provider admin console
+  - Access to mailbox audit logs and admin controls
+  - User contact information (phone, manager)
+  - Incident ticketing system
+  - Forensic log retention policies
+
+metrics:
+  - Time to containment (from alert to session revocation)
+  - Time to full remediation
+  - False positive rate
+  - Recurrence rate (same user compromised again within 90 days)
+
+references:
+  - NIST Cybersecurity Framework (Respond function)
+  - SANS Incident Handler's Handbook
+  - Company Incident Response Policy v2.1

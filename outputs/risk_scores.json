@@ -1,0 +1,2130 @@
+{
+  "scored_events": [
+    {
+      "event_id": "f1bac673-494f-42c9-8620-4a6f94ad0055",
+      "timestamp": "2026-01-09T16:30:20Z",
+      "source_type": "email_gateway",
+      "event_type": "email.inbound",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {},
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": "newsletter@industry.com"
+      },
+      "details": {
+        "message_id": "MSG-20260109-089",
+        "sender": "newsletter@industry.com",
+        "recipient": "sarah.chen@acmecorp.example.com",
+        "subject": "Industry Trends Weekly Digest",
+        "urls": "https://industry.com/digest/2026-01-09",
+        "spf_result": "PASS",
+        "dkim_result": "PASS",
+        "attachment_hashes": ""
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-09T16:30:20Z\", \"message_id\": \"MSG-20260109-089\", \"sender\": \"newsletter@industry.com\", \"recipient\": \"sarah.chen@acmecorp.example.com\", \"subject\": \"Industry Trends Weekly Digest\", \"urls\": \"https://industry.com/digest/2026-01-09\", \"spf_result\": \"PASS\", \"dkim_result\": \"PASS\", \"attachment_hashes\": \"\", \"direction\": \"inbound\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "bcb2c3db-a206-47f0-9693-68040567bf48",
+      "timestamp": "2026-01-10T06:15:00Z",
+      "source_type": "email_gateway",
+      "event_type": "email.",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {},
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": "team@acmecorp.example.com"
+      },
+      "details": {
+        "message_id": "MSG-20260110-004",
+        "sender": "sarah.chen@acmecorp.example.com",
+        "recipient": "team@acmecorp.example.com",
+        "subject": "Weekly marketing update",
+        "urls": "",
+        "spf_result": "",
+        "dkim_result": "PASS",
+        "attachment_hashes": "PASS"
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T06:15:00Z\", \"message_id\": \"MSG-20260110-004\", \"sender\": \"sarah.chen@acmecorp.example.com\", \"recipient\": \"team@acmecorp.example.com\", \"subject\": \"Weekly marketing update\", \"urls\": \"\", \"spf_result\": \"\", \"dkim_result\": \"PASS\", \"attachment_hashes\": \"PASS\", \"direction\": \"\", \"null\": [\"outbound\"]}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "efb98eed-fda8-4215-b3c2-4d70369fbaae",
+      "timestamp": "2026-01-10T06:30:10Z",
+      "source_type": "endpoint",
+      "event_type": "endpoint.process_create",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "SARAH-LAPTOP-01",
+        "os": "",
+        "agent": ""
+      },
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event_type": "process_create",
+        "process": "outlook.exe",
+        "pid": 4521,
+        "parent_process": "explorer.exe",
+        "command_line": "C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE",
+        "hash": "sha256:a1b2c3d4e5f6...",
+        "file_path": null,
+        "dest_port": null,
+        "protocol": null
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T06:30:10Z\", \"event_type\": \"process_create\", \"host\": \"SARAH-LAPTOP-01\", \"user\": \"sarah.chen\", \"process\": \"outlook.exe\", \"pid\": 4521, \"parent_process\": \"explorer.exe\", \"command_line\": \"C:\\\\Program Files\\\\Microsoft Office\\\\root\\\\Office16\\\\OUTLOOK.EXE\", \"hash\": \"sha256:a1b2c3d4e5f6...\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "cd31b9b1-16cc-4fcc-9e5c-d4c89e0af553",
+      "timestamp": "2026-01-10T06:30:15Z",
+      "source_type": "identity",
+      "event_type": "auth.login_success",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "SARAH-LAPTOP-01",
+        "os": "Windows 10 Pro",
+        "agent": "Edge/120.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.45",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event": "login.success",
+        "result": "success",
+        "mfa_method": "certificate",
+        "session_id": "sess-morning-001",
+        "reason": null,
+        "action": null,
+        "actor": null
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T06:30:15Z\", \"event\": \"login.success\", \"user\": \"sarah.chen@acmecorp.example.com\", \"src_ip\": \"192.168.10.45\", \"device_id\": \"SARAH-LAPTOP-01\", \"device_os\": \"Windows 10 Pro\", \"device_agent\": \"Edge/120.0\", \"mfa_method\": \"certificate\", \"result\": \"success\", \"session_id\": \"sess-morning-001\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "0cfad1f1-f5e8-42a8-a329-fac0e3c136af",
+      "timestamp": "2026-01-10T06:35:12+00:00",
+      "source_type": "web_proxy",
+      "event_type": "web.get",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "Windows 10",
+        "agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edge/120.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.45",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": "news.ycombinator.com"
+      },
+      "details": {
+        "method": "GET",
+        "url": "https://news.ycombinator.com/",
+        "status": 200,
+        "referrer": "-",
+        "size": 12453
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"src_ip\": \"192.168.10.45\", \"user\": \"sarah.chen\", \"timestamp\": \"2026-01-10T06:35:12+00:00\", \"method\": \"GET\", \"url\": \"https://news.ycombinator.com/\", \"status\": 200, \"size\": 12453, \"referrer\": \"-\", \"user_agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edge/120.0\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "0bdb0abe-6537-4e22-82cb-9fb6c27f0036",
+      "timestamp": "2026-01-10T06:35:20Z",
+      "source_type": "cloud_mailbox",
+      "event_type": "mailbox.mailboxlogin",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "",
+        "agent": "Client=OWA;Mozilla/5.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.45",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "operation": "MailboxLogin",
+        "session_id": "sess-morning-001",
+        "rule_name": null,
+        "rule_conditions": null,
+        "rule_actions": null,
+        "query": null,
+        "results_count": null,
+        "operation_count": null,
+        "actor": null,
+        "reason": null
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T06:35:20Z\", \"operation\": \"MailboxLogin\", \"user\": \"sarah.chen@acmecorp.example.com\", \"client_ip\": \"192.168.10.45\", \"client_info\": \"Client=OWA;Mozilla/5.0\", \"result\": \"success\", \"session_id\": \"sess-morning-001\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "c614aa0a-3a33-4b18-a338-9dcb6d1e7a59",
+      "timestamp": "2026-01-10T07:15:25Z",
+      "source_type": "endpoint",
+      "event_type": "endpoint.process_create",
+      "severity": "low",
+      "user": {
+        "email": "john.smith@acmecorp.example.com",
+        "username": "john.smith",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "JOHN-DESKTOP-02",
+        "os": "",
+        "agent": ""
+      },
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event_type": "process_create",
+        "process": "chrome.exe",
+        "pid": 3456,
+        "parent_process": "explorer.exe",
+        "command_line": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "hash": "sha256:chrome_hash_123...",
+        "file_path": null,
+        "dest_port": null,
+        "protocol": null
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T07:15:25Z\", \"event_type\": \"process_create\", \"host\": \"JOHN-DESKTOP-02\", \"user\": \"john.smith\", \"process\": \"chrome.exe\", \"pid\": 3456, \"parent_process\": \"explorer.exe\", \"command_line\": \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\", \"hash\": \"sha256:chrome_hash_123...\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "e9038c2d-6199-4005-9da9-480fbf07d0c0",
+      "timestamp": "2026-01-10T07:15:30Z",
+      "source_type": "identity",
+      "event_type": "auth.login_success",
+      "severity": "low",
+      "user": {
+        "email": "john.smith@acmecorp.example.com",
+        "username": "john.smith",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "JOHN-DESKTOP-02",
+        "os": "Windows 11 Pro",
+        "agent": "Chrome/120.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.88",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event": "login.success",
+        "result": "success",
+        "mfa_method": "totp",
+        "session_id": "sess-john-001",
+        "reason": null,
+        "action": null,
+        "actor": null
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T07:15:30Z\", \"event\": \"login.success\", \"user\": \"john.smith@acmecorp.example.com\", \"src_ip\": \"192.168.10.88\", \"device_id\": \"JOHN-DESKTOP-02\", \"device_os\": \"Windows 11 Pro\", \"device_agent\": \"Chrome/120.0\", \"mfa_method\": \"totp\", \"result\": \"success\", \"session_id\": \"sess-john-001\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "a47b2666-7ada-4935-9f14-940fcc616bda",
+      "timestamp": "2026-01-10T07:20:33+00:00",
+      "source_type": "web_proxy",
+      "event_type": "web.get",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "Windows 10",
+        "agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edge/120.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.45",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": "mail.google.com"
+      },
+      "details": {
+        "method": "GET",
+        "url": "https://mail.google.com/mail/u/0/",
+        "status": 200,
+        "referrer": "-",
+        "size": 8932
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"src_ip\": \"192.168.10.45\", \"user\": \"sarah.chen\", \"timestamp\": \"2026-01-10T07:20:33+00:00\", \"method\": \"GET\", \"url\": \"https://mail.google.com/mail/u/0/\", \"status\": 200, \"size\": 8932, \"referrer\": \"-\", \"user_agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edge/120.0\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "d0abdd63-e9ff-44ca-a89b-3ab7398078b0",
+      "timestamp": "2026-01-10T07:25:10+00:00",
+      "source_type": "web_proxy",
+      "event_type": "web.get",
+      "severity": "low",
+      "user": {
+        "email": "john.smith@acmecorp.example.com",
+        "username": "john.smith",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "Windows 10",
+        "agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.88",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": "github.com"
+      },
+      "details": {
+        "method": "GET",
+        "url": "https://github.com/acmecorp/project",
+        "status": 200,
+        "referrer": "-",
+        "size": 22145
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"src_ip\": \"192.168.10.88\", \"user\": \"john.smith\", \"timestamp\": \"2026-01-10T07:25:10+00:00\", \"method\": \"GET\", \"url\": \"https://github.com/acmecorp/project\", \"status\": 200, \"size\": 22145, \"referrer\": \"-\", \"user_agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "581d01b7-4571-484d-9b77-c01cbe8cc835",
+      "timestamp": "2026-01-10T07:30:12Z",
+      "source_type": "email_gateway",
+      "event_type": "email.inbound",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {},
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": "billing@vendor.com"
+      },
+      "details": {
+        "message_id": "MSG-20260110-002",
+        "sender": "billing@vendor.com",
+        "recipient": "sarah.chen@acmecorp.example.com",
+        "subject": "Invoice #4521 - Payment Due",
+        "urls": "https://vendor.com/invoices/4521",
+        "spf_result": "PASS",
+        "dkim_result": "PASS",
+        "attachment_hashes": ""
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T07:30:12Z\", \"message_id\": \"MSG-20260110-002\", \"sender\": \"billing@vendor.com\", \"recipient\": \"sarah.chen@acmecorp.example.com\", \"subject\": \"Invoice #4521 - Payment Due\", \"urls\": \"https://vendor.com/invoices/4521\", \"spf_result\": \"PASS\", \"dkim_result\": \"PASS\", \"attachment_hashes\": \"\", \"direction\": \"inbound\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "c1f8a158-c44d-41d4-8e59-116c2060fa4a",
+      "timestamp": "2026-01-10T07:45:33Z",
+      "source_type": "email_gateway",
+      "event_type": "email.",
+      "severity": "low",
+      "user": {
+        "email": "marketing@partner.example.com",
+        "username": "marketing",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {},
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": "sarah.chen@acmecorp.example.com"
+      },
+      "details": {
+        "message_id": "MSG-20260110-003",
+        "sender": "marketing@partner.example.com",
+        "recipient": "sarah.chen@acmecorp.example.com",
+        "subject": "Q1 Campaign Planning Meeting",
+        "urls": "",
+        "spf_result": "",
+        "dkim_result": "PASS",
+        "attachment_hashes": "PASS"
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T07:45:33Z\", \"message_id\": \"MSG-20260110-003\", \"sender\": \"marketing@partner.example.com\", \"recipient\": \"sarah.chen@acmecorp.example.com\", \"subject\": \"Q1 Campaign Planning Meeting\", \"urls\": \"\", \"spf_result\": \"\", \"dkim_result\": \"PASS\", \"attachment_hashes\": \"PASS\", \"direction\": \"\", \"null\": [\"inbound\"]}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "ba2d79ef-0798-4fea-86ad-a80b237e7b3c",
+      "timestamp": "2026-01-10T08:00:05Z",
+      "source_type": "email_gateway",
+      "event_type": "email.inbound",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {},
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": "noreply@microsoft.com"
+      },
+      "details": {
+        "message_id": "MSG-20260110-008",
+        "sender": "noreply@microsoft.com",
+        "recipient": "sarah.chen@acmecorp.example.com",
+        "subject": "Your Microsoft 365 usage summary",
+        "urls": "https://portal.office.com",
+        "spf_result": "PASS",
+        "dkim_result": "PASS",
+        "attachment_hashes": ""
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T08:00:05Z\", \"message_id\": \"MSG-20260110-008\", \"sender\": \"noreply@microsoft.com\", \"recipient\": \"sarah.chen@acmecorp.example.com\", \"subject\": \"Your Microsoft 365 usage summary\", \"urls\": \"https://portal.office.com\", \"spf_result\": \"PASS\", \"dkim_result\": \"PASS\", \"attachment_hashes\": \"\", \"direction\": \"inbound\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "f1966fa5-d574-4d12-a76b-0345c70faff8",
+      "timestamp": "2026-01-10T08:15:23Z",
+      "source_type": "email_gateway",
+      "event_type": "email.inbound",
+      "severity": "medium",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {},
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": "noreply@micros0ft-secure.info"
+      },
+      "details": {
+        "message_id": "MSG-20260110-001",
+        "sender": "noreply@micros0ft-secure.info",
+        "recipient": "sarah.chen@acmecorp.example.com",
+        "subject": "Urgent: Verify your account",
+        "urls": "hxxp://login-microsoftonline.verify-account.top/auth",
+        "spf_result": "FAIL",
+        "dkim_result": "NONE",
+        "attachment_hashes": ""
+      },
+      "ioc_matches": [
+        {
+          "type": "domain",
+          "value": "micros0ft-secure.info",
+          "list": "malicious_domains"
+        },
+        {
+          "type": "domain",
+          "value": "login-microsoftonline.verify-account.top",
+          "list": "malicious_domains"
+        },
+        {
+          "type": "domain",
+          "value": "verify-account.top",
+          "list": "malicious_domains"
+        },
+        {
+          "type": "domain",
+          "value": "micros0ft-secure.info",
+          "list": "malicious_domains"
+        }
+      ],
+      "raw_log": "{\"timestamp\": \"2026-01-10T08:15:23Z\", \"message_id\": \"MSG-20260110-001\", \"sender\": \"noreply@micros0ft-secure.info\", \"recipient\": \"sarah.chen@acmecorp.example.com\", \"subject\": \"Urgent: Verify your account\", \"urls\": \"hxxp://login-microsoftonline.verify-account.top/auth\", \"spf_result\": \"FAIL\", \"dkim_result\": \"NONE\", \"attachment_hashes\": \"\", \"direction\": \"inbound\"}",
+      "risk_score": 40,
+      "score_breakdown": [
+        {
+          "rule": "ioc_match",
+          "points": 40,
+          "description": "Event matches known IOC: micros0ft-secure.info, login-microsoftonline.verify-account.top, verify-account.top, micros0ft-secure.info"
+        }
+      ]
+    },
+    {
+      "event_id": "d164ba93-c447-426e-ad8d-3bd8306e89c9",
+      "timestamp": "2026-01-10T08:17:40Z",
+      "source_type": "endpoint",
+      "event_type": "endpoint.process_create",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "SARAH-LAPTOP-01",
+        "os": "",
+        "agent": ""
+      },
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event_type": "process_create",
+        "process": "chrome.exe",
+        "pid": 8932,
+        "parent_process": "explorer.exe",
+        "command_line": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe http://login-microsoftonline.verify-account.top/",
+        "hash": "sha256:chrome_hash_123...",
+        "file_path": null,
+        "dest_port": null,
+        "protocol": null
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T08:17:40Z\", \"event_type\": \"process_create\", \"host\": \"SARAH-LAPTOP-01\", \"user\": \"sarah.chen\", \"process\": \"chrome.exe\", \"pid\": 8932, \"parent_process\": \"explorer.exe\", \"command_line\": \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe http://login-microsoftonline.verify-account.top/\", \"hash\": \"sha256:chrome_hash_123...\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "d49e3200-47c6-4008-bb16-f153b7cac608",
+      "timestamp": "2026-01-10T08:17:45+00:00",
+      "source_type": "web_proxy",
+      "event_type": "web.get",
+      "severity": "high",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "Windows 10",
+        "agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.45",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": "login-microsoftonline.verify-account.top"
+      },
+      "details": {
+        "method": "GET",
+        "url": "http://login-microsoftonline.verify-account.top/",
+        "status": 200,
+        "referrer": "https://mail.google.com/",
+        "size": 4521
+      },
+      "ioc_matches": [
+        {
+          "type": "domain",
+          "value": "login-microsoftonline.verify-account.top",
+          "list": "malicious_domains"
+        },
+        {
+          "type": "domain",
+          "value": "verify-account.top",
+          "list": "malicious_domains"
+        },
+        {
+          "type": "domain",
+          "value": "login-microsoftonline.verify-account.top",
+          "list": "malicious_domains"
+        },
+        {
+          "type": "domain",
+          "value": "verify-account.top",
+          "list": "malicious_domains"
+        }
+      ],
+      "raw_log": "{\"src_ip\": \"192.168.10.45\", \"user\": \"sarah.chen\", \"timestamp\": \"2026-01-10T08:17:45+00:00\", \"method\": \"GET\", \"url\": \"http://login-microsoftonline.verify-account.top/\", \"status\": 200, \"size\": 4521, \"referrer\": \"https://mail.google.com/\", \"user_agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0\"}",
+      "risk_score": 75,
+      "score_breakdown": [
+        {
+          "rule": "ioc_match",
+          "points": 40,
+          "description": "Event matches known IOC: login-microsoftonline.verify-account.top, verify-account.top, login-microsoftonline.verify-account.top, verify-account.top"
+        },
+        {
+          "rule": "phishing_link_click",
+          "points": 35,
+          "description": "User clicked known phishing link"
+        }
+      ]
+    },
+    {
+      "event_id": "efd8ca47-c5b0-4229-b25f-cc782d4c6c87",
+      "timestamp": "2026-01-10T08:18:10Z",
+      "source_type": "endpoint",
+      "event_type": "endpoint.network_connect",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "SARAH-LAPTOP-01",
+        "os": "",
+        "agent": ""
+      },
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "185.220.101.45",
+        "dst_domain": ""
+      },
+      "details": {
+        "event_type": "network_connect",
+        "process": "chrome.exe",
+        "pid": 8932,
+        "parent_process": null,
+        "command_line": null,
+        "hash": null,
+        "file_path": null,
+        "dest_port": 80,
+        "protocol": "tcp"
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T08:18:10Z\", \"event_type\": \"network_connect\", \"host\": \"SARAH-LAPTOP-01\", \"user\": \"sarah.chen\", \"process\": \"chrome.exe\", \"pid\": 8932, \"dest_ip\": \"185.220.101.45\", \"dest_port\": 80, \"protocol\": \"tcp\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "9036e931-9c29-4430-9fbd-1299be5b2150",
+      "timestamp": "2026-01-10T08:18:12+00:00",
+      "source_type": "web_proxy",
+      "event_type": "web.post",
+      "severity": "high",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "Windows 10",
+        "agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.45",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": "login-microsoftonline.verify-account.top"
+      },
+      "details": {
+        "method": "POST",
+        "url": "http://login-microsoftonline.verify-account.top/auth",
+        "status": 302,
+        "referrer": "http://login-microsoftonline.verify-account.top/",
+        "size": 156
+      },
+      "ioc_matches": [
+        {
+          "type": "domain",
+          "value": "login-microsoftonline.verify-account.top",
+          "list": "malicious_domains"
+        },
+        {
+          "type": "domain",
+          "value": "verify-account.top",
+          "list": "malicious_domains"
+        },
+        {
+          "type": "domain",
+          "value": "login-microsoftonline.verify-account.top",
+          "list": "malicious_domains"
+        },
+        {
+          "type": "domain",
+          "value": "verify-account.top",
+          "list": "malicious_domains"
+        }
+      ],
+      "raw_log": "{\"src_ip\": \"192.168.10.45\", \"user\": \"sarah.chen\", \"timestamp\": \"2026-01-10T08:18:12+00:00\", \"method\": \"POST\", \"url\": \"http://login-microsoftonline.verify-account.top/auth\", \"status\": 302, \"size\": 156, \"referrer\": \"http://login-microsoftonline.verify-account.top/\", \"user_agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0\"}",
+      "risk_score": 75,
+      "score_breakdown": [
+        {
+          "rule": "ioc_match",
+          "points": 40,
+          "description": "Event matches known IOC: login-microsoftonline.verify-account.top, verify-account.top, login-microsoftonline.verify-account.top, verify-account.top"
+        },
+        {
+          "rule": "phishing_link_click",
+          "points": 35,
+          "description": "User clicked known phishing link"
+        }
+      ]
+    },
+    {
+      "event_id": "eb0d11d3-8528-40ad-b14a-0a29e2085978",
+      "timestamp": "2026-01-10T08:30:20+00:00",
+      "source_type": "web_proxy",
+      "event_type": "web.get",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "Windows 10",
+        "agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edge/120.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.45",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": "linkedin.com"
+      },
+      "details": {
+        "method": "GET",
+        "url": "https://linkedin.com/feed",
+        "status": 200,
+        "referrer": "-",
+        "size": 18234
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"src_ip\": \"192.168.10.45\", \"user\": \"sarah.chen\", \"timestamp\": \"2026-01-10T08:30:20+00:00\", \"method\": \"GET\", \"url\": \"https://linkedin.com/feed\", \"status\": 200, \"size\": 18234, \"referrer\": \"-\", \"user_agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edge/120.0\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "17c68364-d331-4de2-8d1c-61c6f73d1b9a",
+      "timestamp": "2026-01-10T08:45:31Z",
+      "source_type": "identity",
+      "event_type": "auth.login_fail",
+      "severity": "medium",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "unknown",
+        "os": "Linux",
+        "agent": "Mozilla/5.0 (X11; Linux x86_64) Firefox/121.0"
+      },
+      "network": {
+        "src_ip": "89.34.126.77",
+        "src_geo": {
+          "country": "RO",
+          "city": "Bucharest"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event": "login.fail",
+        "result": "fail",
+        "mfa_method": null,
+        "session_id": null,
+        "reason": "invalid_password",
+        "action": null,
+        "actor": null
+      },
+      "ioc_matches": [
+        {
+          "type": "ip",
+          "value": "89.34.126.77",
+          "list": "malicious_ips"
+        }
+      ],
+      "raw_log": "{\"timestamp\": \"2026-01-10T08:45:31Z\", \"event\": \"login.fail\", \"user\": \"sarah.chen@acmecorp.example.com\", \"src_ip\": \"89.34.126.77\", \"device_id\": \"unknown\", \"device_os\": \"Linux\", \"device_agent\": \"Mozilla/5.0 (X11; Linux x86_64) Firefox/121.0\", \"mfa_method\": null, \"result\": \"fail\", \"reason\": \"invalid_password\", \"session_id\": null}",
+      "risk_score": 40,
+      "score_breakdown": [
+        {
+          "rule": "ioc_match",
+          "points": 40,
+          "description": "Event matches known IOC: 89.34.126.77"
+        }
+      ]
+    },
+    {
+      "event_id": "eaefbb7f-0b86-457b-aa8e-255fc3c14a56",
+      "timestamp": "2026-01-10T08:46:02Z",
+      "source_type": "identity",
+      "event_type": "auth.login_fail",
+      "severity": "medium",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "unknown",
+        "os": "Linux",
+        "agent": "Mozilla/5.0 (X11; Linux x86_64) Firefox/121.0"
+      },
+      "network": {
+        "src_ip": "89.34.126.77",
+        "src_geo": {
+          "country": "RO",
+          "city": "Bucharest"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event": "login.fail",
+        "result": "fail",
+        "mfa_method": null,
+        "session_id": null,
+        "reason": "invalid_password",
+        "action": null,
+        "actor": null
+      },
+      "ioc_matches": [
+        {
+          "type": "ip",
+          "value": "89.34.126.77",
+          "list": "malicious_ips"
+        }
+      ],
+      "raw_log": "{\"timestamp\": \"2026-01-10T08:46:02Z\", \"event\": \"login.fail\", \"user\": \"sarah.chen@acmecorp.example.com\", \"src_ip\": \"89.34.126.77\", \"device_id\": \"unknown\", \"device_os\": \"Linux\", \"device_agent\": \"Mozilla/5.0 (X11; Linux x86_64) Firefox/121.0\", \"mfa_method\": null, \"result\": \"fail\", \"reason\": \"invalid_password\", \"session_id\": null}",
+      "risk_score": 40,
+      "score_breakdown": [
+        {
+          "rule": "ioc_match",
+          "points": 40,
+          "description": "Event matches known IOC: 89.34.126.77"
+        }
+      ]
+    },
+    {
+      "event_id": "fe76ab89-ec9b-46ed-961c-df891d6167c4",
+      "timestamp": "2026-01-10T08:47:18Z",
+      "source_type": "identity",
+      "event_type": "auth.login_success",
+      "severity": "critical",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "unknown",
+        "os": "Linux",
+        "agent": "Mozilla/5.0 (X11; Linux x86_64) Firefox/121.0"
+      },
+      "network": {
+        "src_ip": "89.34.126.77",
+        "src_geo": {
+          "country": "RO",
+          "city": "Bucharest"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event": "login.success",
+        "result": "success",
+        "mfa_method": "totp",
+        "session_id": "sess-attacker-001",
+        "reason": null,
+        "action": null,
+        "actor": null
+      },
+      "ioc_matches": [
+        {
+          "type": "ip",
+          "value": "89.34.126.77",
+          "list": "malicious_ips"
+        }
+      ],
+      "raw_log": "{\"timestamp\": \"2026-01-10T08:47:18Z\", \"event\": \"login.success\", \"user\": \"sarah.chen@acmecorp.example.com\", \"src_ip\": \"89.34.126.77\", \"device_id\": \"unknown\", \"device_os\": \"Linux\", \"device_agent\": \"Mozilla/5.0 (X11; Linux x86_64) Firefox/121.0\", \"mfa_method\": \"totp\", \"result\": \"success\", \"session_id\": \"sess-attacker-001\"}",
+      "risk_score": 100,
+      "score_breakdown": [
+        {
+          "rule": "ioc_match",
+          "points": 40,
+          "description": "Event matches known IOC: 89.34.126.77"
+        },
+        {
+          "rule": "new_device",
+          "points": 30,
+          "description": "Login from previously unseen device"
+        },
+        {
+          "rule": "new_geo",
+          "points": 30,
+          "description": "Login from non-corporate network: RO"
+        },
+        {
+          "rule": "impossible_travel",
+          "points": 50,
+          "description": "Impossible travel detected: logins from distant locations within short time"
+        },
+        {
+          "rule": "failed_mfa_then_success",
+          "points": 25,
+          "description": "2 failed login attempts followed by success"
+        }
+      ]
+    },
+    {
+      "event_id": "8c26fa53-fe21-44e9-b2fa-ea670596cb00",
+      "timestamp": "2026-01-10T08:48:05Z",
+      "source_type": "cloud_mailbox",
+      "event_type": "mailbox.mailboxlogin",
+      "severity": "medium",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "",
+        "agent": "Client=EWS;Mozilla/5.0 (X11; Linux x86_64) Firefox/121.0"
+      },
+      "network": {
+        "src_ip": "89.34.126.77",
+        "src_geo": {
+          "country": "RO",
+          "city": "Bucharest"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "operation": "MailboxLogin",
+        "session_id": "sess-attacker-001",
+        "rule_name": null,
+        "rule_conditions": null,
+        "rule_actions": null,
+        "query": null,
+        "results_count": null,
+        "operation_count": null,
+        "actor": null,
+        "reason": null
+      },
+      "ioc_matches": [
+        {
+          "type": "ip",
+          "value": "89.34.126.77",
+          "list": "malicious_ips"
+        }
+      ],
+      "raw_log": "{\"timestamp\": \"2026-01-10T08:48:05Z\", \"operation\": \"MailboxLogin\", \"user\": \"sarah.chen@acmecorp.example.com\", \"client_ip\": \"89.34.126.77\", \"client_info\": \"Client=EWS;Mozilla/5.0 (X11; Linux x86_64) Firefox/121.0\", \"result\": \"success\", \"session_id\": \"sess-attacker-001\"}",
+      "risk_score": 40,
+      "score_breakdown": [
+        {
+          "rule": "ioc_match",
+          "points": 40,
+          "description": "Event matches known IOC: 89.34.126.77"
+        }
+      ]
+    },
+    {
+      "event_id": "564bd6c4-50b2-4e12-90b5-a76e9f825ff0",
+      "timestamp": "2026-01-10T08:48:45Z",
+      "source_type": "cloud_mailbox",
+      "event_type": "mailbox.listfolders",
+      "severity": "medium",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "",
+        "agent": "Client=EWS"
+      },
+      "network": {
+        "src_ip": "89.34.126.77",
+        "src_geo": {
+          "country": "RO",
+          "city": "Bucharest"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "operation": "ListFolders",
+        "session_id": "sess-attacker-001",
+        "rule_name": null,
+        "rule_conditions": null,
+        "rule_actions": null,
+        "query": null,
+        "results_count": null,
+        "operation_count": null,
+        "actor": null,
+        "reason": null
+      },
+      "ioc_matches": [
+        {
+          "type": "ip",
+          "value": "89.34.126.77",
+          "list": "malicious_ips"
+        }
+      ],
+      "raw_log": "{\"timestamp\": \"2026-01-10T08:48:45Z\", \"operation\": \"ListFolders\", \"user\": \"sarah.chen@acmecorp.example.com\", \"client_ip\": \"89.34.126.77\", \"client_info\": \"Client=EWS\", \"folder_count\": 12, \"session_id\": \"sess-attacker-001\"}",
+      "risk_score": 40,
+      "score_breakdown": [
+        {
+          "rule": "ioc_match",
+          "points": 40,
+          "description": "Event matches known IOC: 89.34.126.77"
+        }
+      ]
+    },
+    {
+      "event_id": "640d9f53-4f1c-4710-b860-d161086402a7",
+      "timestamp": "2026-01-10T08:52:30Z",
+      "source_type": "cloud_mailbox",
+      "event_type": "mailbox.new_inboxrule",
+      "severity": "high",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "",
+        "agent": "Client=EWS"
+      },
+      "network": {
+        "src_ip": "89.34.126.77",
+        "src_geo": {
+          "country": "RO",
+          "city": "Bucharest"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "operation": "New-InboxRule",
+        "session_id": "sess-attacker-001",
+        "rule_name": "Auto-forward Financial Docs",
+        "rule_conditions": "SubjectContainsWords: invoice,contract,financial",
+        "rule_actions": "ForwardTo: external-archive@temp-mail.io",
+        "query": null,
+        "results_count": null,
+        "operation_count": null,
+        "actor": null,
+        "reason": null
+      },
+      "ioc_matches": [
+        {
+          "type": "ip",
+          "value": "89.34.126.77",
+          "list": "malicious_ips"
+        }
+      ],
+      "raw_log": "{\"timestamp\": \"2026-01-10T08:52:30Z\", \"operation\": \"New-InboxRule\", \"user\": \"sarah.chen@acmecorp.example.com\", \"client_ip\": \"89.34.126.77\", \"rule_name\": \"Auto-forward Financial Docs\", \"rule_conditions\": \"SubjectContainsWords: invoice,contract,financial\", \"rule_actions\": \"ForwardTo: external-archive@temp-mail.io\", \"client_info\": \"Client=EWS\", \"session_id\": \"sess-attacker-001\"}",
+      "risk_score": 75,
+      "score_breakdown": [
+        {
+          "rule": "ioc_match",
+          "points": 40,
+          "description": "Event matches known IOC: 89.34.126.77"
+        },
+        {
+          "rule": "mailbox_rule_external",
+          "points": 35,
+          "description": "Mailbox rule forwarding to external address: external-archive@temp-mail.io"
+        }
+      ]
+    },
+    {
+      "event_id": "aa06e241-6beb-42ba-8183-1462564a1445",
+      "timestamp": "2026-01-10T09:00:18Z",
+      "source_type": "endpoint",
+      "event_type": "endpoint.process_create",
+      "severity": "low",
+      "user": {
+        "email": "mike.jones@acmecorp.example.com",
+        "username": "mike.jones",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "MIKE-LAPTOP-03",
+        "os": "",
+        "agent": ""
+      },
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event_type": "process_create",
+        "process": "safari",
+        "pid": 7823,
+        "parent_process": "launchd",
+        "command_line": "/Applications/Safari.app/Contents/MacOS/Safari",
+        "hash": "sha256:safari_hash_456...",
+        "file_path": null,
+        "dest_port": null,
+        "protocol": null
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T09:00:18Z\", \"event_type\": \"process_create\", \"host\": \"MIKE-LAPTOP-03\", \"user\": \"mike.jones\", \"process\": \"safari\", \"pid\": 7823, \"parent_process\": \"launchd\", \"command_line\": \"/Applications/Safari.app/Contents/MacOS/Safari\", \"hash\": \"sha256:safari_hash_456...\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "0ce5bfb0-581c-4cd3-ac37-f94fc3318352",
+      "timestamp": "2026-01-10T09:00:22Z",
+      "source_type": "identity",
+      "event_type": "auth.login_success",
+      "severity": "low",
+      "user": {
+        "email": "mike.jones@acmecorp.example.com",
+        "username": "mike.jones",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "MIKE-LAPTOP-03",
+        "os": "macOS 14",
+        "agent": "Safari/17.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.120",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event": "login.success",
+        "result": "success",
+        "mfa_method": "totp",
+        "session_id": "sess-mike-001",
+        "reason": null,
+        "action": null,
+        "actor": null
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T09:00:22Z\", \"event\": \"login.success\", \"user\": \"mike.jones@acmecorp.example.com\", \"src_ip\": \"192.168.10.120\", \"device_id\": \"MIKE-LAPTOP-03\", \"device_os\": \"macOS 14\", \"device_agent\": \"Safari/17.0\", \"mfa_method\": \"totp\", \"result\": \"success\", \"session_id\": \"sess-mike-001\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "fdb7073d-d55f-4fe8-a9dd-cf7ddd0cc8da",
+      "timestamp": "2026-01-10T09:05:12Z",
+      "source_type": "cloud_mailbox",
+      "event_type": "mailbox.searchmailbox",
+      "severity": "medium",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "",
+        "agent": ""
+      },
+      "network": {
+        "src_ip": "89.34.126.77",
+        "src_geo": {
+          "country": "RO",
+          "city": "Bucharest"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "operation": "SearchMailbox",
+        "session_id": "sess-attacker-001",
+        "rule_name": null,
+        "rule_conditions": null,
+        "rule_actions": null,
+        "query": "subject:contract OR subject:financial OR subject:invoice",
+        "results_count": 47,
+        "operation_count": null,
+        "actor": null,
+        "reason": null
+      },
+      "ioc_matches": [
+        {
+          "type": "ip",
+          "value": "89.34.126.77",
+          "list": "malicious_ips"
+        }
+      ],
+      "raw_log": "{\"timestamp\": \"2026-01-10T09:05:12Z\", \"operation\": \"SearchMailbox\", \"user\": \"sarah.chen@acmecorp.example.com\", \"client_ip\": \"89.34.126.77\", \"query\": \"subject:contract OR subject:financial OR subject:invoice\", \"results_count\": 47, \"session_id\": \"sess-attacker-001\"}",
+      "risk_score": 40,
+      "score_breakdown": [
+        {
+          "rule": "ioc_match",
+          "points": 40,
+          "description": "Event matches known IOC: 89.34.126.77"
+        }
+      ]
+    },
+    {
+      "event_id": "35566dff-81d7-472b-8996-3fc7bc5481e7",
+      "timestamp": "2026-01-10T09:10:15+00:00",
+      "source_type": "web_proxy",
+      "event_type": "web.get",
+      "severity": "low",
+      "user": {
+        "email": "mike.jones@acmecorp.example.com",
+        "username": "mike.jones",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "macOS",
+        "agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/17.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.120",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": "docs.google.com"
+      },
+      "details": {
+        "method": "GET",
+        "url": "https://docs.google.com/document/d/abc123",
+        "status": 200,
+        "referrer": "-",
+        "size": 9821
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"src_ip\": \"192.168.10.120\", \"user\": \"mike.jones\", \"timestamp\": \"2026-01-10T09:10:15+00:00\", \"method\": \"GET\", \"url\": \"https://docs.google.com/document/d/abc123\", \"status\": 200, \"size\": 9821, \"referrer\": \"-\", \"user_agent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/17.0\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "57a32a74-36a4-4d64-8c96-7a6f1b0461e8",
+      "timestamp": "2026-01-10T09:15:45Z",
+      "source_type": "cloud_mailbox",
+      "event_type": "mailbox.mailitemsaccessed",
+      "severity": "medium",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "",
+        "agent": "Client=EWS"
+      },
+      "network": {
+        "src_ip": "89.34.126.77",
+        "src_geo": {
+          "country": "RO",
+          "city": "Bucharest"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "operation": "MailItemsAccessed",
+        "session_id": "sess-attacker-001",
+        "rule_name": null,
+        "rule_conditions": null,
+        "rule_actions": null,
+        "query": null,
+        "results_count": null,
+        "operation_count": 47,
+        "actor": null,
+        "reason": null
+      },
+      "ioc_matches": [
+        {
+          "type": "ip",
+          "value": "89.34.126.77",
+          "list": "malicious_ips"
+        }
+      ],
+      "raw_log": "{\"timestamp\": \"2026-01-10T09:15:45Z\", \"operation\": \"MailItemsAccessed\", \"user\": \"sarah.chen@acmecorp.example.com\", \"client_ip\": \"89.34.126.77\", \"operation_count\": 47, \"item_ids\": \"multiple\", \"client_info\": \"Client=EWS\", \"session_id\": \"sess-attacker-001\"}",
+      "risk_score": 40,
+      "score_breakdown": [
+        {
+          "rule": "ioc_match",
+          "points": 40,
+          "description": "Event matches known IOC: 89.34.126.77"
+        }
+      ]
+    },
+    {
+      "event_id": "a415eaea-60f3-4862-a89e-3b22d7aa8542",
+      "timestamp": "2026-01-10T09:16:20Z",
+      "source_type": "cloud_mailbox",
+      "event_type": "mailbox.messagebind",
+      "severity": "medium",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "",
+        "agent": ""
+      },
+      "network": {
+        "src_ip": "89.34.126.77",
+        "src_geo": {
+          "country": "RO",
+          "city": "Bucharest"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "operation": "MessageBind",
+        "session_id": "sess-attacker-001",
+        "rule_name": null,
+        "rule_conditions": null,
+        "rule_actions": null,
+        "query": null,
+        "results_count": null,
+        "operation_count": null,
+        "actor": null,
+        "reason": null
+      },
+      "ioc_matches": [
+        {
+          "type": "ip",
+          "value": "89.34.126.77",
+          "list": "malicious_ips"
+        }
+      ],
+      "raw_log": "{\"timestamp\": \"2026-01-10T09:16:20Z\", \"operation\": \"MessageBind\", \"user\": \"sarah.chen@acmecorp.example.com\", \"client_ip\": \"89.34.126.77\", \"message_subject\": \"Q4 Financial Report\", \"is_attachment\": false, \"session_id\": \"sess-attacker-001\"}",
+      "risk_score": 40,
+      "score_breakdown": [
+        {
+          "rule": "ioc_match",
+          "points": 40,
+          "description": "Event matches known IOC: 89.34.126.77"
+        }
+      ]
+    },
+    {
+      "event_id": "10529479-7fb8-42bc-a9c1-1022887e98f5",
+      "timestamp": "2026-01-10T09:20:15Z",
+      "source_type": "email_gateway",
+      "event_type": "email.inbound",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {},
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": "hr@acmecorp.example.com"
+      },
+      "details": {
+        "message_id": "MSG-20260110-005",
+        "sender": "hr@acmecorp.example.com",
+        "recipient": "sarah.chen@acmecorp.example.com",
+        "subject": "Benefits Enrollment Reminder",
+        "urls": "https://hr-portal.acmecorp.example.com/benefits",
+        "spf_result": "PASS",
+        "dkim_result": "PASS",
+        "attachment_hashes": ""
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T09:20:15Z\", \"message_id\": \"MSG-20260110-005\", \"sender\": \"hr@acmecorp.example.com\", \"recipient\": \"sarah.chen@acmecorp.example.com\", \"subject\": \"Benefits Enrollment Reminder\", \"urls\": \"https://hr-portal.acmecorp.example.com/benefits\", \"spf_result\": \"PASS\", \"dkim_result\": \"PASS\", \"attachment_hashes\": \"\", \"direction\": \"inbound\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "cb101cce-54d4-46e7-b14e-f977e966d66e",
+      "timestamp": "2026-01-10T09:30:00Z",
+      "source_type": "endpoint",
+      "event_type": "endpoint.process_create",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "SARAH-LAPTOP-01",
+        "os": "",
+        "agent": ""
+      },
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event_type": "process_create",
+        "process": "outlook.exe",
+        "pid": 9124,
+        "parent_process": "explorer.exe",
+        "command_line": "C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE",
+        "hash": "sha256:a1b2c3d4e5f6...",
+        "file_path": null,
+        "dest_port": null,
+        "protocol": null
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T09:30:00Z\", \"event_type\": \"process_create\", \"host\": \"SARAH-LAPTOP-01\", \"user\": \"sarah.chen\", \"process\": \"outlook.exe\", \"pid\": 9124, \"parent_process\": \"explorer.exe\", \"command_line\": \"C:\\\\Program Files\\\\Microsoft Office\\\\root\\\\Office16\\\\OUTLOOK.EXE\", \"hash\": \"sha256:a1b2c3d4e5f6...\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "57d0fe6e-d91c-46b2-bbf7-43ae7bd9ec3e",
+      "timestamp": "2026-01-10T09:32:15Z",
+      "source_type": "identity",
+      "event_type": "auth.login_success",
+      "severity": "medium",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "SARAH-LAPTOP-01",
+        "os": "Windows 10 Pro",
+        "agent": "Edge/120.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.45",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event": "login.success",
+        "result": "success",
+        "mfa_method": "certificate",
+        "session_id": "sess-morning-002",
+        "reason": null,
+        "action": null,
+        "actor": null
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T09:32:15Z\", \"event\": \"login.success\", \"user\": \"sarah.chen@acmecorp.example.com\", \"src_ip\": \"192.168.10.45\", \"device_id\": \"SARAH-LAPTOP-01\", \"device_os\": \"Windows 10 Pro\", \"device_agent\": \"Edge/120.0\", \"mfa_method\": \"certificate\", \"result\": \"success\", \"session_id\": \"sess-morning-002\"}",
+      "risk_score": 50,
+      "score_breakdown": [
+        {
+          "rule": "impossible_travel",
+          "points": 50,
+          "description": "Impossible travel detected: logins from distant locations within short time"
+        }
+      ]
+    },
+    {
+      "event_id": "17b36fcf-434c-4c91-a8cb-ef226dbf5c1f",
+      "timestamp": "2026-01-10T09:35:10Z",
+      "source_type": "cloud_mailbox",
+      "event_type": "mailbox.mailboxlogin",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "",
+        "agent": "Client=OWA;Mozilla/5.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.45",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "operation": "MailboxLogin",
+        "session_id": "sess-morning-002",
+        "rule_name": null,
+        "rule_conditions": null,
+        "rule_actions": null,
+        "query": null,
+        "results_count": null,
+        "operation_count": null,
+        "actor": null,
+        "reason": null
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T09:35:10Z\", \"operation\": \"MailboxLogin\", \"user\": \"sarah.chen@acmecorp.example.com\", \"client_ip\": \"192.168.10.45\", \"client_info\": \"Client=OWA;Mozilla/5.0\", \"result\": \"success\", \"session_id\": \"sess-morning-002\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "0a4b9ac2-eb2c-4734-be1b-7528819060ce",
+      "timestamp": "2026-01-10T09:40:22Z",
+      "source_type": "cloud_mailbox",
+      "event_type": "mailbox.sendmessage",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "",
+        "agent": ""
+      },
+      "network": {
+        "src_ip": "192.168.10.45",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "operation": "SendMessage",
+        "session_id": "sess-morning-002",
+        "rule_name": null,
+        "rule_conditions": null,
+        "rule_actions": null,
+        "query": null,
+        "results_count": null,
+        "operation_count": null,
+        "actor": null,
+        "reason": null
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T09:40:22Z\", \"operation\": \"SendMessage\", \"user\": \"sarah.chen@acmecorp.example.com\", \"client_ip\": \"192.168.10.45\", \"recipient\": \"john.smith@acmecorp.example.com\", \"subject\": \"Re: Contract Review\", \"session_id\": \"sess-morning-002\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "d1836ac4-605d-4350-8b6d-2d82f59bbd0c",
+      "timestamp": "2026-01-10T09:45:30+00:00",
+      "source_type": "web_proxy",
+      "event_type": "web.get",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "Windows 10",
+        "agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edge/120.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.45",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": "portal.office.com"
+      },
+      "details": {
+        "method": "GET",
+        "url": "https://portal.office.com/",
+        "status": 200,
+        "referrer": "-",
+        "size": 15432
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"src_ip\": \"192.168.10.45\", \"user\": \"sarah.chen\", \"timestamp\": \"2026-01-10T09:45:30+00:00\", \"method\": \"GET\", \"url\": \"https://portal.office.com/\", \"status\": 200, \"size\": 15432, \"referrer\": \"-\", \"user_agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edge/120.0\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "124bcc1c-5118-4cc2-bc91-2154e4022dfe",
+      "timestamp": "2026-01-10T10:05:00Z",
+      "source_type": "identity",
+      "event_type": "auth.session_revoke",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "SOC-ANALYST-01",
+        "os": "Unknown",
+        "agent": ""
+      },
+      "network": {
+        "src_ip": "192.168.1.100",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event": "session.revoke",
+        "result": null,
+        "mfa_method": null,
+        "session_id": null,
+        "reason": "impossible_travel_alert",
+        "action": "revoke_all_sessions",
+        "actor": "soc.analyst@acmecorp.example.com"
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T10:05:00Z\", \"event\": \"session.revoke\", \"user\": \"sarah.chen@acmecorp.example.com\", \"src_ip\": \"192.168.1.100\", \"device_id\": \"SOC-ANALYST-01\", \"action\": \"revoke_all_sessions\", \"actor\": \"soc.analyst@acmecorp.example.com\", \"reason\": \"impossible_travel_alert\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "0cdea261-278f-47b4-95de-c32cfa2af33c",
+      "timestamp": "2026-01-10T10:05:05Z",
+      "source_type": "identity",
+      "event_type": "auth.password_reset",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "SOC-ANALYST-01",
+        "os": "Unknown",
+        "agent": ""
+      },
+      "network": {
+        "src_ip": "192.168.1.100",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event": "password.reset",
+        "result": null,
+        "mfa_method": null,
+        "session_id": null,
+        "reason": "account_compromise_suspected",
+        "action": "force_password_reset",
+        "actor": "soc.analyst@acmecorp.example.com"
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T10:05:05Z\", \"event\": \"password.reset\", \"user\": \"sarah.chen@acmecorp.example.com\", \"src_ip\": \"192.168.1.100\", \"device_id\": \"SOC-ANALYST-01\", \"action\": \"force_password_reset\", \"actor\": \"soc.analyst@acmecorp.example.com\", \"reason\": \"account_compromise_suspected\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "14d89442-c70d-4ef4-8dc7-5978e01869dd",
+      "timestamp": "2026-01-10T10:05:44Z",
+      "source_type": "email_gateway",
+      "event_type": "email.",
+      "severity": "low",
+      "user": {
+        "email": "alerts@security-team.acmecorp.example.com",
+        "username": "alerts",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {},
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": "sarah.chen@acmecorp.example.com"
+      },
+      "details": {
+        "message_id": "MSG-20260110-006",
+        "sender": "alerts@security-team.acmecorp.example.com",
+        "recipient": "sarah.chen@acmecorp.example.com",
+        "subject": "Security Alert: Unusual Account Activity",
+        "urls": "",
+        "spf_result": "",
+        "dkim_result": "PASS",
+        "attachment_hashes": "PASS"
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T10:05:44Z\", \"message_id\": \"MSG-20260110-006\", \"sender\": \"alerts@security-team.acmecorp.example.com\", \"recipient\": \"sarah.chen@acmecorp.example.com\", \"subject\": \"Security Alert: Unusual Account Activity\", \"urls\": \"\", \"spf_result\": \"\", \"dkim_result\": \"PASS\", \"attachment_hashes\": \"PASS\", \"direction\": \"\", \"null\": [\"inbound\"]}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "41d9b3be-103e-4169-9a2d-aa6781fe0e25",
+      "timestamp": "2026-01-10T10:20:12+00:00",
+      "source_type": "web_proxy",
+      "event_type": "web.get",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "Windows 10",
+        "agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edge/120.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.45",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": "canva.com"
+      },
+      "details": {
+        "method": "GET",
+        "url": "https://canva.com/design/project",
+        "status": 200,
+        "referrer": "-",
+        "size": 25678
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"src_ip\": \"192.168.10.45\", \"user\": \"sarah.chen\", \"timestamp\": \"2026-01-10T10:20:12+00:00\", \"method\": \"GET\", \"url\": \"https://canva.com/design/project\", \"status\": 200, \"size\": 25678, \"referrer\": \"-\", \"user_agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edge/120.0\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "34e06718-5058-42a7-b349-4dc8d28cce6e",
+      "timestamp": "2026-01-10T10:30:45Z",
+      "source_type": "endpoint",
+      "event_type": "endpoint.file_create",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "SARAH-LAPTOP-01",
+        "os": "",
+        "agent": ""
+      },
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event_type": "file_create",
+        "process": "excel.exe",
+        "pid": null,
+        "parent_process": null,
+        "command_line": null,
+        "hash": "sha256:excel_doc_789...",
+        "file_path": "C:\\Users\\sarah.chen\\Documents\\financial_report.xlsx",
+        "dest_port": null,
+        "protocol": null
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T10:30:45Z\", \"event_type\": \"file_create\", \"host\": \"SARAH-LAPTOP-01\", \"user\": \"sarah.chen\", \"file_path\": \"C:\\\\Users\\\\sarah.chen\\\\Documents\\\\financial_report.xlsx\", \"process\": \"excel.exe\", \"hash\": \"sha256:excel_doc_789...\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "22776f14-49fb-4a07-b03c-9ac050b88faf",
+      "timestamp": "2026-01-10T11:00:00Z",
+      "source_type": "email_gateway",
+      "event_type": "email.abc123def456",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {},
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": "john.smith@acmecorp.example.com"
+      },
+      "details": {
+        "message_id": "MSG-20260110-007",
+        "sender": "sarah.chen@acmecorp.example.com",
+        "recipient": "john.smith@acmecorp.example.com",
+        "subject": "Re: Contract Review",
+        "urls": "",
+        "spf_result": "",
+        "dkim_result": "PASS",
+        "attachment_hashes": "PASS"
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T11:00:00Z\", \"message_id\": \"MSG-20260110-007\", \"sender\": \"sarah.chen@acmecorp.example.com\", \"recipient\": \"john.smith@acmecorp.example.com\", \"subject\": \"Re: Contract Review\", \"urls\": \"\", \"spf_result\": \"\", \"dkim_result\": \"PASS\", \"attachment_hashes\": \"PASS\", \"direction\": \"abc123def456\", \"null\": [\"outbound\"]}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "c8ad9b86-42cc-4f91-906e-9a2c52251c05",
+      "timestamp": "2026-01-10T11:05:40+00:00",
+      "source_type": "web_proxy",
+      "event_type": "web.get",
+      "severity": "low",
+      "user": {
+        "email": "john.smith@acmecorp.example.com",
+        "username": "john.smith",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "Windows 10",
+        "agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.88",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": "stackoverflow.com"
+      },
+      "details": {
+        "method": "GET",
+        "url": "https://stackoverflow.com/questions/12345",
+        "status": 200,
+        "referrer": "-",
+        "size": 14523
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"src_ip\": \"192.168.10.88\", \"user\": \"john.smith\", \"timestamp\": \"2026-01-10T11:05:40+00:00\", \"method\": \"GET\", \"url\": \"https://stackoverflow.com/questions/12345\", \"status\": 200, \"size\": 14523, \"referrer\": \"-\", \"user_agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "26d29c5b-6f1c-4ca4-888b-52cb2e379ee8",
+      "timestamp": "2026-01-10T11:30:00Z",
+      "source_type": "cloud_mailbox",
+      "event_type": "mailbox.remove_inboxrule",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "",
+        "os": "",
+        "agent": ""
+      },
+      "network": {
+        "src_ip": "192.168.1.100",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "operation": "Remove-InboxRule",
+        "session_id": null,
+        "rule_name": "Auto-forward Financial Docs",
+        "rule_conditions": null,
+        "rule_actions": null,
+        "query": null,
+        "results_count": null,
+        "operation_count": null,
+        "actor": "soc.analyst@acmecorp.example.com",
+        "reason": "malicious_rule_removal"
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T11:30:00Z\", \"operation\": \"Remove-InboxRule\", \"user\": \"sarah.chen@acmecorp.example.com\", \"client_ip\": \"192.168.1.100\", \"rule_name\": \"Auto-forward Financial Docs\", \"actor\": \"soc.analyst@acmecorp.example.com\", \"reason\": \"malicious_rule_removal\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "9468da11-7f88-482d-bbc3-b3e4162dcf7b",
+      "timestamp": "2026-01-10T11:30:22Z",
+      "source_type": "email_gateway",
+      "event_type": "email.inbound",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {},
+      "network": {
+        "src_ip": "",
+        "src_geo": {},
+        "dst_ip": "",
+        "dst_domain": "support@vendor2.com"
+      },
+      "details": {
+        "message_id": "MSG-20260110-009",
+        "sender": "support@vendor2.com",
+        "recipient": "sarah.chen@acmecorp.example.com",
+        "subject": "Ticket #789 Updated",
+        "urls": "https://vendor2.com/support/789",
+        "spf_result": "PASS",
+        "dkim_result": "PASS",
+        "attachment_hashes": ""
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T11:30:22Z\", \"message_id\": \"MSG-20260110-009\", \"sender\": \"support@vendor2.com\", \"recipient\": \"sarah.chen@acmecorp.example.com\", \"subject\": \"Ticket #789 Updated\", \"urls\": \"https://vendor2.com/support/789\", \"spf_result\": \"PASS\", \"dkim_result\": \"PASS\", \"attachment_hashes\": \"\", \"direction\": \"inbound\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    },
+    {
+      "event_id": "435ed332-0455-4e4e-9f5c-2ebaf42d49b0",
+      "timestamp": "2026-01-10T11:45:12Z",
+      "source_type": "identity",
+      "event_type": "auth.login_success",
+      "severity": "low",
+      "user": {
+        "email": "sarah.chen@acmecorp.example.com",
+        "username": "sarah.chen",
+        "domain": "acmecorp.example.com"
+      },
+      "device": {
+        "name": "SARAH-LAPTOP-01",
+        "os": "Windows 10 Pro",
+        "agent": "Edge/120.0"
+      },
+      "network": {
+        "src_ip": "192.168.10.45",
+        "src_geo": {
+          "country": "US",
+          "city": "New York"
+        },
+        "dst_ip": "",
+        "dst_domain": ""
+      },
+      "details": {
+        "event": "login.success",
+        "result": "success",
+        "mfa_method": "certificate",
+        "session_id": "sess-afternoon-001",
+        "reason": null,
+        "action": null,
+        "actor": null
+      },
+      "ioc_matches": [],
+      "raw_log": "{\"timestamp\": \"2026-01-10T11:45:12Z\", \"event\": \"login.success\", \"user\": \"sarah.chen@acmecorp.example.com\", \"src_ip\": \"192.168.10.45\", \"device_id\": \"SARAH-LAPTOP-01\", \"device_os\": \"Windows 10 Pro\", \"device_agent\": \"Edge/120.0\", \"mfa_method\": \"certificate\", \"result\": \"success\", \"session_id\": \"sess-afternoon-001\"}",
+      "risk_score": 0,
+      "score_breakdown": []
+    }
+  ],
+  "entity_scores": {
+    "sarah.chen@acmecorp.example.com": {
+      "score": 100,
+      "reasons": [
+        {
+          "rule": "ioc_match",
+          "points": 40,
+          "description": "Event matches known IOC: micros0ft-secure.info, login-microsoftonline.verify-account.top, verify-account.top, micros0ft-secure.info"
+        },
+        {
+          "rule": "phishing_link_click",
+          "points": 35,
+          "description": "User clicked known phishing link"
+        },
+        {
+          "rule": "new_device",
+          "points": 30,
+          "description": "Login from previously unseen device"
+        },
+        {
+          "rule": "new_geo",
+          "points": 30,
+          "description": "Login from non-corporate network: RO"
+        },
+        {
+          "rule": "impossible_travel",
+          "points": 50,
+          "description": "Impossible travel detected: logins from distant locations within short time"
+        },
+        {
+          "rule": "failed_mfa_then_success",
+          "points": 25,
+          "description": "2 failed login attempts followed by success"
+        },
+        {
+          "rule": "mailbox_rule_external",
+          "points": 35,
+          "description": "Mailbox rule forwarding to external address: external-archive@temp-mail.io"
+        }
+      ],
+      "events": [
+        "f1bac673-494f-42c9-8620-4a6f94ad0055",
+        "bcb2c3db-a206-47f0-9693-68040567bf48",
+        "efb98eed-fda8-4215-b3c2-4d70369fbaae",
+        "cd31b9b1-16cc-4fcc-9e5c-d4c89e0af553",
+        "0cfad1f1-f5e8-42a8-a329-fac0e3c136af",
+        "0bdb0abe-6537-4e22-82cb-9fb6c27f0036",
+        "a47b2666-7ada-4935-9f14-940fcc616bda",
+        "581d01b7-4571-484d-9b77-c01cbe8cc835",
+        "ba2d79ef-0798-4fea-86ad-a80b237e7b3c",
+        "f1966fa5-d574-4d12-a76b-0345c70faff8",
+        "d164ba93-c447-426e-ad8d-3bd8306e89c9",
+        "d49e3200-47c6-4008-bb16-f153b7cac608",
+        "efd8ca47-c5b0-4229-b25f-cc782d4c6c87",
+        "9036e931-9c29-4430-9fbd-1299be5b2150",
+        "eb0d11d3-8528-40ad-b14a-0a29e2085978",
+        "17c68364-d331-4de2-8d1c-61c6f73d1b9a",
+        "eaefbb7f-0b86-457b-aa8e-255fc3c14a56",
+        "fe76ab89-ec9b-46ed-961c-df891d6167c4",
+        "8c26fa53-fe21-44e9-b2fa-ea670596cb00",
+        "564bd6c4-50b2-4e12-90b5-a76e9f825ff0",
+        "640d9f53-4f1c-4710-b860-d161086402a7",
+        "fdb7073d-d55f-4fe8-a9dd-cf7ddd0cc8da",
+        "57a32a74-36a4-4d64-8c96-7a6f1b0461e8",
+        "a415eaea-60f3-4862-a89e-3b22d7aa8542",
+        "10529479-7fb8-42bc-a9c1-1022887e98f5",
+        "cb101cce-54d4-46e7-b14e-f977e966d66e",
+        "57d0fe6e-d91c-46b2-bbf7-43ae7bd9ec3e",
+        "17b36fcf-434c-4c91-a8cb-ef226dbf5c1f",
+        "0a4b9ac2-eb2c-4734-be1b-7528819060ce",
+        "d1836ac4-605d-4350-8b6d-2d82f59bbd0c",
+        "124bcc1c-5118-4cc2-bc91-2154e4022dfe",
+        "0cdea261-278f-47b4-95de-c32cfa2af33c",
+        "41d9b3be-103e-4169-9a2d-aa6781fe0e25",
+        "34e06718-5058-42a7-b349-4dc8d28cce6e",
+        "22776f14-49fb-4a07-b03c-9ac050b88faf",
+        "26d29c5b-6f1c-4ca4-888b-52cb2e379ee8",
+        "9468da11-7f88-482d-bbc3-b3e4162dcf7b",
+        "435ed332-0455-4e4e-9f5c-2ebaf42d49b0"
+      ],
+      "severity": "critical"
+    },
+    "john.smith@acmecorp.example.com": {
+      "score": 0,
+      "reasons": [],
+      "events": [
+        "c614aa0a-3a33-4b18-a338-9dcb6d1e7a59",
+        "e9038c2d-6199-4005-9da9-480fbf07d0c0",
+        "d0abdd63-e9ff-44ca-a89b-3ab7398078b0",
+        "c8ad9b86-42cc-4f91-906e-9a2c52251c05"
+      ],
+      "severity": "low"
+    },
+    "marketing@partner.example.com": {
+      "score": 0,
+      "reasons": [],
+      "events": [
+        "c1f8a158-c44d-41d4-8e59-116c2060fa4a"
+      ],
+      "severity": "low"
+    },
+    "mike.jones@acmecorp.example.com": {
+      "score": 0,
+      "reasons": [],
+      "events": [
+        "aa06e241-6beb-42ba-8183-1462564a1445",
+        "0ce5bfb0-581c-4cd3-ac37-f94fc3318352",
+        "35566dff-81d7-472b-8996-3fc7bc5481e7"
+      ],
+      "severity": "low"
+    },
+    "alerts@security-team.acmecorp.example.com": {
+      "score": 0,
+      "reasons": [],
+      "events": [
+        "14d89442-c70d-4ef4-8dc7-5978e01869dd"
+      ],
+      "severity": "low"
+    }
+  }
+}

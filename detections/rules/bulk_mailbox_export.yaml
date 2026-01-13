@@ -1,0 +1,70 @@
+name: Bulk Mailbox Export
+description: Large-scale mailbox access or export operation, potential data exfiltration
+severity: high
+confidence: medium
+
+detection_logic:
+  - Monitor for MailItemsAccessed events with high operation counts
+  - Alert if user accesses unusual volume of emails in short time
+  - Increase severity if from non-corporate IP or unknown device
+  - Correlate with recent suspicious login or password change
+
+conditions:
+  - event_type: mailbox.mailitemsaccessed OR mailbox.messagebind
+  - operation_count: > 20 within 1 hour
+  - OR search_results_count: > 50
+  - increase_severity_if:
+      - src_ip NOT IN corporate_ip_ranges
+      - device_id: unknown
+      - recent_password_reset: within 24 hours
+
+false_positive_scenarios:
+  - Legitimate email migration or backup
+  - E-discovery/legal hold operations (whitelist compliance tools)
+  - User cleaning up mailbox before vacation
+  - Email client synchronization after extended offline period
+
+tuning_recommendations:
+  - Baseline normal mailbox access patterns per user
+  - Whitelist e-discovery and compliance tools
+  - Adjust thresholds based on user role (executives may have higher normal volumes)
+  - Combine with search query content analysis (e.g., "password", "confidential")
+
+mitre_attack:
+  - tactic: Collection
+    technique: T1114.002
+    technique_name: Email Collection (Remote Email Collection)
+  - tactic: Exfiltration
+    technique: T1048
+    technique_name: Exfiltration Over Alternative Protocol
+
+response_actions:
+  - Review search queries and accessed message subjects
+  - Determine if data was exfiltrated or just accessed
+  - Check for concurrent file downloads or external communications
+  - If suspicious, revoke session and force re-authentication
+  - Preserve logs for forensic analysis
+  - Assess data sensitivity and notify stakeholders if needed
+
+tool_agnostic_query: |
+  # Pseudocode for bulk mailbox export detection
+  
+  SELECT
+    user,
+    timestamp,
+    SUM(operation_count) AS total_operations,
+    COUNT(DISTINCT folder) AS folders_accessed,
+    src_ip,
+    src_geo,
+    client_info
+  FROM mailbox_audit_logs
+  WHERE
+    operation IN ('MailItemsAccessed', 'MessageBind', 'SearchMailbox')
+    AND timestamp >= NOW() - 1 hour
+  GROUP BY
+    user,
+    src_ip,
+    TIME_WINDOW(timestamp, 1 hour)
+  HAVING
+    total_operations > 20
+    OR folders_accessed > 10

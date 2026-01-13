@@ -1,0 +1,70 @@
+name: Impossible Travel Detected
+description: User authenticated from geographically distant locations within a short time window, indicating potential account compromise
+severity: high
+confidence: high
+
+detection_logic:
+  - Identify consecutive successful login events for the same user
+  - Calculate geographic distance between source IPs
+  - Calculate time difference between logins
+  - Alert if distance > 500 km and time < 60 minutes (implies travel speed > 500 km/h)
+
+conditions:
+  - event_type: auth.login.success
+  - group_by: user.email
+  - within_timeframe: 60 minutes
+  - different_geolocations: true
+  - minimum_distance_km: 500
+
+false_positive_scenarios:
+  - VPN usage with endpoint switching
+  - Load-balanced proxy infrastructure
+  - Shared accounts (should be deprecated)
+  - GeoIP database inaccuracies
+
+tuning_recommendations:
+  - Adjust distance threshold based on organizational footprint
+  - Whitelist known VPN egress points
+  - Consider device fingerprinting in addition to geo
+  - Require MFA step-up for high-risk login locations
+
+mitre_attack:
+  - tactic: Initial Access
+    technique: T1078.004
+    technique_name: Valid Accounts (Cloud Accounts)
+  - tactic: Defense Evasion
+    technique: T1078
+    technique_name: Valid Accounts
+
+response_actions:
+  - Verify user's actual location and travel schedule
+  - Review which session performed which actions
+  - Revoke suspicious sessions immediately
+  - Force password reset if compromise confirmed
+  - Enable conditional access policies for high-risk locations
+
+tool_agnostic_query: |
+  # Pseudocode for impossible travel detection
+
+  SELECT
+    user,
+    login_time_1,
+    login_time_2,
+    geo_1,
+    geo_2,
+    time_diff_minutes,
+    distance_km
+  FROM (
+    SELECT
+      user,
+      timestamp AS login_time_1,
+      LEAD(timestamp) OVER (PARTITION BY user ORDER BY timestamp) AS login_time_2,
+      src_geo AS geo_1,
+      LEAD(src_geo) OVER (PARTITION BY user ORDER BY timestamp) AS geo_2
+    FROM auth_logs
+    WHERE event_type = 'login.success'
+  )
+  WHERE
+    geo_1.country != geo_2.country
+    AND time_diff_minutes < 60
+    AND distance_km > 500

@@ -1,0 +1,184 @@
+name: Mailbox Rule Investigation Playbook
+version: 1.0
+trigger: Alert for suspicious inbox rule creation or modification
+owner: SOC Tier-2 / Email Security Team
+
+steps:
+  - id: 1
+    phase: Verification
+    action: Verify Rule Existence and Details
+    details: |
+      - Confirm the inbox rule currently exists
+      - Retrieve full rule details (name, conditions, actions, creation timestamp)
+      - Identify who/what created the rule (user session, application, API)
+      - Determine if rule is currently active or disabled
+    owner: Tier-2 Analyst
+    estimated_time: 5 minutes
+    commands:
+      - "Get-InboxRule -Mailbox user@company.com"
+      - "Get-MailboxAuditLog -Mailbox user@company.com -Operations New-InboxRule,Set-InboxRule -StartDate <alert_time - 24h>"
+    success_criteria:
+      - Rule details fully documented
+      - Creation method identified
+  
+  - id: 2
+    phase: Analysis
+    action: Assess Rule Legitimacy
+    details: |
+      - Review rule conditions and actions for malicious intent
+      - Check if forwarding destination is external or internal
+      - Determine if rule matches known attack patterns (keywords like "invoice", "password", etc.)
+      - Contact user to verify if they created the rule intentionally
+    owner: Tier-2 Analyst
+    estimated_time: 10 minutes
+    indicators_of_compromise:
+      - Forward/redirect to external domain
+      - Rule conditions targeting sensitive keywords (invoice, contract, confidential, password)
+      - Rule created from unusual IP address or device
+      - Rule created shortly after suspicious login
+    success_criteria:
+      - Legitimacy determination made (benign vs malicious)
+  
+  - id: 3
+    phase: Containment
+    action: Disable or Delete Malicious Rule
+    details: |
+      - If confirmed malicious, immediately delete the rule
+      - Document rule configuration before deletion for forensics
+      - Check for additional rules created by same session/IP
+      - If user account compromised, follow Account Compromise playbook
+    owner: Tier-2 Analyst
+    estimated_time: 5 minutes
+    commands:
+      - "Remove-InboxRule -Mailbox user@company.com -Identity 'Rule Name' -Confirm:$false"
+      - "Export-InboxRule -Mailbox user@company.com -RuleName 'Rule Name' > rule_backup.json"
+    success_criteria:
+      - Malicious rule deleted
+      - Rule backup saved for investigation
+  
+  - id: 4
+    phase: Investigation
+    action: Determine What Emails Were Affected
+    details: |
+      - Review mailbox logs to identify emails matching rule conditions
+      - Determine if any emails were actually forwarded/deleted/moved
+      - If forwarded, identify which emails and assess sensitivity
+      - Check if forwarded emails were accessed at destination
+    owner: Tier-2 Analyst / Email Security
+    estimated_time: 15-20 minutes
+    queries:
+      - "Search mailbox for items matching rule conditions during rule active period"
+      - "Check mail flow logs for forwarded messages to external destination"
+      - "Review recipient mailbox for delivered forwarded emails"
+    success_criteria:
+      - List of affected emails identified
+      - Data sensitivity assessment complete
+  
+  - id: 5
+    phase: Investigation
+    action: Identify Root Cause
+    details: |
+      - Determine how attacker gained access to create rule
+      - Review auth logs for compromise indicators
+      - Check for correlated alerts (impossible travel, new device, etc.)
+      - Assess if part of larger campaign or isolated incident
+    owner: Tier-2 Analyst
+    estimated_time: 15 minutes
+    investigation_steps:
+      - Review user authentication timeline
+      - Check for password reset or MFA bypass
+      - Look for phishing emails sent to user
+      - Correlate with web proxy logs for credential phishing sites
+    success_criteria:
+      - Attack vector identified
+      - Timeline of compromise established
+  
+  - id: 6
+    phase: Eradication
+    action: Remove Attacker Access
+    details: |
+      - Revoke all active sessions for compromised account
+      - Force password reset with MFA re-enrollment
+      - Check for other persistence mechanisms (OAuth apps, delegates, forwarding settings)
+      - Remove any additional malicious configurations
+    owner: Tier-2 Analyst / Incident Response
+    estimated_time: 10-15 minutes
+    commands:
+      - "Revoke-UserSession -User compromised_user@company.com -All"
+      - "Set-UserPasswordReset -User compromised_user@company.com -Force"
+      - "Get-MailboxPermission -Identity compromised_user@company.com"
+      - "Get-MailboxFolderPermission -Identity compromised_user@company.com:\Inbox"
+    success_criteria:
+      - All attacker access removed
+      - No additional persistence mechanisms found
+  
+  - id: 7
+    phase: Recovery
+    action: Restore Normal Operations
+    details: |
+      - Verify legitimate inbox rules still in place (if user had any)
+      - Re-enable account with enhanced monitoring
+      - Set up alerts for similar activity on this account
+      - Notify user of incident and security best practices
+    owner: Tier-2 Analyst
+    estimated_time: 10 minutes
+    success_criteria:
+      - User account restored to normal operation
+      - Enhanced monitoring enabled
+  
+  - id: 8
+    phase: Documentation
+    action: Document Findings and Recommendations
+    details: |
+      - Create incident report detailing rule, impact, and remediation
+      - Document IOCs (IPs, user agents, timestamps)
+      - Provide recommendations for detection improvements
+      - Update detection rules to catch similar patterns faster
+    owner: Tier-2 Lead
+    estimated_time: 20-30 minutes
+    outputs:
+      - Incident report
+      - IOC list
+      - Detection tuning recommendations
+    success_criteria:
+      - Complete documentation
+      - Lessons learned captured
+
+common_malicious_patterns:
+  forwarding_rules:
+    - "ForwardTo: external email address"
+    - "RedirectTo: attacker-controlled address"
+    - "ForwardAsAttachmentTo: data exfiltration"
+  
+  stealth_rules:
+    - "Mark as read (prevent user from noticing)"
+    - "Move to subfolder (hide forwarded emails)"
+    - "Delete after forwarding (cover tracks)"
+  
+  targeted_conditions:
+    - "Subject contains: invoice, payment, contract, confidential, password, credentials"
+    - "From: specific executives or finance team"
+    - "Has attachments: target documents"
+
+prevention_controls:
+  - Alert on all external forwarding rule creation
+  - Implement conditional access policies restricting rule creation from non-corporate IPs
+  - Enforce MFA for mailbox configuration changes
+  - User awareness training on inbox rule phishing
+  - Regular audit of inbox rules across all users
+
+metrics:
+  - Time to rule deletion from alert
+  - Number of emails forwarded before containment
+  - False positive rate for inbox rule alerts
+
+escalation_triggers:
+  - Confidential/classified data forwarded
+  - Executive mailbox affected
+  - Mass rule creation across multiple accounts (campaign)
+  - Evidence of sophisticated attacker (API usage, automation)
+
+references:
+  - Microsoft Exchange Security Best Practices
+  - MITRE ATT&CK T1114.003 (Email Forwarding Rule)
+  - Company Email Security Policy

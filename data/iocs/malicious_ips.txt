@@ -1,0 +1,6 @@
+# Known Malicious IP Addresses
+# Format: IP address or CIDR per line
+# Last updated: 2026-01-10
+
+89.34.126.77
+185.220.101.45

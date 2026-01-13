@@ -1,0 +1,8 @@
+# Known Good IP Ranges (Corporate Network)
+# Format: CIDR notation per line
+# Last updated: 2026-01-10
+
+192.168.0.0/16
+192.168.1.0/24
+192.168.10.0/24
+10.0.0.0/8

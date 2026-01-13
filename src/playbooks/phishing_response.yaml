@@ -1,0 +1,154 @@
+name: Phishing Email Response Playbook
+version: 1.0
+trigger: Suspected or confirmed phishing email reported or detected
+owner: SOC Tier-1 / Email Security Team
+
+steps:
+  - id: 1
+    phase: Identification
+    action: Collect Phishing Artifacts
+    details: |
+      - Obtain original email (header + body + attachments)
+      - Extract sender address, subject, URLs, and attachment hashes
+      - Determine if email is targeted (spearphishing) or mass campaign
+      - Check email gateway logs for delivery count
+    owner: Tier-1 Analyst
+    estimated_time: 5 minutes
+    success_criteria:
+      - Full email artifacts collected
+      - Delivery scope identified (how many recipients)
+  
+  - id: 2
+    phase: Analysis
+    action: Assess Phishing Email
+    details: |
+      - Analyze email headers (SPF, DKIM, DMARC results)
+      - Check sender domain for typosquatting or spoofing
+      - Detonate URLs in sandbox if available
+      - Scan attachments with antivirus and sandbox
+      - Determine malicious intent and potential impact
+    owner: Tier-1 Analyst / Email Security Team
+    estimated_time: 10-15 minutes
+    tools:
+      - Email header analyzer
+      - URL sandbox (URLhaus, VirusTotal, ANY.RUN)
+      - File sandbox (Cuckoo, Joe Sandbox)
+    success_criteria:
+      - Malicious verdict confirmed OR benign/spam
+      - IOCs extracted (domains, IPs, hashes)
+  
+  - id: 3
+    phase: Containment
+    action: Block IOCs Immediately
+    details: |
+      - Add malicious domains to proxy/firewall block list
+      - Add sender domain/IP to email gateway block list
+      - Add file hashes to endpoint protection blocklist
+      - Delete emails from all mailboxes if possible (purge)
+    owner: Email Security Engineer / Network Team
+    estimated_time: 10 minutes
+    commands:
+      - "Add-ProxyBlocklist -Domain phishing-domain.com"
+      - "Add-EmailBlockSender -Address attacker@phishing-domain.com"
+      - "Search-Mailbox -All -SearchQuery 'subject:Urgent: Verify' -DeleteContent"
+    success_criteria:
+      - IOCs blocked at perimeter
+      - Emails removed from user mailboxes
+  
+  - id: 4
+    phase: Investigation
+    action: Identify Affected Users
+    details: |
+      - Query email logs for all recipients of phishing email
+      - Check web proxy logs for users who clicked links
+      - Review auth logs for credential submissions (logins from attacker IPs or unusual locations)
+      - Create list of high-risk users who likely interacted
+    owner: Tier-1/Tier-2 Analyst
+    estimated_time: 15-20 minutes
+    queries:
+      - "Get all recipients of message_id = <phishing_message_id>"
+      - "Get web_proxy events where URL contains phishing_domain within 1 hour of email delivery"
+      - "Get auth events for recipients where src_ip IN attacker_ips OR new_device = true"
+    success_criteria:
+      - Complete list of recipients
+      - List of users who clicked (high-risk)
+      - List of users with suspicious auth activity (critical)
+  
+  - id: 5
+    phase: Containment
+    action: Respond to User Interactions
+    details: |
+      - For users who clicked but no credential submission: Send security awareness reminder
+      - For users who likely submitted credentials: Immediately force password reset and session revocation (follow Account Compromise playbook)
+      - Monitor all affected users for 48 hours
+    owner: Tier-2 Analyst / Incident Response
+    estimated_time: Variable (5-60 minutes depending on scope)
+    success_criteria:
+      - High-risk users contained (passwords reset, sessions revoked)
+      - All users notified
+  
+  - id: 6
+    phase: Communication
+    action: Notify Stakeholders
+    details: |
+      - Send internal security alert to all employees (if widespread campaign)
+      - Notify security awareness team for targeted training
+      - Update executive team if high-profile targets affected
+      - Report to external entities if required (e.g., phishing site takedown request)
+    owner: Security Communications / Management
+    estimated_time: 15-30 minutes
+    success_criteria:
+      - Internal notification sent
+      - Stakeholders informed
+  
+  - id: 7
+    phase: Eradication
+    action: Take Down Phishing Infrastructure
+    details: |
+      - Report phishing domain to hosting provider for takedown
+      - Submit URLs to PhishTank, Google Safe Browsing, Microsoft SmartScreen
+      - Coordinate with threat intelligence partners
+      - Monitor for related campaigns or infrastructure reuse
+    owner: Threat Intelligence Team / Email Security
+    estimated_time: 20-30 minutes
+    success_criteria:
+      - Takedown requests submitted
+      - IOCs shared with threat intel communities
+  
+  - id: 8
+    phase: Documentation
+    action: Document Phishing Incident
+    details: |
+      - Create incident report with email sample, IOCs, and impact
+      - Update phishing trend tracker
+      - Document lessons learned
+      - Update email filtering rules based on findings
+    owner: Tier-1 Lead
+    estimated_time: 20 minutes
+    success_criteria:
+      - Incident documented
+      - IOCs added to internal threat intel feed
+
+escalation_triggers:
+  - Phishing Campaign: > 50 recipients
+  - Executive/High-Value Target: CEO, CFO, IT admin accounts targeted
+  - Credential Theft Confirmed: Auth logs show attacker using stolen credentials
+  - Malware Delivery: Attachments contain ransomware or advanced malware
+
+prevention_recommendations:
+  - Enable email link rewriting/protection
+  - Deploy DMARC with reject policy for corporate domain
+  - Implement email banner warnings for external senders
+  - Conduct regular phishing simulations
+  - Deploy endpoint EDR for credential protection
+
+metrics:
+  - Time to block IOCs from initial report
+  - Percentage of users who clicked phishing link
+  - Percentage of users who submitted credentials
+  - False positive rate for phishing detections
+
+references:
+  - Anti-Phishing Working Group (APWG) guidelines
+  - CISA Phishing Guidance
+  - Company Security Awareness Policy

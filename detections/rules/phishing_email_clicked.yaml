@@ -1,0 +1,82 @@
+name: Phishing Email Clicked
+description: User clicked link in email containing known phishing indicators or IOCs
+severity: high
+confidence: high
+
+detection_logic:
+  - Correlate email receipt with web proxy access within short timeframe
+  - Match email URL to clicked URL or domain
+  - Alert if email contains phishing indicators (SPF fail, known-bad domain, etc.)
+  - Create high-confidence alert if credential submission detected (HTTP POST)
+
+conditions:
+  - sequence:
+      1. email.inbound event with suspicious_indicators OR ioc_match
+      2. web.request event to matching URL/domain within 30 minutes by same user
+  - suspicious_email_indicators:
+      - spf_result: FAIL
+      - dkim_result: NONE or FAIL
+      - url_domain: IN malicious_domains_list
+      - sender_domain: typosquatting pattern
+
+false_positive_scenarios:
+  - Link validation services (automated clicking)
+  - Security awareness testing (coordinate with training team)
+  - URL shorteners resolving to legitimate sites
+  - Shared links in team channels
+
+tuning_recommendations:
+  - Implement email link rewriting to force sandbox detonation
+  - Whitelist security awareness testing campaigns
+  - Consider time proximity (tighter window = higher confidence)
+  - Add device context (mobile vs desktop different  risk levels)
+
+mitre_attack:
+  - tactic: Initial Access
+    technique: T1566.002
+    technique_name: Phishing (Spearphishing Link)
+  - tactic: Credential Access
+    technique: T1589.001
+    technique_name: Credentials from Password Stores
+
+response_actions:
+  - Isolate user device if available (EDR)
+  - Check for credential submission (HTTP POST, forms)
+  - If credentials likely submitted, immediate password reset
+  - Revoke active sessions
+  - Block domain at proxy/firewall
+  - Add IOCs to threat intelligence feeds
+  - Notify user and security awareness team
+
+tool_agnostic_query: |
+  # Pseudocode for phishing click correlation
+  
+  # Step 1: Get suspicious emails
+  suspicious_emails AS (
+    SELECT
+      timestamp AS email_time,
+      user,
+      urls,  # Extract URLs from email
+      sender,
+      message_id
+    FROM email_gateway_logs
+    WHERE
+      (spf_result = 'FAIL' OR dkim_result IN ('FAIL', 'NONE'))
+      OR sender_domain IN malicious_domains
+      OR urls OVERLAPS malicious_domains
+  )
+  
+  # Step 2: Correlate with web proxy clicks
+  SELECT
+    e.user,
+    e.email_time,
+    w.timestamp AS click_time,
+    w.url AS clicked_url,
+    TIMEDIFF(w.timestamp, e.email_time) AS time_to_click_seconds
+  FROM suspicious_emails e
+  JOIN web_proxy_logs w
+    ON e.user = w.user
+    AND w.timestamp >= e.email_time
+    AND w.timestamp <= e.email_time + INTERVAL 30 MINUTE
+  WHERE
+    DOMAIN(w.url) IN (SELECT DOMAIN(url) FROM UNNEST(e.urls))

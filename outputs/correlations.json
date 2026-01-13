@@ -1,0 +1,98 @@
+{
+  "correlations": [
+    {
+      "correlation_id": "phishing_chain_sarah.chen@acmecorp.example.com",
+      "pattern": "phishing_click_login",
+      "user": "sarah.chen@acmecorp.example.com",
+      "events": [
+        "f1966fa5-d574-4d12-a76b-0345c70faff8",
+        "d49e3200-47c6-4008-bb16-f153b7cac608",
+        "17c68364-d331-4de2-8d1c-61c6f73d1b9a",
+        "eaefbb7f-0b86-457b-aa8e-255fc3c14a56",
+        "fe76ab89-ec9b-46ed-961c-df891d6167c4"
+      ],
+      "description": "User received phishing email, clicked link, and suspicious login followed"
+    },
+    {
+      "correlation_id": "impossible_travel_sarah.chen@acmecorp.example.com",
+      "pattern": "impossible_travel",
+      "user": "sarah.chen@acmecorp.example.com",
+      "events": [
+        "fe76ab89-ec9b-46ed-961c-df891d6167c4",
+        "57d0fe6e-d91c-46b2-bbf7-43ae7bd9ec3e"
+      ],
+      "description": "User authenticated from geographically distant locations within short timeframe"
+    },
+    {
+      "correlation_id": "post_compromise_sarah.chen@acmecorp.example.com",
+      "pattern": "post_compromise_activity",
+      "user": "sarah.chen@acmecorp.example.com",
+      "events": [
+        "fe76ab89-ec9b-46ed-961c-df891d6167c4",
+        "640d9f53-4f1c-4710-b860-d161086402a7",
+        "fdb7073d-d55f-4fe8-a9dd-cf7ddd0cc8da",
+        "26d29c5b-6f1c-4ca4-888b-52cb2e379ee8"
+      ],
+      "description": "Suspicious mailbox activity detected after suspicious login"
+    }
+  ],
+  "user_timelines": {
+    "sarah.chen@acmecorp.example.com": [
+      "f1bac673-494f-42c9-8620-4a6f94ad0055",
+      "bcb2c3db-a206-47f0-9693-68040567bf48",
+      "efb98eed-fda8-4215-b3c2-4d70369fbaae",
+      "cd31b9b1-16cc-4fcc-9e5c-d4c89e0af553",
+      "0cfad1f1-f5e8-42a8-a329-fac0e3c136af",
+      "0bdb0abe-6537-4e22-82cb-9fb6c27f0036",
+      "a47b2666-7ada-4935-9f14-940fcc616bda",
+      "581d01b7-4571-484d-9b77-c01cbe8cc835",
+      "ba2d79ef-0798-4fea-86ad-a80b237e7b3c",
+      "f1966fa5-d574-4d12-a76b-0345c70faff8",
+      "d164ba93-c447-426e-ad8d-3bd8306e89c9",
+      "d49e3200-47c6-4008-bb16-f153b7cac608",
+      "efd8ca47-c5b0-4229-b25f-cc782d4c6c87",
+      "9036e931-9c29-4430-9fbd-1299be5b2150",
+      "eb0d11d3-8528-40ad-b14a-0a29e2085978",
+      "17c68364-d331-4de2-8d1c-61c6f73d1b9a",
+      "eaefbb7f-0b86-457b-aa8e-255fc3c14a56",
+      "fe76ab89-ec9b-46ed-961c-df891d6167c4",
+      "8c26fa53-fe21-44e9-b2fa-ea670596cb00",
+      "564bd6c4-50b2-4e12-90b5-a76e9f825ff0",
+      "640d9f53-4f1c-4710-b860-d161086402a7",
+      "fdb7073d-d55f-4fe8-a9dd-cf7ddd0cc8da",
+      "57a32a74-36a4-4d64-8c96-7a6f1b0461e8",
+      "a415eaea-60f3-4862-a89e-3b22d7aa8542",
+      "10529479-7fb8-42bc-a9c1-1022887e98f5",
+      "cb101cce-54d4-46e7-b14e-f977e966d66e",
+      "57d0fe6e-d91c-46b2-bbf7-43ae7bd9ec3e",
+      "17b36fcf-434c-4c91-a8cb-ef226dbf5c1f",
+      "0a4b9ac2-eb2c-4734-be1b-7528819060ce",
+      "d1836ac4-605d-4350-8b6d-2d82f59bbd0c",
+      "124bcc1c-5118-4cc2-bc91-2154e4022dfe",
+      "0cdea261-278f-47b4-95de-c32cfa2af33c",
+      "41d9b3be-103e-4169-9a2d-aa6781fe0e25",
+      "34e06718-5058-42a7-b349-4dc8d28cce6e",
+      "22776f14-49fb-4a07-b03c-9ac050b88faf",
+      "26d29c5b-6f1c-4ca4-888b-52cb2e379ee8",
+      "9468da11-7f88-482d-bbc3-b3e4162dcf7b",
+      "435ed332-0455-4e4e-9f5c-2ebaf42d49b0"
+    ],
+    "john.smith@acmecorp.example.com": [
+      "c614aa0a-3a33-4b18-a338-9dcb6d1e7a59",
+      "e9038c2d-6199-4005-9da9-480fbf07d0c0",
+      "d0abdd63-e9ff-44ca-a89b-3ab7398078b0",
+      "c8ad9b86-42cc-4f91-906e-9a2c52251c05"
+    ],
+    "marketing@partner.example.com": [
+      "c1f8a158-c44d-41d4-8e59-116c2060fa4a"
+    ],
+    "mike.jones@acmecorp.example.com": [
+      "aa06e241-6beb-42ba-8183-1462564a1445",
+      "0ce5bfb0-581c-4cd3-ac37-f94fc3318352",
+      "35566dff-81d7-472b-8996-3fc7bc5481e7"
+    ],
+    "alerts@security-team.acmecorp.example.com": [
+      "14d89442-c70d-4ef4-8dc7-5978e01869dd"
+    ]
+  }
+}

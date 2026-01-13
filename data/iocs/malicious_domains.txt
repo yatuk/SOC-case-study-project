@@ -1,0 +1,9 @@
+# Known Phishing and Malicious Domains
+# Format: one domain per line
+# Last updated: 2026-01-10
+
+micros0ft-secure.info
+verify-account.top
+login-microsoftonline.verify-account.top
+temp-mail.io
+external-archive.temp-mail.io

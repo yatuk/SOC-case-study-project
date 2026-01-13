@@ -1,0 +1,68 @@
+name: Suspicious Mailbox Rule Created
+description: Inbox rule created with external email forwarding, common persistence technique after account compromise
+severity: critical
+confidence: high
+
+detection_logic:
+  - Monitor for New-InboxRule or similar mailbox rule creation events
+  - Check if rule action contains forwarding/redirection
+  - Alert if destination is external domain (not corporate)
+  - Increase severity if source IP matches IOC or is non-corporate
+
+conditions:
+  - event_type: mailbox.new_inboxrule OR mailbox.set_inboxrule
+  - rule_action_contains:
+      - ForwardTo
+      - RedirectTo
+      - ForwardAsAttachmentTo
+  - destination_domain: NOT IN corporate_domains
+  - exclude_legitimate_automation: rule_creator != approved_automation_accounts
+
+false_positive_scenarios:
+  - Legitimate out-of-office forwarding (should use built-in OOF instead)
+  - Business process automation (whitelist service accounts)
+  - User forwarding to personal email (policy violation, not necessarily malicious)
+
+tuning_recommendations:
+  - Maintain whitelist of approved external partners for forwarding
+  - Alert on any rule creation from suspicious IPs regardless of destination
+  - Combine with recent password reset or MFA change signals
+  - Monitor for rule modifications, not just creation
+
+mitre_attack:
+  - tactic: Persistence
+    technique: T1114.003
+    technique_name: Email Collection (Email Forwarding Rule)
+  - tactic: Collection
+    technique: T1114.002
+    technique_name: Email Collection (Remote Email Collection)
+
+response_actions:
+  - Delete malicious forwarding rule immediately
+  - Review all emails that match rule criteria (what would have been forwarded)
+  - Check if any emails were actually forwarded
+  - Investigate how rule was created (compromised account vs insider)
+  - Search for other persistence mechanisms (OAuth apps, additional rules)
+  - Force password reset and session revocation
+
+tool_agnostic_query: |
+  # Pseudocode for mailbox rule detection
+  
+  SELECT
+    timestamp,
+    user,
+    rule_name,
+    rule_conditions,
+    rule_actions,
+    src_ip,
+    src_geo,
+    client_info
+  FROM mailbox_audit_logs
+  WHERE
+    operation IN ('New-InboxRule', 'Set-InboxRule', 'Enable-InboxRule')
+    AND (
+      rule_actions LIKE '%ForwardTo%'
+      OR rule_actions LIKE '%RedirectTo%'
+    )
+    AND NOT REGEXP_MATCH(rule_actions, '@(company\.com|partner\.com)')
+    AND user NOT IN approved_automation_accounts
