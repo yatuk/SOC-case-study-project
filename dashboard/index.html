@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOC Incident Dashboard - INC-2026-010-001</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <h1>SOC Incident Dashboard</h1>
+            </div>
+            <div class="header-info">
+                <span id="incident-id" class="incident-badge">Loading...</span>
+                <span id="incident-status" class="status-badge">...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- KPI Bar -->
+    <section class="kpi-bar">
+        <div class="kpi-card">
+            <div class="kpi-label">Total Events</div>
+            <div class="kpi-value" id="kpi-total-events">--</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Total Alerts</div>
+            <div class="kpi-value" id="kpi-total-alerts">--</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">High Severity</div>
+            <div class="kpi-value critical" id="kpi-high-severity">--</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Unique Users</div>
+            <div class="kpi-value" id="kpi-unique-users">--</div>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Alert List Panel -->
+        <section class="alert-panel">
+            <div class="panel-header">
+                <h2>Alerts</h2>
+                <div class="panel-controls">
+                    <input type="text" id="alert-search" class="search-input" placeholder="Search alerts...">
+                    <select id="severity-filter" class="filter-select">
+                        <option value="all">All Severities</option>
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+            </div>
+            <div class="alert-list" id="alert-list">
+                <!-- Alerts populated by JS -->
+            </div>
+        </section>
+
+        <!-- Alert Details Drawer -->
+        <section class="details-panel" id="details-panel">
+            <div class="panel-header">
+                <h2>Alert Details</h2>
+                <button class="close-btn" id="close-details">&times;</button>
+            </div>
+            <div class="details-content" id="details-content">
+                <div class="empty-state">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 16v-4M12 8h.01"/>
+                    </svg>
+                    <p>Select an alert to view details</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Section: Timeline & MITRE -->
+    <section class="bottom-section">
+        <!-- Incident Timeline -->
+        <div class="timeline-container">
+            <div class="panel-header">
+                <h2>Attack Chain Timeline</h2>
+            </div>
+            <div class="timeline" id="timeline">
+                <!-- Timeline populated by JS -->
+            </div>
+        </div>
+
+        <!-- MITRE ATT&CK Heatmap -->
+        <div class="mitre-container">
+            <div class="panel-header">
+                <h2>MITRE ATT&CK Heatmap</h2>
+            </div>
+            <div class="mitre-grid" id="mitre-grid">
+                <!-- MITRE grid populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Risk Score Modal -->
+    <div class="modal" id="risk-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Risk Score Breakdown</h3>
+                <button class="close-btn" id="close-risk-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="risk-modal-body">
+                <!-- Risk details populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

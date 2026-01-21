@@ -7,6 +7,7 @@ Usage: python run_pipeline.py
 """
 
 import sys
+import shutil
 from pathlib import Path
 
 # Add src to path
@@ -22,14 +23,35 @@ from report import ReportGenerator
 
 def print_banner():
     banner = """
-╔══════════════════════════════════════════════════════════════╗
-║                                                              ║
-║     SOC CASE STUDY - AUTOMATED DETECTION PIPELINE           ║
-║     Phishing → Account Compromise → Alert → Response        ║
-║                                                              ║
-╚══════════════════════════════════════════════════════════════╝
+================================================================
+    SOC CASE STUDY - AUTOMATED DETECTION PIPELINE
+    Phishing -> Account Compromise -> Alert -> Response
+================================================================
 """
     print(banner)
+
+
+def copy_outputs_to_dashboard():
+    """
+    Copy outputs directory to dashboard/dashboard_data/ for web visualization.
+    Works cross-platform (Windows, macOS, Linux).
+    """
+    source_dir = Path("outputs")
+    dest_dir = Path("dashboard") / "dashboard_data"
+    
+    # Create dashboard directory if it doesn't exist
+    dest_dir.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Remove existing dashboard_data if present
+    if dest_dir.exists():
+        shutil.rmtree(dest_dir)
+    
+    # Copy entire outputs directory
+    shutil.copytree(source_dir, dest_dir)
+    
+    print(f"[OK] Copied outputs to {dest_dir}")
+    print(f"[DASHBOARD] Dashboard ready at: dashboard/index.html")
+    print(f"   Open in browser or deploy via GitHub Pages")
 
 
 def main():
@@ -88,15 +110,15 @@ def main():
         print("\n" + "=" * 60)
         print("PIPELINE COMPLETE")
         print("=" * 60)
-        print(f"\n✅ Processed {len(normalized_events)} events")
-        print(f"✅ Generated {len(alerts)} alerts")
-        print(f"✅ Identified {len(scores['entity_scores'])} entities")
+        print(f"\n[OK] Processed {len(normalized_events)} events")
+        print(f"[OK] Generated {len(alerts)} alerts")
+        print(f"[OK] Identified {len(scores['entity_scores'])} entities")
         
         high_risk = sum(1 for e in scores['entity_scores'].values() 
                        if e['severity'] in ['high', 'critical'])
-        print(f"✅ High-risk entities: {high_risk}")
+        print(f"[OK] High-risk entities: {high_risk}")
         
-        print(f"\n📁 Outputs saved to: ./outputs/")
+        print(f"\n[OUTPUT] Outputs saved to: ./outputs/")
         print(f"   - alerts.jsonl")
         print(f"   - summary.json")
         print(f"   - report_executive.md")
@@ -104,14 +126,20 @@ def main():
         print(f"   - risk_scores.json")
         print(f"   - correlations.json")
         
-        print("\n✨ Review the executive report (outputs/report_executive.md) for incident summary")
-        print("🔍 Review the technical report (outputs/report_technical.md) for detailed analysis")
-        print("🚨 Review alerts (outputs/alerts.jsonl) for detection details\n")
+        print("\n[INFO] Review the executive report (outputs/report_executive.md) for incident summary")
+        print("[INFO] Review the technical report (outputs/report_technical.md) for detailed analysis")
+        print("[INFO] Review alerts (outputs/alerts.jsonl) for detection details\n")
+        
+        # Step 7: Copy outputs to dashboard (cross-platform)
+        print("\n" + "=" * 60)
+        print("STEP 7: DASHBOARD DATA SYNC")
+        print("=" * 60)
+        copy_outputs_to_dashboard()
         
         return 0
         
     except Exception as e:
-        print(f"\n❌ ERROR: Pipeline failed: {e}")
+        print(f"\n[ERROR] Pipeline failed: {e}")
         import traceback
         traceback.print_exc()
         return 1
