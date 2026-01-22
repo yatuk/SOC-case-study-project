@@ -1,0 +1,27 @@
+# Large dataset files (>100MB GitHub limit)
+datasets/GUIDE_Train.csv
+datasets/GUIDE_Test.csv
+datasets/cybersecurity_attacks.csv
+datasets/phishing_features.csv
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+env/
+venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Outputs (optional - uncomment to exclude)
+# outputs/

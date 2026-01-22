@@ -1,12 +1,18 @@
 # Guvenlik Olayi Yonetici Ozeti
 
-**Olusturulma:** 2026-01-22 16:03:23
+**Olusturulma:** 2026-01-22 17:42:01
 
 ## Genel Bakis
 
 Bu rapor, Anadolu Finans Holding altyapisinda son 14 gun icinde tespit edilen guvenlik olaylarini ozetlemektedir.
 
 **ONEMLI: Bu tamamen KURGUSAL bir veri setidir. Gercek sirketlerle iliskisi yoktur.**
+
+### Normalize Edilen Veri Setleri
+- **Toplam Dosya**: 8
+- **Toplam Olay**: 3051
+- **Toplam IOC**: 4000
+- **Pseudonimizasyon**: Aktif
 
 ## Temel Bulgular
 

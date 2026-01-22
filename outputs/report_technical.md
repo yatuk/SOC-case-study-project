@@ -1,6 +1,6 @@
 # Teknik Olay Analiz Raporu
 
-**Olusturulma:** 2026-01-22 16:03:23
+**Olusturulma:** 2026-01-22 17:42:01
 
 ## Algilama Genel Bakisi
 
@@ -10,6 +10,15 @@
 - M365 Denetim Kayitlari
 - Proxy/DNS Kayitlari
 - EDR Telemetrisi
+- Azure AD Denetim Kayitlari (Normalize edilmis)
+- Windows Guvenlik Olaylari (Normalize edilmis)
+- Microsoft 365 Defender Kayitlari (Normalize edilmis)
+
+### Normalize Edilen Veri Setleri
+- **Toplam Dosya**: 8
+- **Toplam Olay**: 3051
+- **Toplam IOC**: 4000
+- **Pseudonimizasyon**: Aktif
 
 ### Olay Istatistikleri
 - Toplam Olay: 500+
@@ -31,6 +40,8 @@
 - T1547.001 - Kayit Defteri Run Anahtarlari
 - T1071.001 - Web Protokolleri (C2)
 - T1567.002 - Bulut Depolama Uzerinden Sizdirma
+- T1003.006 - DCSync (Normalize edilmis veriden)
+- T1550.001 - Alternatif Kimlik Dogrulama Materyali (OAuth)
 
 ## Uzlasma Gostergeleri (IOC)
 
@@ -50,6 +61,7 @@
 2. **Ag Analizi** - Tum C2 beacon trafik kaliplarini incele
 3. **E-posta Denetimi** - Ele gecirilen hesaplardan gelen tum e-postalari izle
 4. **Erisim Incelemesi** - Tum admin rol atamalarini denetle
+5. **LDAP/AD Incelemesi** - Supheli DCSync aktivitelerini arastir
 
 ---
 *Bu bir egitim/simulasyon amacli sentetik veri setidir.*
