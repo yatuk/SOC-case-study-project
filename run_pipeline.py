@@ -7,6 +7,7 @@ Usage: python run_pipeline.py
 """
 
 import sys
+import shutil
 from pathlib import Path
 
 # Add src to path
@@ -28,6 +29,32 @@ def print_banner():
 ================================================================
 """
     print(banner)
+
+
+def export_to_dashboard():
+    """
+    Export outputs to dashboard/dashboard_data/ for GitHub Pages.
+    Cross-platform (Windows, macOS, Linux).
+    """
+    source_dir = Path("outputs")
+    dest_dir = Path("dashboard") / "dashboard_data"
+    
+    if not source_dir.exists():
+        print("[ERROR] outputs/ directory not found")
+        return
+    
+    # Create dashboard_data directory
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Copy all files from outputs to dashboard_data
+    for file in source_dir.glob("*"):
+        if file.is_file():
+            dest_file = dest_dir / file.name
+            shutil.copy2(file, dest_file)
+            print(f"[OK] Exported {file.name}")
+    
+    print(f"\n[DASHBOARD] Data exported to: {dest_dir}")
+    print("[DASHBOARD] Commit dashboard/ to GitHub for Pages deployment")
 
 
 
@@ -107,6 +134,12 @@ def main():
         print("\n[INFO] Review the executive report (outputs/report_executive.md) for incident summary")
         print("[INFO] Review the technical report (outputs/report_technical.md) for detailed analysis")
         print("[INFO] Review alerts (outputs/alerts.jsonl) for detection details\n")
+        
+        # Export to dashboard (GitHub Pages static)
+        print("\n" + "=" * 60)
+        print("EXPORTING TO DASHBOARD")
+        print("=" * 60)
+        export_to_dashboard()
         
         return 0
         

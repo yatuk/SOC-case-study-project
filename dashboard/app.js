@@ -1,446 +1,718 @@
-/**
- * SOC Dashboard - Main Application Logic
- * Loads and visualizes SOC pipeline outputs
- */
+// dashboard/app.js
 
-// ===== State Management =====
 const state = {
     summary: null,
     alerts: [],
     riskScores: null,
     correlations: null,
+    currentView: 'overview',
     selectedAlert: null,
     filters: {
         severity: 'all',
-        searchTerm: ''
+        confidence: 'all',
+        search: '',
+        onlyOpen: false
     }
 };
 
-// ===== Data Paths (works for both local and GitHub Pages) =====
-const DATA_PATH = 'dashboard_data/';
-
-// ===== Initialization =====
-document.addEventListener('DOMContentLoaded', async () => {
-    await loadAllData();
-    renderDashboard();
-    attachEventListeners();
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    initNavigation();
+    initCommandBar();
+    initCaseDrawer();
+    loadData();
 });
 
+// ===== Navigation =====
+function initNavigation() {
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchView(item.dataset.view);
+        });
+    });
+}
+
+function switchView(viewName) {
+    state.currentView = viewName;
+    
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.view === viewName);
+    });
+    
+    document.querySelectorAll('.view').forEach(view => {
+        view.classList.toggle('active', view.id === `view-${viewName}`);
+    });
+    
+    renderView(viewName);
+}
+
+// ===== Command Bar =====
+function initCommandBar() {
+    document.getElementById('refresh-btn').addEventListener('click', () => {
+        showToast('Refreshing data...', 'success');
+        loadData();
+    });
+    
+    document.getElementById('export-btn').addEventListener('click', exportData);
+    
+    document.getElementById('global-search').addEventListener('input', (e) => {
+        state.filters.search = e.target.value.toLowerCase();
+        if (state.currentView === 'alerts') renderAlerts();
+    });
+}
+
+function exportData() {
+    const data = {
+        summary: state.summary,
+        alerts: getFilteredAlerts(),
+        timestamp: new Date().toISOString()
+    };
+    
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `soc-export-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    showToast('Data exported successfully', 'success');
+}
+
 // ===== Data Loading =====
-async function loadAllData() {
+async function loadData() {
     try {
-        // Load summary
-        const summaryResponse = await fetch(`${DATA_PATH}summary.json`);
-        state.summary = await summaryResponse.json();
-
-        // Load alerts (JSONL format)
-        const alertsResponse = await fetch(`${DATA_PATH}alerts.jsonl`);
-        const alertsText = await alertsResponse.text();
-        state.alerts = alertsText.trim().split('\n').map(line => JSON.parse(line));
-
-        // Load risk scores
-        const riskResponse = await fetch(`${DATA_PATH}risk_scores.json`);
-        state.riskScores = await riskResponse.json();
-
-        // Load correlations
-        const corrResponse = await fetch(`${DATA_PATH}correlations.json`);
-        state.correlations = await corrResponse.json();
-
+        const [summaryRes, alertsRes, riskRes, corrRes] = await Promise.all([
+            fetch('./dashboard_data/summary.json'),
+            fetch('./dashboard_data/alerts.jsonl'),
+            fetch('./dashboard_data/risk_scores.json'),
+            fetch('./dashboard_data/correlations.json')
+        ]);
+        
+        if (!summaryRes.ok) throw new Error('Data not found');
+        
+        state.summary = await summaryRes.json();
+        
+        if (alertsRes.ok) {
+            const text = await alertsRes.text();
+            state.alerts = text.trim().split('\n')
+                .map(line => {
+                    try { return JSON.parse(line); }
+                    catch { return null; }
+                })
+                .filter(Boolean);
+        }
+        
+        if (riskRes.ok) state.riskScores = await riskRes.json();
+        if (corrRes.ok) state.correlations = await corrRes.json();
+        
+        updateStatus('healthy', 'Data OK');
+        updateLastLoaded();
+        renderView(state.currentView);
+        
     } catch (error) {
-        console.error('Error loading data:', error);
-        showError('Failed to load dashboard data. Please ensure pipeline has been run.');
+        console.error('Failed to load data:', error);
+        updateStatus('error', 'Data Missing');
+        showEmptyState('Run python run_pipeline.py and commit dashboard/dashboard_data/');
     }
 }
 
-// ===== Main Rendering =====
-function renderDashboard() {
+function updateStatus(status, text) {
+    const pill = document.getElementById('status-pill');
+    pill.className = `status-pill ${status}`;
+    pill.querySelector('.status-text').textContent = text;
+}
+
+function updateLastLoaded() {
+    const now = new Date();
+    document.getElementById('last-loaded').textContent = 
+        `Last loaded: ${now.toLocaleTimeString()}`;
+}
+
+// ===== View Rendering =====
+function renderView(viewName) {
+    switch(viewName) {
+        case 'overview': renderOverview(); break;
+        case 'alerts': renderAlerts(); break;
+        case 'entities': renderEntities(); break;
+        case 'timeline': renderTimeline(); break;
+        case 'mitre': renderMITRE(); break;
+        case 'reports': renderReports('executive'); break;
+    }
+}
+
+// ===== Overview =====
+function renderOverview() {
     if (!state.summary) return;
-
-    renderHeader();
-    renderKPIs();
-    renderAlertList();
-    renderTimeline();
-    renderMITREHeatmap();
-}
-
-// ===== Header Rendering =====
-function renderHeader() {
-    document.getElementById('incident-id').textContent = state.summary.incident_id;
     
-    const statusBadge = document.getElementById('incident-status');
-    statusBadge.textContent = state.summary.status.replace(/_/g, ' ');
-    statusBadge.className = `status-badge ${state.summary.severity}`;
-}
-
-// ===== KPI Rendering =====
-function renderKPIs() {
     const metrics = state.summary.metrics;
     
-    document.getElementById('kpi-total-events').textContent = metrics.total_events_analyzed;
-    document.getElementById('kpi-total-alerts').textContent = metrics.total_alerts_generated;
+    document.getElementById('kpi-events').innerHTML = 
+        `<div>${metrics.total_events_analyzed}</div>`;
+    document.getElementById('kpi-alerts').innerHTML = 
+        `<div>${metrics.total_alerts_generated}</div>`;
     
-    const highSeverity = metrics.alerts_by_severity.critical + metrics.alerts_by_severity.high;
-    document.getElementById('kpi-high-severity').textContent = highSeverity;
-    document.getElementById('kpi-unique-users').textContent = metrics.affected_users;
-}
-
-// ===== Alert List Rendering =====
-function renderAlertList() {
-    const container = document.getElementById('alert-list');
-    const filtered = getFilteredAlerts();
-
-    if (filtered.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state" style="padding: 2rem;">
-                <p>No alerts match current filters</p>
+    const highSev = metrics.alerts_by_severity.critical + metrics.alerts_by_severity.high;
+    document.getElementById('kpi-high').innerHTML = 
+        `<div>${highSev}</div>`;
+    document.getElementById('kpi-users').innerHTML = 
+        `<div>${metrics.affected_users}</div>`;
+    
+    // Severity bars
+    const sevData = [
+        { label: 'Critical', value: metrics.alerts_by_severity.critical, class: 'critical' },
+        { label: 'High', value: metrics.alerts_by_severity.high, class: 'high' },
+        { label: 'Medium', value: metrics.alerts_by_severity.medium, class: 'medium' },
+        { label: 'Low', value: metrics.alerts_by_severity.low, class: 'low' }
+    ];
+    
+    const maxSev = Math.max(...sevData.map(d => d.value));
+    document.getElementById('severity-bars').innerHTML = sevData.map(d => `
+        <div class="bar-item">
+            <div class="bar-label">${d.label}</div>
+            <div class="bar-track">
+                <div class="bar-fill ${d.class}" style="width: ${(d.value / maxSev) * 100}%"></div>
             </div>
-        `;
-        return;
-    }
-
-    container.innerHTML = filtered.map((alert, index) => `
-        <div class="alert-item" data-alert-id="${alert.alert_id}" onclick="selectAlert('${alert.alert_id}')">
-            <div class="alert-header">
-                <div class="alert-name">${escapeHtml(alert.name)}</div>
-                <span class="severity-badge ${alert.severity}">${alert.severity}</span>
+            <div class="bar-value">${d.value}</div>
+        </div>
+    `).join('');
+    
+    // User bars
+    const userCounts = {};
+    state.alerts.forEach(alert => {
+        const user = alert.entity.user;
+        userCounts[user] = (userCounts[user] || 0) + 1;
+    });
+    
+    const topUsers = Object.entries(userCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+    
+    const maxUser = Math.max(...topUsers.map(([, count]) => count));
+    document.getElementById('user-bars').innerHTML = topUsers.map(([user, count]) => `
+        <div class="bar-item">
+            <div class="bar-label">${user.split('@')[0]}</div>
+            <div class="bar-track">
+                <div class="bar-fill" style="width: ${(count / maxUser) * 100}%"></div>
             </div>
-            <div class="alert-meta">
-                <span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                        <circle cx="12" cy="7" r="4"/>
-                    </svg>
-                    ${escapeHtml(alert.entity.user)}
-                </span>
-                <span>Confidence: ${alert.confidence}</span>
-            </div>
+            <div class="bar-value">${count}</div>
         </div>
     `).join('');
 }
 
-// ===== Alert Selection & Details =====
-function selectAlert(alertId) {
-    const alert = state.alerts.find(a => a.alert_id === alertId);
-    if (!alert) return;
-
-    state.selectedAlert = alert;
-
-    // Update UI selection
-    document.querySelectorAll('.alert-item').forEach(item => {
-        item.classList.toggle('selected', item.dataset.alertId === alertId);
-    });
-
-    renderAlertDetails(alert);
-}
-
-function renderAlertDetails(alert) {
-    const container = document.getElementById('details-content');
+// ===== Alerts =====
+function renderAlerts() {
+    const container = document.getElementById('alerts-list');
+    const filtered = getFilteredAlerts();
     
-    container.innerHTML = `
-        <div class="detail-section">
-            <h3>Overview</h3>
-            <div class="detail-field">
-                <div class="field-label">Alert Name</div>
-                <div class="field-value">${escapeHtml(alert.name)}</div>
-            </div>
-            <div class="detail-field">
-                <div class="field-label">Severity / Confidence</div>
-                <div class="field-value">
-                    <span class="severity-badge ${alert.severity}">${alert.severity}</span>
-                    <span style="margin-left: 0.5rem;">Confidence: ${alert.confidence}</span>
+    if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state">No alerts match filters</div>';
+        return;
+    }
+    
+    container.innerHTML = filtered.map(alert => {
+        const caseState = getCaseState(alert.alert_id);
+        const status = caseState.status || 'new';
+        
+        return `
+            <div class="alert-card ${alert.severity}" onclick="openCaseDrawer('${alert.alert_id}')" tabindex="0">
+                <div class="alert-header">
+                    <div class="alert-title">${escapeHtml(alert.name)}</div>
+                    <div class="alert-badges">
+                        <span class="badge ${alert.severity} ${alert.severity === 'critical' ? 'pulse' : ''}">${alert.severity}</span>
+                        <span class="badge">${alert.confidence}</span>
+                    </div>
+                </div>
+                <div class="alert-meta">
+                    <span>Entity: ${escapeHtml(alert.entity.user)}</span>
+                    <span>Window: ${alert.time_window.start.substring(0, 16)}</span>
+                    <span>Status: ${status}</span>
+                </div>
+                <div class="alert-chips">
+                    ${alert.entity.ips ? alert.entity.ips.map(ip => 
+                        `<span class="chip">${ip}</span>`
+                    ).join('') : ''}
                 </div>
             </div>
-            <div class="detail-field">
-                <div class="field-label">Affected Entity</div>
-                <div class="field-value mono" style="cursor: pointer;" onclick="showRiskScore('${escapeHtml(alert.entity.user)}')">${escapeHtml(alert.entity.user)}</div>
-                <small style="color: var(--text-muted);">Click to view risk score breakdown</small>
-            </div>
-            <div class="detail-field">
-                <div class="field-label">Time Window</div>
-                <div class="field-value mono">${alert.time_window.start} → ${alert.time_window.end}</div>
+        `;
+    }).join('');
+    
+    // Keyboard navigation
+    document.querySelectorAll('.alert-card').forEach((card, idx) => {
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') card.click();
+            if (e.key === 'ArrowDown') document.querySelectorAll('.alert-card')[idx + 1]?.focus();
+            if (e.key === 'ArrowUp') document.querySelectorAll('.alert-card')[idx - 1]?.focus();
+        });
+    });
+}
+
+function getFilteredAlerts() {
+    return state.alerts.filter(alert => {
+        if (state.filters.severity !== 'all' && alert.severity !== state.filters.severity) return false;
+        if (state.filters.confidence !== 'all' && alert.confidence !== state.filters.confidence) return false;
+        
+        if (state.filters.search) {
+            const searchable = [
+                alert.name,
+                alert.entity.user,
+                alert.hypothesis
+            ].join(' ').toLowerCase();
+            
+            if (!searchable.includes(state.filters.search)) return false;
+        }
+        
+        if (state.filters.onlyOpen) {
+            const caseState = getCaseState(alert.alert_id);
+            if (caseState.status === 'closed') return false;
+        }
+        
+        return true;
+    });
+}
+
+// Filter handlers
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('severity-filter')?.addEventListener('change', (e) => {
+        state.filters.severity = e.target.value;
+        renderAlerts();
+    });
+    
+    document.getElementById('confidence-filter')?.addEventListener('change', (e) => {
+        state.filters.confidence = e.target.value;
+        renderAlerts();
+    });
+    
+    document.getElementById('alert-search')?.addEventListener('input', (e) => {
+        state.filters.search = e.target.value.toLowerCase();
+        renderAlerts();
+    });
+    
+    document.getElementById('only-open')?.addEventListener('change', (e) => {
+        state.filters.onlyOpen = e.target.checked;
+        renderAlerts();
+    });
+});
+
+// ===== Entities =====
+function renderEntities() {
+    if (!state.riskScores) return;
+    
+    const selector = document.getElementById('entity-selector');
+    const users = Object.keys(state.riskScores.entity_scores);
+    
+    if (selector.options.length === 0) {
+        selector.innerHTML = users.map(user => 
+            `<option value="${user}">${user}</option>`
+        ).join('');
+        
+        selector.addEventListener('change', renderEntities);
+    }
+    
+    const selectedUser = selector.value || users[0];
+    const userScore = state.riskScores.entity_scores[selectedUser];
+    
+    document.getElementById('entity-content').innerHTML = `
+        <div class="risk-display">
+            <div class="risk-score">${userScore.score}</div>
+            <div style="color: var(--text-secondary); margin-top: var(--space-sm);">
+                Risk Score (<span class="badge ${userScore.severity}">${userScore.severity}</span>)
             </div>
         </div>
-
-        <div class="detail-section">
-            <h3>Hypothesis</h3>
-            <div class="field-value">${escapeHtml(alert.hypothesis)}</div>
-        </div>
-
-        <div class="detail-section">
-            <h3>MITRE ATT&CK Techniques</h3>
-            <div class="mitre-tags">
-                ${alert.mitre.map(technique => `
-                    <div class="mitre-tag">
-                        <strong>${technique.id}</strong>
-                        <div>${escapeHtml(technique.name)}</div>
-                        <span class="tactic">${escapeHtml(technique.tactic)}</span>
+        
+        <h3 style="margin-bottom: var(--space-md);">Contributing Factors</h3>
+        <div class="risk-factors">
+            ${userScore.reasons.map(r => `
+                <div class="risk-factor">
+                    <div class="risk-factor-title">
+                        +${r.points} — ${escapeHtml(r.rule.replace(/_/g, ' ').toUpperCase())}
                     </div>
-                `).join('')}
-            </div>
-        </div>
-
-        <div class="detail-section">
-            <h3>Evidence (Event IDs)</h3>
-            <div class="evidence-list">
-                ${alert.evidence.slice(0, 10).map(id => `
-                    <div class="evidence-item">${id}</div>
-                `).join('')}
-                ${alert.evidence.length > 10 ? `<div class="evidence-item">+ ${alert.evidence.length - 10} more events</div>` : ''}
-            </div>
-        </div>
-
-        <div class="detail-section">
-            <h3>Recommended Actions</h3>
-            <ul class="actions-list">
-                ${alert.recommended_actions.map(action => `
-                    <li>${escapeHtml(action)}</li>
-                `).join('')}
-            </ul>
-            <button class="copy-btn" onclick="copyActions()">📋 Copy Actions to Clipboard</button>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                        ${escapeHtml(r.description)}
+                    </div>
+                    <div class="risk-factor-bar">
+                        <div class="risk-factor-fill" style="width: ${(r.points / userScore.score) * 100}%"></div>
+                    </div>
+                </div>
+            `).join('')}
         </div>
     `;
 }
 
-// ===== Timeline Rendering =====
+// ===== Timeline =====
 function renderTimeline() {
-    const container = document.getElementById('timeline');
-    
-    // Map alerts to timeline events with proper ordering
-    const timelineEvents = [
-        {
-            title: 'Phishing Email Received',
-            time: '2026-01-10T08:15:23Z',
-            desc: 'Malicious phishing email delivered to user inbox',
-            severity: 'medium'
-        },
-        {
-            title: 'Phishing Link Clicked',
-            time: '2026-01-10T08:17:45Z',
-            desc: 'User clicked malicious link and submitted credentials',
-            severity: 'high'
-        },
-        {
-            title: 'Suspicious Login (Impossible Travel)',
-            time: '2026-01-10T08:47:18Z',
-            desc: 'Attacker authenticated from Romania after credential theft',
-            severity: 'critical'
-        },
-        {
-            title: 'Mailbox Rule Created (Persistence)',
-            time: '2026-01-10T08:52:30Z',
-            desc: 'Forwarding rule created to exfiltrate sensitive emails',
-            severity: 'critical'
-        },
-        {
-            title: 'SOC Detection & Containment',
-            time: '2026-01-10T10:05:00Z',
-            desc: 'Sessions revoked, password reset, malicious rule removed',
-            severity: 'low'
-        }
+    const steps = [
+        { title: 'Phishing Email Received', desc: 'Credential harvesting link delivered', active: false },
+        { title: 'Phishing Link Clicked', desc: 'User submitted credentials to fake page', active: false },
+        { title: 'Impossible Travel', desc: 'Attacker authenticated from distant location', active: true },
+        { title: 'Mailbox Rule Persistence', desc: 'Forwarding rule created for exfiltration', active: false }
     ];
-
-    container.innerHTML = timelineEvents.map(event => `
-        <div class="timeline-item">
-            <div class="timeline-marker ${event.severity}"></div>
+    
+    document.getElementById('timeline-stepper').innerHTML = steps.map(step => `
+        <div class="timeline-step ${step.active ? 'active' : ''}">
+            <div class="timeline-marker"></div>
             <div class="timeline-content">
-                <div class="timeline-title">${escapeHtml(event.title)}</div>
-                <div class="timeline-time">${formatTime(event.time)}</div>
-                <div class="timeline-desc">${escapeHtml(event.desc)}</div>
+                <div class="timeline-title">${step.title}</div>
+                <div class="timeline-desc">${step.desc}</div>
+                <div class="timeline-alerts">
+                    ${state.alerts.filter(a => a.name.toLowerCase().includes(step.title.toLowerCase().split(' ')[0]))
+                        .map(a => `<span class="badge ${a.severity}">${a.name.substring(0, 20)}...</span>`).join('')}
+                </div>
             </div>
         </div>
     `).join('');
 }
 
-// ===== MITRE ATT&CK Heatmap =====
-function renderMITREHeatmap() {
-    const container = document.getElementById('mitre-grid');
+// ===== MITRE =====
+function renderMITRE() {
+    if (!state.summary) return;
     
-    // Extract all unique MITRE techniques from summary
-    const techniques = state.summary.mitre_techniques.map(tech => {
-        const [id, name] = tech.split(' - ');
+    const techniques = state.summary.mitre_techniques.map(t => {
+        const [id, name] = t.split(' - ');
         return { id, name };
     });
-
-    // Get techniques used in alerts for highlighting
+    
     const usedTechniques = new Set();
     state.alerts.forEach(alert => {
         alert.mitre.forEach(m => usedTechniques.add(m.id));
     });
-
-    container.innerHTML = techniques.map(tech => `
-        <div class="mitre-cell ${usedTechniques.has(tech.id) ? 'active' : ''}">
+    
+    document.getElementById('mitre-grid').innerHTML = techniques.map(tech => `
+        <div class="mitre-cell ${usedTechniques.has(tech.id) ? 'active' : ''}" 
+             onclick="filterByMITRE('${tech.id}')">
             <div class="mitre-id">${tech.id}</div>
             <div class="mitre-name">${escapeHtml(tech.name)}</div>
         </div>
     `).join('');
 }
 
-// ===== Risk Score Modal =====
-function showRiskScore(userEmail) {
-    const userScore = state.riskScores.entity_scores[userEmail];
-    if (!userScore) {
-        alert('No risk score data available for this user');
-        return;
+function filterByMITRE(techniqueId) {
+    // Switch to alerts view and filter
+    switchView('alerts');
+    showToast(`Filtered by ${techniqueId}`, 'success');
+}
+
+// ===== Reports =====
+async function renderReports(type) {
+    try {
+        const response = await fetch(`./dashboard_data/report_${type}.md`);
+        const markdown = await response.text();
+        
+        document.getElementById('report-content').innerHTML = renderMarkdown(markdown);
+    } catch {
+        document.getElementById('report-content').innerHTML = 
+            '<div class="empty-state">Report not available</div>';
     }
+}
 
-    const modal = document.getElementById('risk-modal');
-    const modalBody = document.getElementById('risk-modal-body');
+function renderMarkdown(md) {
+    let html = escapeHtml(md);
+    
+    // Headings
+    html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+    html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+    
+    // Bold
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    
+    // Code
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    
+    // Lists
+    html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    
+    // Paragraphs
+    html = html.replace(/\n\n/g, '</p><p>');
+    html = '<p>' + html + '</p>';
+    
+    return html;
+}
 
-    modalBody.innerHTML = `
-        <div class="risk-user">${escapeHtml(userEmail)}</div>
-        <div class="risk-score-display">${userScore.score}</div>
-        <div style="text-align: center; color: var(--text-secondary); margin-bottom: 1rem;">
-            Total Risk Score (Severity: <span class="severity-badge ${userScore.severity}">${userScore.severity}</span>)
+// Report tabs
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            renderReports(tab.dataset.report);
+        });
+    });
+});
+
+// ===== Case Drawer =====
+function initCaseDrawer() {
+    const overlay = document.getElementById('drawer-overlay');
+    const drawer = document.getElementById('case-drawer');
+    const closeBtn = document.getElementById('drawer-close');
+    
+    overlay.addEventListener('click', closeCaseDrawer);
+    closeBtn.addEventListener('click', closeCaseDrawer);
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer.classList.contains('active')) {
+            closeCaseDrawer();
+        }
+    });
+    
+    // Drawer tabs
+    document.querySelectorAll('.drawer-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.drawer-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.drawer-panel').forEach(p => p.classList.remove('active'));
+            
+            tab.classList.add('active');
+            document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
+        });
+    });
+    
+    // Case status change
+    document.getElementById('case-status')?.addEventListener('change', (e) => {
+        if (state.selectedAlert) {
+            updateCaseState(state.selectedAlert.alert_id, { status: e.target.value });
+            logActivity('Status changed to ' + e.target.value);
+            showToast('Case status updated', 'success');
+            renderAlerts(); // Refresh list
+        }
+    });
+    
+    // Case assignment
+    document.getElementById('case-assign')?.addEventListener('change', (e) => {
+        if (state.selectedAlert) {
+            updateCaseState(state.selectedAlert.alert_id, { assignee: e.target.value });
+            logActivity('Assigned to ' + e.target.value);
+            showToast('Case assigned', 'success');
+        }
+    });
+    
+    // Add note
+    document.getElementById('add-note-btn')?.addEventListener('click', () => {
+        const textarea = document.getElementById('note-textarea');
+        const note = textarea.value.trim();
+        
+        if (note && state.selectedAlert) {
+            logActivity('Note: ' + note);
+            textarea.value = '';
+            showToast('Note added', 'success');
+        }
+    });
+}
+
+function openCaseDrawer(alertId) {
+    const alert = state.alerts.find(a => a.alert_id === alertId);
+    if (!alert) return;
+    
+    state.selectedAlert = alert;
+    
+    const caseId = generateCaseId(alertId);
+    const caseState = getCaseState(alertId);
+    
+    document.getElementById('case-id').textContent = caseId;
+    document.getElementById('case-status').value = caseState.status || 'new';
+    document.getElementById('case-assign').value = caseState.assignee || 'unassigned';
+    
+    // SLA (simulated)
+    const elapsed = Math.floor((Date.now() - new Date(alert.time_window.start).getTime()) / 1000 / 60);
+    const remaining = Math.max(0, 240 - elapsed); // 4 hour SLA
+    document.getElementById('sla-chip').textContent = 
+        `SLA: ${Math.floor(remaining / 60).toString().padStart(2, '0')}:${(remaining % 60).toString().padStart(2, '0')}`;
+    
+    // Summary panel
+    document.getElementById('panel-summary').innerHTML = `
+        <div class="drawer-section">
+            <h4>Alert Details</h4>
+            <div style="margin-bottom: var(--space-sm);">
+                <strong>${escapeHtml(alert.name)}</strong>
+            </div>
+            <div style="display: flex; gap: var(--space-xs); margin-bottom: var(--space-sm);">
+                <span class="badge ${alert.severity}">${alert.severity}</span>
+                <span class="badge">${alert.confidence}</span>
+            </div>
         </div>
-
-        <div class="risk-factors">
-            <h4 style="margin-bottom: 1rem; color: var(--text-primary);">Contributing Factors</h4>
-            ${userScore.reasons.map(reason => `
+        
+        <div class="drawer-section">
+            <h4>Entity</h4>
+            <div style="display: flex; gap: var(--space-xs); align-items: center;">
+                <code>${escapeHtml(alert.entity.user)}</code>
+                <button class="copy-btn" onclick="copyText('${escapeHtml(alert.entity.user)}')">Copy</button>
+            </div>
+        </div>
+        
+        <div class="drawer-section">
+            <h4>Hypothesis</h4>
+            <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                ${escapeHtml(alert.hypothesis)}
+            </p>
+        </div>
+    `;
+    
+    // Evidence panel
+    document.getElementById('panel-evidence').innerHTML = `
+        <div class="drawer-section">
+            <h4>Evidence Event IDs (${alert.evidence.length})</h4>
+            <div class="evidence-list">
+                ${alert.evidence.slice(0, 20).map(id => 
+                    `<div class="evidence-item">${id}</div>`
+                ).join('')}
+                ${alert.evidence.length > 20 ? `<div class="evidence-item">+ ${alert.evidence.length - 20} more</div>` : ''}
+            </div>
+            <button class="copy-btn" style="margin-top: var(--space-sm);" 
+                    onclick="copyText('${alert.evidence.join('\\n')}')">
+                Copy All IDs
+            </button>
+        </div>
+    `;
+    
+    // MITRE panel
+    document.getElementById('panel-mitre').innerHTML = `
+        <div class="drawer-section">
+            <h4>Techniques Used</h4>
+            ${alert.mitre.map(t => `
                 <div class="risk-factor">
-                    <div class="risk-factor-rule">
-                        <span class="risk-factor-points">+${reason.points}</span>
-                        ${escapeHtml(reason.rule.replace(/_/g, ' ').toUpperCase())}
-                    </div>
-                    <div class="risk-factor-desc">${escapeHtml(reason.description)}</div>
+                    <div class="mitre-id">${t.id}</div>
+                    <div class="mitre-name">${escapeHtml(t.name)}</div>
+                    <div class="mitre-tactic">${escapeHtml(t.tactic)}</div>
                 </div>
             `).join('')}
         </div>
-
-        <div style="margin-top: 1.5rem; padding: 1rem; background: var(--bg-tertiary); border-radius: 0.375rem; font-size: 0.875rem; color: var(--text-secondary);">
-            <strong>Risk Calculation:</strong> Individual event risk scores are aggregated based on detection rules. 
-            Higher scores indicate stronger indicators of compromise requiring immediate investigation.
+    `;
+    
+    // Response panel
+    document.getElementById('panel-response').innerHTML = `
+        <div class="drawer-section">
+            <h4>Recommended Actions</h4>
+            <ul class="action-list">
+                ${alert.recommended_actions.map(action => 
+                    `<li class="action-item">${escapeHtml(action)}</li>`
+                ).join('')}
+            </ul>
+            <button class="copy-btn" style="margin-top: var(--space-sm);" 
+                    onclick="copyText('${alert.recommended_actions.join('\\n')}')">
+                Copy All Actions
+            </button>
+        </div>
+        
+        <div class="drawer-section">
+            <button class="playbook-btn" onclick="simulatePlaybook()">
+                Simulate Playbook Run
+            </button>
         </div>
     `;
-
-    modal.classList.add('active');
+    
+    // Load war room
+    renderWarRoom();
+    
+    // Open drawer
+    document.getElementById('drawer-overlay').classList.add('active');
+    document.getElementById('case-drawer').classList.add('active');
 }
 
-// ===== Filtering =====
-function getFilteredAlerts() {
-    return state.alerts.filter(alert => {
-        // Severity filter
-        if (state.filters.severity !== 'all' && alert.severity !== state.filters.severity) {
-            return false;
-        }
-
-        // Search filter
-        if (state.filters.searchTerm) {
-            const term = state.filters.searchTerm.toLowerCase();
-            const searchableText = [
-                alert.name,
-                alert.entity.user,
-                alert.entity.ips?.join(' ') || '',
-                alert.hypothesis
-            ].join(' ').toLowerCase();
-
-            if (!searchableText.includes(term)) {
-                return false;
-            }
-        }
-
-        return true;
-    });
+function closeCaseDrawer() {
+    document.getElementById('drawer-overlay').classList.remove('active');
+    document.getElementById('case-drawer').classList.remove('active');
+    state.selectedAlert = null;
 }
 
-// ===== Event Listeners =====
-function attachEventListeners() {
-    // Search input
-    document.getElementById('alert-search').addEventListener('input', (e) => {
-        state.filters.searchTerm = e.target.value;
-        renderAlertList();
-    });
+// ===== Case State Management =====
+function getCaseState(alertId) {
+    const key = `case_${alertId}`;
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : {};
+}
 
-    // Severity filter
-    document.getElementById('severity-filter').addEventListener('change', (e) => {
-        state.filters.severity = e.target.value;
-        renderAlertList();
-    });
+function updateCaseState(alertId, updates) {
+    const key = `case_${alertId}`;
+    const current = getCaseState(alertId);
+    localStorage.setItem(key, JSON.stringify({ ...current, ...updates, updated: Date.now() }));
+}
 
-    // Close details panel
-    document.getElementById('close-details').addEventListener('click', () => {
-        state.selectedAlert = null;
-        document.querySelectorAll('.alert-item').forEach(item => {
-            item.classList.remove('selected');
-        });
-        document.getElementById('details-content').innerHTML = `
-            <div class="empty-state">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="M12 16v-4M12 8h.01"/>
-                </svg>
-                <p>Select an alert to view details</p>
+function generateCaseId(alertId) {
+    const hash = alertId.split('-')[0].toUpperCase();
+    const year = new Date().getFullYear();
+    return `CASE-${year}-${hash}`;
+}
+
+// ===== War Room =====
+function renderWarRoom() {
+    if (!state.selectedAlert) return;
+    
+    const activities = getActivities(state.selectedAlert.alert_id);
+    
+    document.getElementById('activity-feed').innerHTML = activities.length > 0
+        ? activities.map(act => `
+            <div class="activity-item">
+                <div class="activity-time">${new Date(act.time).toLocaleTimeString()}</div>
+                <div>${escapeHtml(act.message)}</div>
             </div>
-        `;
-    });
-
-    // Close risk modal
-    document.getElementById('close-risk-modal').addEventListener('click', () => {
-        document.getElementById('risk-modal').classList.remove('active');
-    });
-
-    // Close modal on backdrop click
-    document.getElementById('risk-modal').addEventListener('click', (e) => {
-        if (e.target.id === 'risk-modal') {
-            document.getElementById('risk-modal').classList.remove('active');
-        }
-    });
+        `).join('')
+        : '<div class="empty-state" style="padding: var(--space-md);">No activity yet</div>';
 }
 
-// ===== Utility Functions =====
+function getActivities(alertId) {
+    const key = `activities_${alertId}`;
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : [];
+}
+
+function logActivity(message) {
+    if (!state.selectedAlert) return;
+    
+    const key = `activities_${state.selectedAlert.alert_id}`;
+    const activities = getActivities(state.selectedAlert.alert_id);
+    
+    activities.push({
+        time: Date.now(),
+        message: message
+    });
+    
+    localStorage.setItem(key, JSON.stringify(activities));
+    renderWarRoom();
+}
+
+function simulatePlaybook() {
+    logActivity('Playbook executed: Account Compromise Response');
+    logActivity('- Sessions revoked');
+    logActivity('- Password reset initiated');
+    logActivity('- Mailbox rules reviewed');
+    showToast('Playbook simulated', 'success');
+}
+
+// ===== Utilities =====
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
 
-function formatTime(timestamp) {
-    const date = new Date(timestamp);
-    return date.toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        timeZoneName: 'short'
+function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('Copied to clipboard', 'success');
     });
 }
 
-function copyActions() {
-    if (!state.selectedAlert) return;
-
-    const actions = state.selectedAlert.recommended_actions.join('\n');
-    navigator.clipboard.writeText(actions).then(() => {
-        const btn = event.target;
-        const originalText = btn.textContent;
-        btn.textContent = '✓ Copied!';
-        btn.style.background = 'var(--severity-low)';
-        
-        setTimeout(() => {
-            btn.textContent = originalText;
-            btn.style.background = 'var(--accent-blue)';
-        }, 2000);
-    }).catch(err => {
-        console.error('Failed to copy:', err);
-        alert('Failed to copy to clipboard');
-    });
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
 }
 
-function showError(message) {
-    document.body.innerHTML = `
-        <div style="display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column; color: var(--text-primary);">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="8" x2="12" y2="12"/>
-                <line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            <h2 style="margin-top: 1rem;">${message}</h2>
-            <p style="margin-top: 0.5rem; color: var(--text-secondary);">Run the pipeline with: <code style="background: var(--bg-secondary); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">python run_pipeline.py</code></p>
-        </div>
-    `;
+function showEmptyState(message) {
+    document.querySelector('.content-area').innerHTML = 
+        `<div class="empty-state"><h2>No Data Available</h2><p>${message}</p></div>`;
 }
 
-// ===== Global function exposure for onclick handlers =====
-window.selectAlert = selectAlert;
-window.showRiskScore = showRiskScore;
-window.copyActions = copyActions;
+// Expose functions to global scope
+window.openCaseDrawer = openCaseDrawer;
+window.closeCaseDrawer = closeCaseDrawer;
+window.copyText = copyText;
+window.simulatePlaybook = simulatePlaybook;
+window.filterByMITRE = filterByMITRE;
