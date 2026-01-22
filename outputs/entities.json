@@ -1,0 +1,158 @@
+{
+  "users": {
+    "sarah.chen@acmecorp.example.com": {
+      "type": "user",
+      "first_seen": "2026-01-09T16:30:20Z",
+      "last_seen": "2026-01-15T15:10:09.319475",
+      "event_count": 44,
+      "alert_count": 7,
+      "risk_score": 100,
+      "devices": [],
+      "ips": [
+        "185.220.101.45",
+        "203.0.113.50",
+        "10.0.0.0"
+      ],
+      "sources": [
+        null,
+        "email_gateway",
+        "identity_provider",
+        "cloud_mailbox",
+        "web_proxy"
+      ]
+    },
+    "john.smith@acmecorp.example.com": {
+      "type": "user",
+      "first_seen": "2026-01-10T07:15:25Z",
+      "last_seen": "2026-01-10T11:05:40+00:00",
+      "event_count": 4,
+      "alert_count": 0,
+      "risk_score": 0,
+      "devices": [],
+      "ips": [],
+      "sources": [
+        null
+      ]
+    },
+    "marketing@partner.example.com": {
+      "type": "user",
+      "first_seen": "2026-01-10T07:45:33Z",
+      "last_seen": "2026-01-10T07:45:33Z",
+      "event_count": 1,
+      "alert_count": 0,
+      "risk_score": 0,
+      "devices": [],
+      "ips": [],
+      "sources": [
+        null
+      ]
+    },
+    "mike.jones@acmecorp.example.com": {
+      "type": "user",
+      "first_seen": "2026-01-10T09:00:18Z",
+      "last_seen": "2026-01-10T09:10:15+00:00",
+      "event_count": 3,
+      "alert_count": 0,
+      "risk_score": 0,
+      "devices": [],
+      "ips": [],
+      "sources": [
+        null
+      ]
+    },
+    "alerts@security-team.acmecorp.example.com": {
+      "type": "user",
+      "first_seen": "2026-01-10T10:05:44Z",
+      "last_seen": "2026-01-10T10:05:44Z",
+      "event_count": 1,
+      "alert_count": 0,
+      "risk_score": 0,
+      "devices": [],
+      "ips": [],
+      "sources": [
+        null
+      ]
+    },
+    "michael.rodriguez@acmecorp.example.com": {
+      "type": "user",
+      "first_seen": "2026-01-17T13:10:09.319475",
+      "last_seen": "2026-01-17T14:38:09.319475",
+      "event_count": 18,
+      "alert_count": 0,
+      "risk_score": 0,
+      "devices": [],
+      "ips": [
+        "192.42.116.180",
+        "10.0.0.0"
+      ],
+      "sources": [
+        "cloud_mailbox",
+        "identity_provider",
+        "email_gateway"
+      ]
+    },
+    "priya.patel@acmecorp.example.com": {
+      "type": "user",
+      "first_seen": "2026-01-20T13:10:09.319475",
+      "last_seen": "2026-01-20T13:45:09.319475",
+      "event_count": 16,
+      "alert_count": 0,
+      "risk_score": 0,
+      "devices": [],
+      "ips": [
+        "45.142.213.91"
+      ],
+      "sources": [
+        "identity_provider",
+        "admin_portal"
+      ]
+    }
+  },
+  "ips": {
+    "185.220.101.45": {
+      "type": "ip",
+      "first_seen": "2026-01-15T14:10:09.319475",
+      "last_seen": "2026-01-15T15:10:09.319475",
+      "event_count": 2,
+      "users": [
+        "sarah.chen@acmecorp.example.com"
+      ],
+      "geo": "Romania",
+      "reputation": "malicious"
+    },
+    "203.0.113.50": {
+      "type": "ip",
+      "first_seen": "2026-01-15T14:40:09.319475",
+      "last_seen": "2026-01-15T14:40:09.319475",
+      "event_count": 1,
+      "users": [
+        "sarah.chen@acmecorp.example.com"
+      ],
+      "geo": "US",
+      "reputation": "clean"
+    },
+    "192.42.116.180": {
+      "type": "ip",
+      "first_seen": "2026-01-17T14:10:09.319475",
+      "last_seen": "2026-01-17T14:38:09.319475",
+      "event_count": 16,
+      "users": [
+        "michael.rodriguez@acmecorp.example.com"
+      ],
+      "geo": "Romania",
+      "reputation": "malicious"
+    },
+    "45.142.213.91": {
+      "type": "ip",
+      "first_seen": "2026-01-20T13:10:09.319475",
+      "last_seen": "2026-01-20T13:45:09.319475",
+      "event_count": 16,
+      "users": [
+        "priya.patel@acmecorp.example.com"
+      ],
+      "geo": "Romania",
+      "reputation": "malicious"
+    }
+  },
+  "domains": {}
+}

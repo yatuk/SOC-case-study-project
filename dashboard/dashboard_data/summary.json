@@ -35,14 +35,14 @@
     "Containment (SOC Response)"
   ],
   "mitre_techniques": [
-    "T1566.002 - Phishing: Spearphishing Link",
-    "T1114.003 - Email Collection: Email Forwarding Rule",
-    "T1087 - Account Discovery",
-    "T1114.002 - Email Collection: Remote Email Collection",
-    "T1114 - Email Collection",
     "T1078.004 - Valid Accounts: Cloud Accounts",
     "T1589.001 - Credentials from Password Stores",
-    "T1078 - Valid Accounts"
+    "T1566.002 - Phishing: Spearphishing Link",
+    "T1087 - Account Discovery",
+    "T1114 - Email Collection",
+    "T1114.002 - Email Collection: Remote Email Collection",
+    "T1078 - Valid Accounts",
+    "T1114.003 - Email Collection: Email Forwarding Rule"
   ],
   "affected_entities": {
     "users": [

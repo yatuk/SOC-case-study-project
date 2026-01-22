@@ -2,7 +2,7 @@
 ## Phishing-Led Account Compromise - Detailed Analysis
 
 **Incident ID:** INC-2026-010-001  
-**Analysis Date:** 2026-01-21 23:14:27 UTC  
+**Analysis Date:** 2026-01-22 13:10:09 UTC  
 **Analyst:** SOC Tier-2 Team
 
 ---
@@ -129,7 +129,7 @@ Total Alerts: 4
 - **Severity:** CRITICAL
 - **Confidence:** high
 - **Entity:** sarah.chen@acmecorp.example.com
-- **Hypothesis:** Multiple indicators of account compromise detected: Event matches known IOC: micros0ft-secure.info, login-microsoftonline.verify-account.top, verify-account.top, micros0ft-secure.info; User clicked known phishing link; Login from previously unseen device. These combined indicators suggest the account has been compromised and is being actively misused.
+- **Hypothesis:** Multiple indicators of account compromise detected: Event matches known IOC: micros0ft-secure.info, verify-account.top, login-microsoftonline.verify-account.top, micros0ft-secure.info; User clicked known phishing link; Login from previously unseen device. These combined indicators suggest the account has been compromised and is being actively misused.
 - **MITRE ATT&CK:** T1078.004, T1087, T1114
 
 

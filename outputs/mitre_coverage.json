@@ -1,0 +1,163 @@
+{
+  "overall": {
+    "T1566.002": 3,
+    "T1078": 3,
+    "T1114.002": 3,
+    "T1098": 1,
+    "T1528": 1,
+    "T1556": 1,
+    "T1098.001": 1,
+    "T1589.001": 1,
+    "T1078.004": 2,
+    "T1114.003": 1,
+    "T1087": 1,
+    "T1114": 1
+  },
+  "by_case": {
+    "CASE-2026-0001": {
+      "T1566.002": 1,
+      "T1078": 1,
+      "T1114.002": 1,
+      "T1098": 1
+    },
+    "CASE-2026-0002": {
+      "T1566.002": 1,
+      "T1528": 1,
+      "T1114.002": 1
+    },
+    "CASE-2026-0003": {
+      "T1078": 1,
+      "T1556": 1,
+      "T1098.001": 1
+    }
+  },
+  "techniques": [
+    {
+      "id": "T1566.002",
+      "name": "Phishing: Spearphishing Link",
+      "tactic": "Initial Access",
+      "count": 3,
+      "cases": [
+        "CASE-2026-0001",
+        "CASE-2026-0002"
+      ]
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion",
+      "count": 3,
+      "cases": [
+        "CASE-2026-0001",
+        "CASE-2026-0003"
+      ]
+    },
+    {
+      "id": "T1114.002",
+      "name": "Email Collection: Remote Email Collection",
+      "tactic": "Collection",
+      "count": 3,
+      "cases": [
+        "CASE-2026-0001",
+        "CASE-2026-0002"
+      ]
+    },
+    {
+      "id": "T1098",
+      "name": "Account Manipulation",
+      "tactic": "Persistence",
+      "count": 1,
+      "cases": [
+        "CASE-2026-0001"
+      ]
+    },
+    {
+      "id": "T1528",
+      "name": "Steal Application Access Token",
+      "tactic": "Credential Access",
+      "count": 1,
+      "cases": [
+        "CASE-2026-0002"
+      ]
+    },
+    {
+      "id": "T1556",
+      "name": "Modify Authentication Process",
+      "tactic": "Credential Access",
+      "count": 1,
+      "cases": [
+        "CASE-2026-0003"
+      ]
+    },
+    {
+      "id": "T1098.001",
+      "name": "Account Manipulation: Additional Cloud Credentials",
+      "tactic": "Persistence",
+      "count": 1,
+      "cases": [
+        "CASE-2026-0003"
+      ]
+    },
+    {
+      "id": "T1589.001",
+      "name": "Credentials from Password Stores",
+      "tactic": "Credential Access",
+      "count": 1,
+      "cases": []
+    },
+    {
+      "id": "T1078.004",
+      "name": "Valid Accounts: Cloud Accounts",
+      "tactic": "Initial Access",
+      "count": 2,
+      "cases": []
+    },
+    {
+      "id": "T1114.003",
+      "name": "Email Collection: Email Forwarding Rule",
+      "tactic": "Persistence",
+      "count": 1,
+      "cases": []
+    },
+    {
+      "id": "T1087",
+      "name": "Account Discovery",
+      "tactic": "Discovery",
+      "count": 1,
+      "cases": []
+    },
+    {
+      "id": "T1114",
+      "name": "Email Collection",
+      "tactic": "Collection",
+      "count": 1,
+      "cases": []
+    }
+  ],
+  "summary": {
+    "total_techniques": 12,
+    "total_observations": 19,
+    "most_common": [
+      [
+        "T1566.002",
+        3
+      ],
+      [
+        "T1078",
+        3
+      ],
+      [
+        "T1114.002",
+        3
+      ],
+      [
+        "T1078.004",
+        2
+      ],
+      [
+        "T1098",
+        1
+      ]
+    ]
+  }
+}

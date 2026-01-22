@@ -1,0 +1,32 @@
+{
+  "iocs": [
+    {
+      "type": "domain",
+      "value": "secure-login-verify.tk",
+      "tags": [
+        "phishing"
+      ]
+    },
+    {
+      "type": "app",
+      "value": "MailSyncPro",
+      "tags": [
+        "malicious_oauth"
+      ]
+    },
+    {
+      "type": "ip",
+      "value": "45.142.213.91",
+      "tags": [
+        "brute_force"
+      ]
+    },
+    {
+      "type": "ip",
+      "value": "185.220.101.45",
+      "tags": [
+        "suspicious"
+      ]
+    }
+  ]
+}

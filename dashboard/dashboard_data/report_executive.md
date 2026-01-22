@@ -87,4 +87,4 @@ This incident demonstrates the effectiveness of our layered security controls an
 The incident highlights the ongoing need for security awareness training and technical controls to prevent phishing attacks.
 
 **Report Prepared By:** SOC Analysis Team  
-**Date:** 2026-01-21
+**Date:** 2026-01-22
