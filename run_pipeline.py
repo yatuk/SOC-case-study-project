@@ -8,6 +8,7 @@ Usage: python run_pipeline.py
 
 import sys
 import shutil
+import json
 from pathlib import Path
 
 # Add src to path
@@ -19,6 +20,11 @@ from correlate import EventCorrelator
 from score import RiskScorer
 from detect import AlertDetector
 from report import ReportGenerator
+from generate_cases import CaseGenerator
+from generate_entities import EntityGenerator
+from generate_mitre import generate_mitre_coverage
+from generate_playbooks import generate_playbook_runs
+from generate_kpi_timeseries import generate_kpi_timeseries
 
 
 def print_banner():
@@ -110,6 +116,58 @@ def main():
         print("=" * 60)
         generator = ReportGenerator()
         generator.generate_all_reports(alerts, scores['entity_scores'], normalized_events)
+        
+        # Step 7: Enhanced data generation (cases, entities, IOCs, etc.)
+        print("\n" + "=" * 60)
+        print("STEP 7: ENHANCED DATA GENERATION")
+        print("=" * 60)
+        
+        # Generate multi-case incident data
+        case_gen = CaseGenerator()
+        cases, case_events, iocs = case_gen.generate_all_cases()
+        
+        # Save cases
+        with open(Path("outputs") / "cases.json", "w") as f:
+            json.dump({"cases": cases}, f, indent=2)
+        print(f"[OK] Generated {len(cases)} incident cases")
+        
+        # Merge case events with normalized events and save
+        all_events = normalized_events + case_events
+        with open(Path("outputs") / "events.jsonl", "w") as f:
+            for event in all_events:
+                f.write(json.dumps(event) + "\n")
+        print(f"[OK] Saved {len(all_events)} total events")
+        
+        # Save IOCs
+        ioc_list = [{"type": t, "value": v, "tags": [tag]} for t, v, tag in iocs]
+        with open(Path("outputs") / "iocs.json", "w") as f:
+            json.dump({"iocs": ioc_list}, f, indent=2)
+        print(f"[OK] Generated {len(iocs)} IOCs")
+        
+        # Generate entity profiles
+        entity_gen = EntityGenerator(all_events, scores)
+        entities = entity_gen.generate_entities()
+        entity_gen.save(entities)
+        print(f"[OK] Generated entity profiles")
+        
+        # Generate MITRE coverage
+        mitre_coverage = generate_mitre_coverage(cases, alerts)
+        with open(Path("outputs") / "mitre_coverage.json", "w") as f:
+            json.dump(mitre_coverage, f, indent=2)
+        print(f"[OK] Generated MITRE coverage")
+        
+        # Generate playbook runs
+        playbook_runs = generate_playbook_runs(cases)
+        with open(Path("outputs") / "playbook_runs.jsonl", "w") as f:
+            for run in playbook_runs:
+                f.write(json.dumps(run) + "\n")
+        print(f"[OK] Generated {len(playbook_runs)} playbook runs")
+        
+        # Generate KPI timeseries
+        kpi_timeseries = generate_kpi_timeseries(all_events, alerts)
+        with open(Path("outputs") / "kpi_timeseries.json", "w") as f:
+            json.dump(kpi_timeseries, f, indent=2)
+        print(f"[OK] Generated KPI timeseries")
         
         # Summary
         print("\n" + "=" * 60)

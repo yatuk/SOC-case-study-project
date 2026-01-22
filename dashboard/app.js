@@ -1,26 +1,38 @@
-// dashboard/app.js
-
+// ===== State Management =====
 const state = {
-    summary: null,
+    // Data
+    cases: [],
     alerts: [],
+    events: [],
+    entities: null,
+    iocs: [],
+    mitre: null,
+    playbooks: [],
+    kpiTimeseries: null,
+    summary: null,
     riskScores: null,
-    correlations: null,
-    currentView: 'overview',
+    
+    // UI State
+    currentView: 'cases',
+    selectedCase: null,
     selectedAlert: null,
+    commandPaletteOpen: false,
+    
+    // Filters
     filters: {
         severity: 'all',
-        confidence: 'all',
-        search: '',
-        onlyOpen: false
+        status: 'all',
+        search: ''
     }
 };
 
-// Initialize
+// ===== Initialization =====
 document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     initCommandBar();
-    initCaseDrawer();
-    loadData();
+    initCommandPalette();
+    initDrawer();
+    loadAllData();
 });
 
 // ===== Navigation =====
@@ -36,36 +48,36 @@ function initNavigation() {
 function switchView(viewName) {
     state.currentView = viewName;
     
+    // Update nav
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.toggle('active', item.dataset.view === viewName);
     });
     
-    document.querySelectorAll('.view').forEach(view => {
-        view.classList.toggle('active', view.id === `view-${viewName}`);
-    });
-    
+    // Render view
     renderView(viewName);
 }
 
 // ===== Command Bar =====
 function initCommandBar() {
     document.getElementById('refresh-btn').addEventListener('click', () => {
-        showToast('Refreshing data...', 'success');
-        loadData();
+        const btn = document.getElementById('refresh-btn');
+        btn.classList.add('refreshing');
+        loadAllData().finally(() => {
+            btn.classList.remove('refreshing');
+        });
     });
     
     document.getElementById('export-btn').addEventListener('click', exportData);
     
-    document.getElementById('global-search').addEventListener('input', (e) => {
-        state.filters.search = e.target.value.toLowerCase();
-        if (state.currentView === 'alerts') renderAlerts();
+    document.getElementById('global-search').addEventListener('click', () => {
+        openCommandPalette();
     });
 }
 
 function exportData() {
     const data = {
-        summary: state.summary,
-        alerts: getFilteredAlerts(),
+        cases: state.cases,
+        alerts: state.alerts,
         timestamp: new Date().toISOString()
     };
     
@@ -80,42 +92,159 @@ function exportData() {
     showToast('Data exported successfully', 'success');
 }
 
-// ===== Data Loading =====
-async function loadData() {
-    try {
-        const [summaryRes, alertsRes, riskRes, corrRes] = await Promise.all([
-            fetch('./dashboard_data/summary.json'),
-            fetch('./dashboard_data/alerts.jsonl'),
-            fetch('./dashboard_data/risk_scores.json'),
-            fetch('./dashboard_data/correlations.json')
-        ]);
-        
-        if (!summaryRes.ok) throw new Error('Data not found');
-        
-        state.summary = await summaryRes.json();
-        
-        if (alertsRes.ok) {
-            const text = await alertsRes.text();
-            state.alerts = text.trim().split('\n')
-                .map(line => {
-                    try { return JSON.parse(line); }
-                    catch { return null; }
-                })
-                .filter(Boolean);
+// ===== Command Palette =====
+function initCommandPalette() {
+    const overlay = document.getElementById('command-palette-overlay');
+    const input = document.getElementById('command-input');
+    
+    // Ctrl+K to open
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            openCommandPalette();
         }
         
-        if (riskRes.ok) state.riskScores = await riskRes.json();
-        if (corrRes.ok) state.correlations = await corrRes.json();
+        if (e.key === 'Escape' && state.commandPaletteOpen) {
+            closeCommandPalette();
+        }
+    });
+    
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeCommandPalette();
+    });
+    
+    input.addEventListener('input', handleCommandSearch);
+}
+
+function openCommandPalette() {
+    state.commandPaletteOpen = true;
+    document.getElementById('command-palette-overlay').classList.add('active');
+    document.getElementById('command-input').focus();
+    renderCommandResults();
+}
+
+function closeCommandPalette() {
+    state.commandPaletteOpen = false;
+    document.getElementById('command-palette-overlay').classList.remove('active');
+    document.getElementById('command-input').value = '';
+}
+
+function handleCommandSearch(e) {
+    const query = e.target.value.toLowerCase();
+    renderCommandResults(query);
+}
+
+function renderCommandResults(query = '') {
+    const results = document.getElementById('command-results');
+    
+    const commands = [
+        { icon: '🏠', label: 'Go to Overview', action: () => switchView('overview') },
+        { icon: '📋', label: 'Go to Cases', action: () => switchView('cases') },
+        { icon: '⚠️', label: 'Go to Alerts', action: () => switchView('alerts') },
+        { icon: '👥', label: 'Go to Entities', action: () => switchView('entities') },
+        { icon: '🔍', label: 'Go to Intelligence', action: () => switchView('intelligence') },
+        { icon: '⏱️', label: 'Go to Timeline', action: () => switchView('timeline') },
+        { icon: '🎯', label: 'Go to MITRE', action: () => switchView('mitre') },
+        { icon: '🤖', label: 'Go to Automations', action: () => switchView('automations') },
+        { icon: '📥', label: 'Export Data', action: exportData },
+        { icon: '🔄', label: 'Refresh Data', action: () => loadAllData() }
+    ];
+    
+    // Add case searches
+    state.cases.forEach(c => {
+        commands.push({
+            icon: '📄',
+            label: `Open ${c.case_id}`,
+            desc: c.title,
+            action: () => openCase(c.case_id)
+        });
+    });
+    
+    const filtered = query
+        ? commands.filter(c => c.label.toLowerCase().includes(query) || (c.desc && c.desc.toLowerCase().includes(query)))
+        : commands;
+    
+    results.innerHTML = filtered.slice(0, 10).map((cmd, i) => `
+        <div class="command-item${i === 0 ? ' selected' : ''}" data-action="${i}">
+            <span class="command-item-icon">${cmd.icon}</span>
+            <div class="command-item-text">
+                <div class="command-item-label">${cmd.label}</div>
+                ${cmd.desc ? `<div class="command-item-desc">${cmd.desc}</div>` : ''}
+            </div>
+        </div>
+    `).join('');
+    
+    // Add click handlers
+    document.querySelectorAll('.command-item').forEach((item, i) => {
+        item.addEventListener('click', () => {
+            filtered[i].action();
+            closeCommandPalette();
+        });
+    });
+}
+
+// ===== Data Loading =====
+async function loadAllData() {
+    showLoading();
+    
+    try {
+        const [
+            casesRes, alertsRes, eventsRes, entitiesRes,
+            iocsRes, mitreRes, playbooksRes, kpiRes,
+            summaryRes, riskRes
+        ] = await Promise.all([
+            fetch('./dashboard_data/cases.json'),
+            fetch('./dashboard_data/alerts.jsonl'),
+            fetch('./dashboard_data/events.jsonl'),
+            fetch('./dashboard_data/entities.json'),
+            fetch('./dashboard_data/iocs.json'),
+            fetch('./dashboard_data/mitre_coverage.json'),
+            fetch('./dashboard_data/playbook_runs.jsonl'),
+            fetch('./dashboard_data/kpi_timeseries.json'),
+            fetch('./dashboard_data/summary.json'),
+            fetch('./dashboard_data/risk_scores.json')
+        ]);
+        
+        if (!casesRes.ok) throw new Error('Data not found');
+        
+        // Parse all data
+        const casesData = await casesRes.json();
+        state.cases = casesData.cases || [];
+        
+        state.alerts = await parseJSONL(alertsRes);
+        state.events = await parseJSONL(eventsRes);
+        
+        state.entities = await entitiesRes.json();
+        state.iocs = (await iocsRes.json()).iocs || [];
+        state.mitre = await mitreRes.json();
+        state.playbooks = await parseJSONL(playbooksRes);
+        state.kpiTimeseries = await kpiRes.json();
+        state.summary = await summaryRes.json();
+        state.riskScores = await riskRes.json();
         
         updateStatus('healthy', 'Data OK');
         updateLastLoaded();
+        updateActiveCasesBadge();
+        hideLoading();
         renderView(state.currentView);
         
     } catch (error) {
         console.error('Failed to load data:', error);
         updateStatus('error', 'Data Missing');
-        showEmptyState('Run python run_pipeline.py and commit dashboard/dashboard_data/');
+        hideLoading();
+        showEmptyState('Run python run_pipeline.py and commit dashboard_data/');
     }
+}
+
+async function parseJSONL(response) {
+    if (!response.ok) return [];
+    const text = await response.text();
+    return text.trim().split('\n')
+        .map(line => {
+            try { return JSON.parse(line); }
+            catch { return null; }
+        })
+        .filter(Boolean);
 }
 
 function updateStatus(status, text) {
@@ -130,209 +259,274 @@ function updateLastLoaded() {
         `Last loaded: ${now.toLocaleTimeString()}`;
 }
 
+function updateActiveCasesBadge() {
+    const activeCases = state.cases.filter(c => c.status !== 'closed').length;
+    document.getElementById('active-cases-badge').textContent = activeCases;
+}
+
+function showLoading() {
+    document.getElementById('loading-state').style.display = 'block';
+    document.getElementById('view-container').style.display = 'none';
+}
+
+function hideLoading() {
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('view-container').style.display = 'block';
+}
+
 // ===== View Rendering =====
 function renderView(viewName) {
+    const container = document.getElementById('view-container');
+    
     switch(viewName) {
-        case 'overview': renderOverview(); break;
-        case 'alerts': renderAlerts(); break;
-        case 'entities': renderEntities(); break;
-        case 'timeline': renderTimeline(); break;
-        case 'mitre': renderMITRE(); break;
-        case 'reports': renderReports('executive'); break;
+        case 'overview':
+            renderOverview(container);
+            break;
+        case 'cases':
+            renderCases(container);
+            break;
+        case 'alerts':
+            renderAlerts(container);
+            break;
+        case 'entities':
+            renderEntities(container);
+            break;
+        case 'intelligence':
+            renderIntelligence(container);
+            break;
+        case 'timeline':
+            renderTimeline(container);
+            break;
+        case 'mitre':
+            renderMITRE(container);
+            break;
+        case 'automations':
+            renderAutomations(container);
+            break;
     }
 }
 
-// ===== Overview =====
-function renderOverview() {
-    if (!state.summary) return;
+// ===== Overview View =====
+function renderOverview(container) {
+    const metrics = state.summary?.metrics || {};
+    const highSev = (metrics.alerts_by_severity?.critical || 0) + (metrics.alerts_by_severity?.high || 0);
     
-    const metrics = state.summary.metrics;
-    
-    document.getElementById('kpi-events').innerHTML = 
-        `<div>${metrics.total_events_analyzed}</div>`;
-    document.getElementById('kpi-alerts').innerHTML = 
-        `<div>${metrics.total_alerts_generated}</div>`;
-    
-    const highSev = metrics.alerts_by_severity.critical + metrics.alerts_by_severity.high;
-    document.getElementById('kpi-high').innerHTML = 
-        `<div>${highSev}</div>`;
-    document.getElementById('kpi-users').innerHTML = 
-        `<div>${metrics.affected_users}</div>`;
-    
-    // Severity bars
-    const sevData = [
-        { label: 'Critical', value: metrics.alerts_by_severity.critical, class: 'critical' },
-        { label: 'High', value: metrics.alerts_by_severity.high, class: 'high' },
-        { label: 'Medium', value: metrics.alerts_by_severity.medium, class: 'medium' },
-        { label: 'Low', value: metrics.alerts_by_severity.low, class: 'low' }
-    ];
-    
-    const maxSev = Math.max(...sevData.map(d => d.value));
-    document.getElementById('severity-bars').innerHTML = sevData.map(d => `
-        <div class="bar-item">
-            <div class="bar-label">${d.label}</div>
-            <div class="bar-track">
-                <div class="bar-fill ${d.class}" style="width: ${(d.value / maxSev) * 100}%"></div>
+    container.innerHTML = `
+        <h1 class="view-title">Security Overview</h1>
+        
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-label">Active Cases</div>
+                <div class="card-value">${state.cases.filter(c => c.status !== 'closed').length}</div>
+                <div class="card-change">of ${state.cases.length} total</div>
             </div>
-            <div class="bar-value">${d.value}</div>
-        </div>
-    `).join('');
-    
-    // User bars
-    const userCounts = {};
-    state.alerts.forEach(alert => {
-        const user = alert.entity.user;
-        userCounts[user] = (userCounts[user] || 0) + 1;
-    });
-    
-    const topUsers = Object.entries(userCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5);
-    
-    const maxUser = Math.max(...topUsers.map(([, count]) => count));
-    document.getElementById('user-bars').innerHTML = topUsers.map(([user, count]) => `
-        <div class="bar-item">
-            <div class="bar-label">${user.split('@')[0]}</div>
-            <div class="bar-track">
-                <div class="bar-fill" style="width: ${(count / maxUser) * 100}%"></div>
+            <div class="card">
+                <div class="card-label">Total Alerts</div>
+                <div class="card-value">${state.alerts.length}</div>
+                <div class="card-change">${metrics.total_events_analyzed || 0} events analyzed</div>
             </div>
-            <div class="bar-value">${count}</div>
+            <div class="card">
+                <div class="card-label">High Severity</div>
+                <div class="card-value" style="color: var(--critical);">${highSev}</div>
+                <div class="card-change">require immediate action</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Entities at Risk</div>
+                <div class="card-value">${Object.keys(state.entities?.users || {}).length}</div>
+                <div class="card-change">${metrics.affected_users || 0} affected users</div>
+            </div>
         </div>
-    `).join('');
+        
+        <h2 style="margin-bottom: var(--space-4); font-size: var(--text-xl);">Recent Activity</h2>
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Case ID</th>
+                        <th>Title</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Alerts</th>
+                        <th>Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${state.cases.slice(0, 5).map(c => `
+                        <tr onclick="openCase('${c.case_id}')">
+                            <td><code>${c.case_id}</code></td>
+                            <td>${escapeHtml(c.title)}</td>
+                            <td><span class="badge ${c.severity}">${c.severity}</span></td>
+                            <td>${c.status}</td>
+                            <td>${c.alert_count}</td>
+                            <td>${formatRelativeTime(c.updated_at)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
 }
 
-// ===== Alerts =====
-function renderAlerts() {
-    const container = document.getElementById('alerts-list');
-    const filtered = getFilteredAlerts();
-    
-    if (filtered.length === 0) {
-        container.innerHTML = '<div class="empty-state">No alerts match filters</div>';
-        return;
-    }
-    
-    container.innerHTML = filtered.map(alert => {
-        const caseState = getCaseState(alert.alert_id);
-        const status = caseState.status || 'new';
-        
-        return `
-            <div class="alert-card ${alert.severity}" onclick="openCaseDrawer('${alert.alert_id}')" tabindex="0">
-                <div class="alert-header">
-                    <div class="alert-title">${escapeHtml(alert.name)}</div>
-                    <div class="alert-badges">
-                        <span class="badge ${alert.severity} ${alert.severity === 'critical' ? 'pulse' : ''}">${alert.severity}</span>
-                        <span class="badge">${alert.confidence}</span>
-                    </div>
-                </div>
-                <div class="alert-meta">
-                    <span>Entity: ${escapeHtml(alert.entity.user)}</span>
-                    <span>Window: ${alert.time_window.start.substring(0, 16)}</span>
-                    <span>Status: ${status}</span>
-                </div>
-                <div class="alert-chips">
-                    ${alert.entity.ips ? alert.entity.ips.map(ip => 
-                        `<span class="chip">${ip}</span>`
-                    ).join('') : ''}
-                </div>
-            </div>
-        `;
-    }).join('');
-    
-    // Keyboard navigation
-    document.querySelectorAll('.alert-card').forEach((card, idx) => {
-        card.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') card.click();
-            if (e.key === 'ArrowDown') document.querySelectorAll('.alert-card')[idx + 1]?.focus();
-            if (e.key === 'ArrowUp') document.querySelectorAll('.alert-card')[idx - 1]?.focus();
-        });
-    });
-}
-
-function getFilteredAlerts() {
-    return state.alerts.filter(alert => {
-        if (state.filters.severity !== 'all' && alert.severity !== state.filters.severity) return false;
-        if (state.filters.confidence !== 'all' && alert.confidence !== state.filters.confidence) return false;
-        
-        if (state.filters.search) {
-            const searchable = [
-                alert.name,
-                alert.entity.user,
-                alert.hypothesis
-            ].join(' ').toLowerCase();
-            
-            if (!searchable.includes(state.filters.search)) return false;
-        }
-        
-        if (state.filters.onlyOpen) {
-            const caseState = getCaseState(alert.alert_id);
-            if (caseState.status === 'closed') return false;
-        }
-        
+// ===== Cases View =====
+function renderCases(container) {
+    const filtered = state.cases.filter(c => {
+        if (state.filters.status !== 'all' && c.status !== state.filters.status) return false;
+        if (state.filters.severity !== 'all' && c.severity !== state.filters.severity) return false;
+        if (state.filters.search && !JSON.stringify(c).toLowerCase().includes(state.filters.search)) return false;
         return true;
     });
-}
-
-// Filter handlers
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('severity-filter')?.addEventListener('change', (e) => {
-        state.filters.severity = e.target.value;
-        renderAlerts();
-    });
     
-    document.getElementById('confidence-filter')?.addEventListener('change', (e) => {
-        state.filters.confidence = e.target.value;
-        renderAlerts();
-    });
-    
-    document.getElementById('alert-search')?.addEventListener('input', (e) => {
-        state.filters.search = e.target.value.toLowerCase();
-        renderAlerts();
-    });
-    
-    document.getElementById('only-open')?.addEventListener('change', (e) => {
-        state.filters.onlyOpen = e.target.checked;
-        renderAlerts();
-    });
-});
-
-// ===== Entities =====
-function renderEntities() {
-    if (!state.riskScores) return;
-    
-    const selector = document.getElementById('entity-selector');
-    const users = Object.keys(state.riskScores.entity_scores);
-    
-    if (selector.options.length === 0) {
-        selector.innerHTML = users.map(user => 
-            `<option value="${user}">${user}</option>`
-        ).join('');
-        
-        selector.addEventListener('change', renderEntities);
-    }
-    
-    const selectedUser = selector.value || users[0];
-    const userScore = state.riskScores.entity_scores[selectedUser];
-    
-    document.getElementById('entity-content').innerHTML = `
-        <div class="risk-display">
-            <div class="risk-score">${userScore.score}</div>
-            <div style="color: var(--text-secondary); margin-top: var(--space-sm);">
-                Risk Score (<span class="badge ${userScore.severity}">${userScore.severity}</span>)
+    container.innerHTML = `
+        <div class="view-header">
+            <h1 class="view-title">Incident Cases</h1>
+            <div style="display: flex; gap: var(--space-2);">
+                <select id="status-filter" class="btn-secondary">
+                    <option value="all">All Status</option>
+                    <option value="new">New</option>
+                    <option value="investigating">Investigating</option>
+                    <option value="contained">Contained</option>
+                    <option value="closed">Closed</option>
+                </select>
+                <select id="severity-filter-cases" class="btn-secondary">
+                    <option value="all">All Severities</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
             </div>
         </div>
         
-        <h3 style="margin-bottom: var(--space-md);">Contributing Factors</h3>
-        <div class="risk-factors">
-            ${userScore.reasons.map(r => `
-                <div class="risk-factor">
-                    <div class="risk-factor-title">
-                        +${r.points} — ${escapeHtml(r.rule.replace(/_/g, ' ').toUpperCase())}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Case ID</th>
+                        <th>Title</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Owner</th>
+                        <th>Affected Users</th>
+                        <th>Alerts</th>
+                        <th>Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filtered.map(c => `
+                        <tr onclick="openCase('${c.case_id}')">
+                            <td><code>${c.case_id}</code></td>
+                            <td>${escapeHtml(c.title)}</td>
+                            <td><span class="badge ${c.severity}">${c.severity}</span></td>
+                            <td>${c.status}</td>
+                            <td>${c.owner}</td>
+                            <td>${c.affected_users.join(', ')}</td>
+                            <td>${c.alert_count}</td>
+                            <td>${formatRelativeTime(c.created_at)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+    
+    // Attach filter handlers
+    document.getElementById('status-filter').addEventListener('change', (e) => {
+        state.filters.status = e.target.value;
+        renderView('cases');
+    });
+    
+    document.getElementById('severity-filter-cases').addEventListener('change', (e) => {
+        state.filters.severity = e.target.value;
+        renderView('cases');
+    });
+}
+
+// ===== Alerts View =====
+function renderAlerts(container) {
+    // Group alerts by case
+    const alertsByCase = {};
+    state.alerts.forEach(alert => {
+        // Find which case this alert belongs to based on user/timing
+        const matchingCase = state.cases.find(c => 
+            c.affected_users.includes(alert.entity.user)
+        );
+        
+        const caseId = matchingCase ? matchingCase.case_id : 'UNCATEGORIZED';
+        if (!alertsByCase[caseId]) {
+            alertsByCase[caseId] = [];
+        }
+        alertsByCase[caseId].push(alert);
+    });
+    
+    container.innerHTML = `
+        <h1 class="view-title">Security Alerts</h1>
+        
+        ${Object.entries(alertsByCase).map(([caseId, alerts]) => {
+            const caseData = state.cases.find(c => c.case_id === caseId);
+            return `
+                <div style="margin-bottom: var(--space-8);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
+                        <h2 style="font-size: var(--text-xl);">
+                            ${caseData ? `${caseData.case_id} — ${caseData.title}` : 'Uncategorized Alerts'}
+                        </h2>
+                        ${caseData ? `<span class="badge ${caseData.severity}">${caseData.severity}</span>` : ''}
                     </div>
-                    <div style="font-size: 0.875rem; color: var(--text-secondary);">
-                        ${escapeHtml(r.description)}
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Alert</th>
+                                    <th>Severity</th>
+                                    <th>Entity</th>
+                                    <th>Evidence</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${alerts.map(alert => `
+                                    <tr onclick="openAlertDrawer('${alert.alert_id}', '${caseId}')">
+                                        <td>
+                                            <div style="font-weight: 600;">${escapeHtml(alert.name)}</div>
+                                            <div style="font-size: var(--text-xs); color: var(--text-muted);">${alert.alert_id}</div>
+                                        </td>
+                                        <td>
+                                            <span class="badge ${alert.severity}">${alert.severity}</span>
+                                            <span class="badge">${alert.confidence}</span>
+                                        </td>
+                                        <td>
+                                            <div class="chip" onclick="event.stopPropagation(); pivotToEntity('${alert.entity.user}')">${alert.entity.user}</div>
+                                        </td>
+                                        <td>${alert.evidence.length} events</td>
+                                        <td>${alert.recommended_actions.length} actions</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="risk-factor-bar">
-                        <div class="risk-factor-fill" style="width: ${(r.points / userScore.score) * 100}%"></div>
+                </div>
+            `;
+        }).join('')}
+    `;
+}
+
+// ===== Entities View =====
+function renderEntities(container) {
+    const users = state.entities?.users || {};
+    
+    container.innerHTML = `
+        <h1 class="view-title">Entity Risk Profiles</h1>
+        
+        <div class="card-grid">
+            ${Object.entries(users).map(([email, data]) => `
+                <div class="card" onclick="viewEntityProfile('${email}')">
+                    <div style="margin-bottom: var(--space-4);">
+                        <div style="font-weight: 600; margin-bottom: var(--space-2);">${email}</div>
+                        <span class="badge ${getRiskSeverity(data.risk_score)}">Risk: ${data.risk_score}</span>
+                    </div>
+                    <div style="font-size: var(--text-sm); color: var(--text-secondary);">
+                        <div>${data.event_count} events</div>
+                        <div>${data.alert_count} alerts</div>
+                        <div>${data.ips.length} unique IPs</div>
                     </div>
                 </div>
             `).join('')}
@@ -340,350 +534,339 @@ function renderEntities() {
     `;
 }
 
-// ===== Timeline =====
-function renderTimeline() {
-    const steps = [
-        { title: 'Phishing Email Received', desc: 'Credential harvesting link delivered', active: false },
-        { title: 'Phishing Link Clicked', desc: 'User submitted credentials to fake page', active: false },
-        { title: 'Impossible Travel', desc: 'Attacker authenticated from distant location', active: true },
-        { title: 'Mailbox Rule Persistence', desc: 'Forwarding rule created for exfiltration', active: false }
-    ];
-    
-    document.getElementById('timeline-stepper').innerHTML = steps.map(step => `
-        <div class="timeline-step ${step.active ? 'active' : ''}">
-            <div class="timeline-marker"></div>
-            <div class="timeline-content">
-                <div class="timeline-title">${step.title}</div>
-                <div class="timeline-desc">${step.desc}</div>
-                <div class="timeline-alerts">
-                    ${state.alerts.filter(a => a.name.toLowerCase().includes(step.title.toLowerCase().split(' ')[0]))
-                        .map(a => `<span class="badge ${a.severity}">${a.name.substring(0, 20)}...</span>`).join('')}
-                </div>
-            </div>
+// ===== Intelligence View =====
+function renderIntelligence(container) {
+    container.innerHTML = `
+        <div class="view-header">
+            <h1 class="view-title">Threat Intelligence</h1>
+            <button class="btn-primary" onclick="exportIOCs()">Export IOCs</button>
         </div>
-    `).join('');
-}
-
-// ===== MITRE =====
-function renderMITRE() {
-    if (!state.summary) return;
-    
-    const techniques = state.summary.mitre_techniques.map(t => {
-        const [id, name] = t.split(' - ');
-        return { id, name };
-    });
-    
-    const usedTechniques = new Set();
-    state.alerts.forEach(alert => {
-        alert.mitre.forEach(m => usedTechniques.add(m.id));
-    });
-    
-    document.getElementById('mitre-grid').innerHTML = techniques.map(tech => `
-        <div class="mitre-cell ${usedTechniques.has(tech.id) ? 'active' : ''}" 
-             onclick="filterByMITRE('${tech.id}')">
-            <div class="mitre-id">${tech.id}</div>
-            <div class="mitre-name">${escapeHtml(tech.name)}</div>
-        </div>
-    `).join('');
-}
-
-function filterByMITRE(techniqueId) {
-    // Switch to alerts view and filter
-    switchView('alerts');
-    showToast(`Filtered by ${techniqueId}`, 'success');
-}
-
-// ===== Reports =====
-async function renderReports(type) {
-    try {
-        const response = await fetch(`./dashboard_data/report_${type}.md`);
-        const markdown = await response.text();
         
-        document.getElementById('report-content').innerHTML = renderMarkdown(markdown);
-    } catch {
-        document.getElementById('report-content').innerHTML = 
-            '<div class="empty-state">Report not available</div>';
-    }
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Indicator</th>
+                        <th>Tags</th>
+                        <th>Linked Cases</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${state.iocs.map(ioc => `
+                        <tr>
+                            <td><span class="badge">${ioc.type}</span></td>
+                            <td><code>${ioc.value}</code></td>
+                            <td>${ioc.tags.map(t => `<span class="chip">${t}</span>`).join(' ')}</td>
+                            <td>—</td>
+                            <td><button class="btn-secondary" onclick="copyText('${ioc.value}')">Copy</button></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
 }
 
-function renderMarkdown(md) {
-    let html = escapeHtml(md);
+// ===== Timeline View =====
+function renderTimeline(container) {
+    const recentEvents = state.events.slice(0, 50);
     
-    // Headings
-    html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-    html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-    html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-    
-    // Bold
-    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    
-    // Code
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-    
-    // Lists
-    html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
-    html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
-    
-    // Paragraphs
-    html = html.replace(/\n\n/g, '</p><p>');
-    html = '<p>' + html + '</p>';
-    
-    return html;
+    container.innerHTML = `
+        <h1 class="view-title">Event Timeline</h1>
+        
+        <div style="background: var(--bg-secondary); padding: var(--space-6); border-radius: var(--radius-lg); border: 1px solid var(--border-primary);">
+            ${recentEvents.map(event => `
+                <div style="padding: var(--space-4); border-left: 2px solid var(--brand-primary); margin-bottom: var(--space-4); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+                        <div style="font-weight: 600;">${event.event_type}</div>
+                        <div style="font-size: var(--text-xs); color: var(--text-muted); font-family: var(--font-mono);">${formatDateTime(event.timestamp)}</div>
+                    </div>
+                    <div style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-2);">
+                        ${escapeHtml(event.description || event.raw_summary)}
+                    </div>
+                    <div style="display: flex; gap: var(--space-2);">
+                        <span class="chip">${event.source}</span>
+                        ${event.user ? `<span class="chip">${event.user}</span>` : ''}
+                        ${event.src_ip && event.src_ip !== '10.0.0.0' ? `<span class="chip">${event.src_ip}</span>` : ''}
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
 }
 
-// Report tabs
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            renderReports(tab.dataset.report);
-        });
-    });
-});
+// ===== MITRE View =====
+function renderMITRE(container) {
+    const techniques = state.mitre?.techniques || [];
+    
+    container.innerHTML = `
+        <h1 class="view-title">MITRE ATT&CK Coverage</h1>
+        
+        <div class="card-grid">
+            ${techniques.map(tech => `
+                <div class="card">
+                    <div style="font-family: var(--font-mono); color: var(--brand-primary); font-weight: 600; margin-bottom: var(--space-2);">
+                        ${tech.id}
+                    </div>
+                    <div style="font-weight: 600; margin-bottom: var(--space-2);">
+                        ${escapeHtml(tech.name)}
+                    </div>
+                    <div style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-2);">
+                        ${tech.tactic}
+                    </div>
+                    <div style="font-size: var(--text-sm);">
+                        <span class="badge">${tech.count} observations</span>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+// ===== Automations View =====
+function renderAutomations(container) {
+    container.innerHTML = `
+        <h1 class="view-title">Playbook Automations</h1>
+        
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Playbook</th>
+                        <th>Case</th>
+                        <th>Status</th>
+                        <th>Duration</th>
+                        <th>Actions</th>
+                        <th>Executed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${state.playbooks.map(pb => `
+                        <tr>
+                            <td>
+                                <div style="font-weight: 600;">${escapeHtml(pb.name)}</div>
+                                <div style="font-size: var(--text-xs); color: var(--text-muted);">${pb.playbook_id}</div>
+                            </td>
+                            <td>${pb.case_id ? `<code>${pb.case_id}</code>` : '—'}</td>
+                            <td><span class="badge ${pb.status === 'completed' ? 'low' : 'medium'}">${pb.status}</span></td>
+                            <td>${pb.duration_seconds}s</td>
+                            <td>${pb.actions_taken.length} actions</td>
+                            <td>${formatRelativeTime(pb.started_at)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+}
 
 // ===== Case Drawer =====
-function initCaseDrawer() {
+function initDrawer() {
     const overlay = document.getElementById('drawer-overlay');
-    const drawer = document.getElementById('case-drawer');
-    const closeBtn = document.getElementById('drawer-close');
+    const close = document.getElementById('drawer-close');
     
-    overlay.addEventListener('click', closeCaseDrawer);
-    closeBtn.addEventListener('click', closeCaseDrawer);
+    overlay.addEventListener('click', closeDrawer);
+    close.addEventListener('click', closeDrawer);
     
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && drawer.classList.contains('active')) {
-            closeCaseDrawer();
-        }
+        if (e.key === 'Escape') closeDrawer();
     });
     
-    // Drawer tabs
+    document.getElementById('add-note-btn').addEventListener('click', addNote);
+}
+
+function openCase(caseId) {
+    const caseData = state.cases.find(c => c.case_id === caseId);
+    if (!caseData) return;
+    
+    state.selectedCase = caseData;
+    
+    // Populate drawer
+    document.getElementById('drawer-case-id').textContent = caseData.case_id;
+    document.getElementById('drawer-meta').innerHTML = `
+        <span class="badge ${caseData.severity}">${caseData.severity}</span>
+        <span class="badge">${caseData.status}</span>
+        <span style="font-size: var(--text-sm); color: var(--text-secondary);">Owner: ${caseData.owner}</span>
+    `;
+    
+    // Tabs
+    document.getElementById('drawer-tabs').innerHTML = `
+        <button class="drawer-tab active" data-tab="summary">Summary</button>
+        <button class="drawer-tab" data-tab="alerts">Alerts</button>
+        <button class="drawer-tab" data-tab="entities">Entities</button>
+        <button class="drawer-tab" data-tab="mitre">MITRE</button>
+    `;
+    
+    // Tab handlers
     document.querySelectorAll('.drawer-tab').forEach(tab => {
         tab.addEventListener('click', () => {
             document.querySelectorAll('.drawer-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.drawer-panel').forEach(p => p.classList.remove('active'));
-            
             tab.classList.add('active');
-            document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
+            renderCaseTab(tab.dataset.tab, caseData);
         });
     });
     
-    // Case status change
-    document.getElementById('case-status')?.addEventListener('change', (e) => {
-        if (state.selectedAlert) {
-            updateCaseState(state.selectedAlert.alert_id, { status: e.target.value });
-            logActivity('Status changed to ' + e.target.value);
-            showToast('Case status updated', 'success');
-            renderAlerts(); // Refresh list
-        }
-    });
-    
-    // Case assignment
-    document.getElementById('case-assign')?.addEventListener('change', (e) => {
-        if (state.selectedAlert) {
-            updateCaseState(state.selectedAlert.alert_id, { assignee: e.target.value });
-            logActivity('Assigned to ' + e.target.value);
-            showToast('Case assigned', 'success');
-        }
-    });
-    
-    // Add note
-    document.getElementById('add-note-btn')?.addEventListener('click', () => {
-        const textarea = document.getElementById('note-textarea');
-        const note = textarea.value.trim();
-        
-        if (note && state.selectedAlert) {
-            logActivity('Note: ' + note);
-            textarea.value = '';
-            showToast('Note added', 'success');
-        }
-    });
-}
-
-function openCaseDrawer(alertId) {
-    const alert = state.alerts.find(a => a.alert_id === alertId);
-    if (!alert) return;
-    
-    state.selectedAlert = alert;
-    
-    const caseId = generateCaseId(alertId);
-    const caseState = getCaseState(alertId);
-    
-    document.getElementById('case-id').textContent = caseId;
-    document.getElementById('case-status').value = caseState.status || 'new';
-    document.getElementById('case-assign').value = caseState.assignee || 'unassigned';
-    
-    // SLA (simulated)
-    const elapsed = Math.floor((Date.now() - new Date(alert.time_window.start).getTime()) / 1000 / 60);
-    const remaining = Math.max(0, 240 - elapsed); // 4 hour SLA
-    document.getElementById('sla-chip').textContent = 
-        `SLA: ${Math.floor(remaining / 60).toString().padStart(2, '0')}:${(remaining % 60).toString().padStart(2, '0')}`;
-    
-    // Summary panel
-    document.getElementById('panel-summary').innerHTML = `
-        <div class="drawer-section">
-            <h4>Alert Details</h4>
-            <div style="margin-bottom: var(--space-sm);">
-                <strong>${escapeHtml(alert.name)}</strong>
-            </div>
-            <div style="display: flex; gap: var(--space-xs); margin-bottom: var(--space-sm);">
-                <span class="badge ${alert.severity}">${alert.severity}</span>
-                <span class="badge">${alert.confidence}</span>
-            </div>
-        </div>
-        
-        <div class="drawer-section">
-            <h4>Entity</h4>
-            <div style="display: flex; gap: var(--space-xs); align-items: center;">
-                <code>${escapeHtml(alert.entity.user)}</code>
-                <button class="copy-btn" onclick="copyText('${escapeHtml(alert.entity.user)}')">Copy</button>
-            </div>
-        </div>
-        
-        <div class="drawer-section">
-            <h4>Hypothesis</h4>
-            <p style="color: var(--text-secondary); font-size: 0.875rem;">
-                ${escapeHtml(alert.hypothesis)}
-            </p>
-        </div>
-    `;
-    
-    // Evidence panel
-    document.getElementById('panel-evidence').innerHTML = `
-        <div class="drawer-section">
-            <h4>Evidence Event IDs (${alert.evidence.length})</h4>
-            <div class="evidence-list">
-                ${alert.evidence.slice(0, 20).map(id => 
-                    `<div class="evidence-item">${id}</div>`
-                ).join('')}
-                ${alert.evidence.length > 20 ? `<div class="evidence-item">+ ${alert.evidence.length - 20} more</div>` : ''}
-            </div>
-            <button class="copy-btn" style="margin-top: var(--space-sm);" 
-                    onclick="copyText('${alert.evidence.join('\\n')}')">
-                Copy All IDs
-            </button>
-        </div>
-    `;
-    
-    // MITRE panel
-    document.getElementById('panel-mitre').innerHTML = `
-        <div class="drawer-section">
-            <h4>Techniques Used</h4>
-            ${alert.mitre.map(t => `
-                <div class="risk-factor">
-                    <div class="mitre-id">${t.id}</div>
-                    <div class="mitre-name">${escapeHtml(t.name)}</div>
-                    <div class="mitre-tactic">${escapeHtml(t.tactic)}</div>
-                </div>
-            `).join('')}
-        </div>
-    `;
-    
-    // Response panel
-    document.getElementById('panel-response').innerHTML = `
-        <div class="drawer-section">
-            <h4>Recommended Actions</h4>
-            <ul class="action-list">
-                ${alert.recommended_actions.map(action => 
-                    `<li class="action-item">${escapeHtml(action)}</li>`
-                ).join('')}
-            </ul>
-            <button class="copy-btn" style="margin-top: var(--space-sm);" 
-                    onclick="copyText('${alert.recommended_actions.join('\\n')}')">
-                Copy All Actions
-            </button>
-        </div>
-        
-        <div class="drawer-section">
-            <button class="playbook-btn" onclick="simulatePlaybook()">
-                Simulate Playbook Run
-            </button>
-        </div>
-    `;
-    
-    // Load war room
-    renderWarRoom();
+    renderCaseTab('summary', caseData);
+    renderWarRoom(caseId);
     
     // Open drawer
     document.getElementById('drawer-overlay').classList.add('active');
     document.getElementById('case-drawer').classList.add('active');
 }
 
-function closeCaseDrawer() {
-    document.getElementById('drawer-overlay').classList.remove('active');
-    document.getElementById('case-drawer').classList.remove('active');
-    state.selectedAlert = null;
-}
-
-// ===== Case State Management =====
-function getCaseState(alertId) {
-    const key = `case_${alertId}`;
-    const data = localStorage.getItem(key);
-    return data ? JSON.parse(data) : {};
-}
-
-function updateCaseState(alertId, updates) {
-    const key = `case_${alertId}`;
-    const current = getCaseState(alertId);
-    localStorage.setItem(key, JSON.stringify({ ...current, ...updates, updated: Date.now() }));
-}
-
-function generateCaseId(alertId) {
-    const hash = alertId.split('-')[0].toUpperCase();
-    const year = new Date().getFullYear();
-    return `CASE-${year}-${hash}`;
-}
-
-// ===== War Room =====
-function renderWarRoom() {
-    if (!state.selectedAlert) return;
+function renderCaseTab(tabName, caseData) {
+    const content = document.getElementById('drawer-content');
     
-    const activities = getActivities(state.selectedAlert.alert_id);
+    switch(tabName) {
+        case 'summary':
+            content.innerHTML = `
+                <div class="drawer-section">
+                    <h4>Title</h4>
+                    <p>${escapeHtml(caseData.title)}</p>
+                </div>
+                <div class="drawer-section">
+                    <h4>Narrative</h4>
+                    <p style="line-height: 1.6;">${escapeHtml(caseData.narrative)}</p>
+                </div>
+                <div class="drawer-section">
+                    <h4>Affected Assets</h4>
+                    ${caseData.impacted_assets.map(asset => `<span class="chip">${asset}</span>`).join(' ')}
+                </div>
+                <div class="drawer-section">
+                    <h4>Timeline</h4>
+                    <div style="font-size: var(--text-sm); color: var(--text-secondary);">
+                        <div>Created: ${formatDateTime(caseData.created_at)}</div>
+                        <div>Updated: ${formatDateTime(caseData.updated_at)}</div>
+                    </div>
+                </div>
+            `;
+            break;
+        case 'alerts':
+            const caseAlerts = state.alerts.filter(a => caseData.affected_users.includes(a.entity.user));
+            content.innerHTML = `
+                <div class="drawer-section">
+                    <h4>Associated Alerts (${caseAlerts.length})</h4>
+                    ${caseAlerts.map(alert => `
+                        <div style="padding: var(--space-3); background: var(--bg-tertiary); border-radius: var(--radius-md); margin-bottom: var(--space-2);">
+                            <div style="font-weight: 600; margin-bottom: var(--space-2);">${escapeHtml(alert.name)}</div>
+                            <span class="badge ${alert.severity}">${alert.severity}</span>
+                            <span class="badge">${alert.confidence}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            break;
+        case 'entities':
+            content.innerHTML = `
+                <div class="drawer-section">
+                    <h4>Affected Users</h4>
+                    ${caseData.affected_users.map(user => `
+                        <div class="chip" style="cursor: pointer;" onclick="pivotToEntity('${user}')">${user}</div>
+                    `).join(' ')}
+                </div>
+            `;
+            break;
+        case 'mitre':
+            content.innerHTML = `
+                <div class="drawer-section">
+                    <h4>MITRE Techniques</h4>
+                    ${caseData.mitre_techniques.map(tech => {
+                        const details = state.mitre?.techniques.find(t => t.id === tech);
+                        return `
+                            <div style="padding: var(--space-3); background: var(--bg-tertiary); border-radius: var(--radius-md); margin-bottom: var(--space-2);">
+                                <div style="font-family: var(--font-mono); color: var(--brand-primary); font-weight: 600;">${tech}</div>
+                                ${details ? `<div style="font-size: var(--text-sm); color: var(--text-secondary);">${details.name}</div>` : ''}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            break;
+    }
+}
+
+function renderWarRoom(caseId) {
+    const activities = getActivities(caseId);
+    const feed = document.getElementById('activity-feed');
     
-    document.getElementById('activity-feed').innerHTML = activities.length > 0
+    feed.innerHTML = activities.length > 0
         ? activities.map(act => `
             <div class="activity-item">
-                <div class="activity-time">${new Date(act.time).toLocaleTimeString()}</div>
+                <div class="activity-time">${formatDateTime(act.timestamp)}</div>
                 <div>${escapeHtml(act.message)}</div>
             </div>
         `).join('')
-        : '<div class="empty-state" style="padding: var(--space-md);">No activity yet</div>';
+        : '<div class="empty-state" style="padding: var(--space-4);">No activity yet</div>';
 }
 
-function getActivities(alertId) {
-    const key = `activities_${alertId}`;
-    const data = localStorage.getItem(key);
-    return data ? JSON.parse(data) : [];
-}
-
-function logActivity(message) {
-    if (!state.selectedAlert) return;
+function addNote() {
+    if (!state.selectedCase) return;
     
-    const key = `activities_${state.selectedAlert.alert_id}`;
-    const activities = getActivities(state.selectedAlert.alert_id);
+    const textarea = document.getElementById('note-textarea');
+    const note = textarea.value.trim();
+    
+    if (!note) return;
+    
+    logActivity(state.selectedCase.case_id, `Note: ${note}`);
+    textarea.value = '';
+    showToast('Note added', 'success');
+}
+
+function logActivity(caseId, message) {
+    const key = `activities_${caseId}`;
+    const activities = JSON.parse(localStorage.getItem(key) || '[]');
     
     activities.push({
-        time: Date.now(),
+        timestamp: new Date().toISOString(),
         message: message
     });
     
     localStorage.setItem(key, JSON.stringify(activities));
-    renderWarRoom();
+    renderWarRoom(caseId);
 }
 
-function simulatePlaybook() {
-    logActivity('Playbook executed: Account Compromise Response');
-    logActivity('- Sessions revoked');
-    logActivity('- Password reset initiated');
-    logActivity('- Mailbox rules reviewed');
-    showToast('Playbook simulated', 'success');
+function getActivities(caseId) {
+    const key = `activities_${caseId}`;
+    return JSON.parse(localStorage.getItem(key) || '[]');
 }
 
-// ===== Utilities =====
+function closeDrawer() {
+    document.getElementById('drawer-overlay').classList.remove('active');
+    document.getElementById('case-drawer').classList.remove('active');
+    state.selectedCase = null;
+}
+
+// ===== Helper Functions =====
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+function formatDateTime(isoString) {
+    const date = new Date(isoString);
+    return date.toLocaleString();
+}
+
+function formatRelativeTime(isoString) {
+    const date = new Date(isoString);
+    const now = new Date();
+    const diff = now - date;
+    const hours = Math.floor(diff / 1000 / 60 / 60);
+    const days = Math.floor(hours / 24);
+    
+    if (days > 0) return `${days}d ago`;
+    if (hours > 0) return `${hours}h ago`;
+    return 'Just now';
+}
+
+function getRiskSeverity(score) {
+    if (score >= 80) return 'critical';
+    if (score >= 60) return 'high';
+    if (score >= 40) return 'medium';
+    return 'low';
 }
 
 function copyText(text) {
@@ -700,19 +883,48 @@ function showToast(message, type = 'success') {
     
     container.appendChild(toast);
     
-    setTimeout(() => {
-        toast.remove();
-    }, 3000);
+    setTimeout(() => toast.remove(), 3000);
 }
 
 function showEmptyState(message) {
-    document.querySelector('.content-area').innerHTML = 
+    document.getElementById('view-container').innerHTML = 
         `<div class="empty-state"><h2>No Data Available</h2><p>${message}</p></div>`;
 }
 
-// Expose functions to global scope
-window.openCaseDrawer = openCaseDrawer;
-window.closeCaseDrawer = closeCaseDrawer;
+function pivotToEntity(email) {
+    state.currentView = 'entities';
+    switchView('entities');
+    showToast(`Pivoted to ${email}`, 'info');
+}
+
+function exportIOCs() {
+    const csv = 'type,indicator,tags\n' + state.iocs.map(i => 
+        `${i.type},${i.value},${i.tags.join(';')}`
+    ).join('\n');
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'iocs.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    showToast('IOCs exported', 'success');
+}
+
+function openAlertDrawer(alertId, caseId) {
+    openCase(caseId);
+}
+
+function viewEntityProfile(email) {
+    showToast(`Viewing profile for ${email}`, 'info');
+}
+
+// Expose functions globally
+window.openCase = openCase;
+window.closeDrawer = closeDrawer;
 window.copyText = copyText;
-window.simulatePlaybook = simulatePlaybook;
-window.filterByMITRE = filterByMITRE;
+window.pivotToEntity = pivotToEntity;
+window.exportIOCs = exportIOCs;
+window.viewEntityProfile = viewEntityProfile;

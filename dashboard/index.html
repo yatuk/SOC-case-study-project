@@ -1,15 +1,28 @@
 <!DOCTYPE html>
-<!-- dashboard/index.html -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOC Incident Console</title>
+    <title>ACME SOC Console</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Toast Container -->
     <div class="toast-container" id="toast-container"></div>
+
+    <!-- Command Palette (Ctrl+K) -->
+    <div class="command-palette-overlay" id="command-palette-overlay">
+        <div class="command-palette">
+            <div class="command-search">
+                <svg class="command-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input type="text" id="command-input" placeholder="Type a command or search..." autofocus>
+                <kbd>ESC</kbd>
+            </div>
+            <div class="command-results" id="command-results"></div>
+        </div>
+    </div>
 
     <!-- Main Shell -->
     <div class="shell">
@@ -19,15 +32,23 @@
                 <svg class="logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                 </svg>
-                <span class="logo-text">SOC Console</span>
+                <span class="logo-text">ACME SOC</span>
             </div>
             <nav class="nav">
-                <a href="#" class="nav-item active" data-view="overview">
+                <a href="#" class="nav-item" data-view="overview">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
                         <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
                     </svg>
                     <span>Overview</span>
+                </a>
+                <a href="#" class="nav-item active" data-view="cases">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                    <span>Cases</span>
+                    <span class="nav-badge" id="active-cases-badge">0</span>
                 </a>
                 <a href="#" class="nav-item" data-view="alerts">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -38,31 +59,41 @@
                 </a>
                 <a href="#" class="nav-item" data-view="entities">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                        <circle cx="12" cy="7" r="4"/>
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                     </svg>
                     <span>Entities</span>
                 </a>
-                <a href="#" class="nav-item" data-view="timeline">
+                <a href="#" class="nav-item" data-view="intelligence">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/>
-                        <polyline points="12 6 12 12 16 14"/>
+                        <circle cx="12" cy="12" r="6"/>
+                        <circle cx="12" cy="12" r="2"/>
+                    </svg>
+                    <span>Intelligence</span>
+                </a>
+                <a href="#" class="nav-item" data-view="timeline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="2" x2="12" y2="22"/>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                     </svg>
                     <span>Timeline</span>
                 </a>
                 <a href="#" class="nav-item" data-view="mitre">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                        <line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>
+                        <line x1="3" y1="9" x2="21" y2="9"/>
+                        <line x1="9" y1="21" x2="9" y2="9"/>
                     </svg>
-                    <span>MITRE</span>
+                    <span>MITRE ATT&CK</span>
                 </a>
-                <a href="#" class="nav-item" data-view="reports">
+                <a href="#" class="nav-item" data-view="automations">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                        <polyline points="17 2 12 7 7 2"/>
                     </svg>
-                    <span>Reports</span>
+                    <span>Automations</span>
                 </a>
             </nav>
         </aside>
@@ -71,11 +102,14 @@
         <main class="main">
             <!-- Command Bar -->
             <header class="command-bar">
-                <div class="search-box">
+                <div class="search-box" id="global-search-box">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                     </svg>
-                    <input type="text" placeholder="Search alerts, entities..." id="global-search">
+                    <input type="text" placeholder="Search or press Ctrl+K..." id="global-search" readonly>
+                    <div class="search-hint">
+                        <kbd>Ctrl</kbd> + <kbd>K</kbd>
+                    </div>
                 </div>
                 <div class="command-actions">
                     <button class="cmd-btn" id="refresh-btn" title="Refresh data">
@@ -100,146 +134,18 @@
 
             <!-- Content Area -->
             <div class="content-area">
-                <!-- Overview View -->
-                <div class="view active" id="view-overview">
-                    <h1 class="view-title">Incident Overview</h1>
-                    
-                    <div class="kpi-row">
-                        <div class="kpi-card">
-                            <div class="kpi-label">Total Events</div>
-                            <div class="kpi-value" id="kpi-events">
-                                <div class="skeleton">--</div>
-                            </div>
-                        </div>
-                        <div class="kpi-card">
-                            <div class="kpi-label">Total Alerts</div>
-                            <div class="kpi-value" id="kpi-alerts">
-                                <div class="skeleton">--</div>
-                            </div>
-                        </div>
-                        <div class="kpi-card">
-                            <div class="kpi-label">High Severity</div>
-                            <div class="kpi-value critical" id="kpi-high">
-                                <div class="skeleton">--</div>
-                            </div>
-                        </div>
-                        <div class="kpi-card">
-                            <div class="kpi-label">Unique Users</div>
-                            <div class="kpi-value" id="kpi-users">
-                                <div class="skeleton">--</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section-card">
-                        <h2>Incident Narrative</h2>
-                        <div class="narrative-flow">
-                            <div class="narrative-step">
-                                <div class="step-num">1</div>
-                                <div class="step-content">
-                                    <strong>Phishing Email</strong>
-                                    <p>Credential harvesting link delivered to user</p>
-                                </div>
-                            </div>
-                            <div class="narrative-arrow">→</div>
-                            <div class="narrative-step">
-                                <div class="step-num">2</div>
-                                <div class="step-content">
-                                    <strong>Credential Theft</strong>
-                                    <p>User submitted credentials to fake login page</p>
-                                </div>
-                            </div>
-                            <div class="narrative-arrow">→</div>
-                            <div class="narrative-step">
-                                <div class="step-num">3</div>
-                                <div class="step-content">
-                                    <strong>Impossible Travel</strong>
-                                    <p>Attacker accessed account from distant location</p>
-                                </div>
-                            </div>
-                            <div class="narrative-arrow">→</div>
-                            <div class="narrative-step">
-                                <div class="step-num">4</div>
-                                <div class="step-content">
-                                    <strong>Persistence</strong>
-                                    <p>Mailbox forwarding rule created for exfiltration</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="metrics-row">
-                        <div class="section-card">
-                            <h3>Alerts by Severity</h3>
-                            <div class="distribution-bars" id="severity-bars"></div>
-                        </div>
-                        <div class="section-card">
-                            <h3>Top Users by Alerts</h3>
-                            <div class="distribution-bars" id="user-bars"></div>
-                        </div>
+                <!-- Loading State -->
+                <div class="loading-state" id="loading-state">
+                    <div class="skeleton-grid">
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
                     </div>
                 </div>
 
-                <!-- Alerts View -->
-                <div class="view" id="view-alerts">
-                    <div class="view-header">
-                        <h1 class="view-title">Security Alerts</h1>
-                        <div class="filters">
-                            <select id="severity-filter" class="filter-select">
-                                <option value="all">All Severities</option>
-                                <option value="critical">Critical</option>
-                                <option value="high">High</option>
-                                <option value="medium">Medium</option>
-                                <option value="low">Low</option>
-                            </select>
-                            <select id="confidence-filter" class="filter-select">
-                                <option value="all">All Confidence</option>
-                                <option value="high">High</option>
-                                <option value="medium">Medium</option>
-                                <option value="low">Low</option>
-                            </select>
-                            <input type="text" id="alert-search" class="filter-input" placeholder="Search...">
-                            <label class="toggle-label">
-                                <input type="checkbox" id="only-open">
-                                <span>Only Open</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="alerts-list" id="alerts-list"></div>
-                </div>
-
-                <!-- Entities View -->
-                <div class="view" id="view-entities">
-                    <div class="view-header">
-                        <h1 class="view-title">Entity Risk Analysis</h1>
-                        <select id="entity-selector" class="filter-select"></select>
-                    </div>
-                    <div id="entity-content"></div>
-                </div>
-
-                <!-- Timeline View -->
-                <div class="view" id="view-timeline">
-                    <h1 class="view-title">Attack Timeline</h1>
-                    <div class="timeline-stepper" id="timeline-stepper"></div>
-                </div>
-
-                <!-- MITRE View -->
-                <div class="view" id="view-mitre">
-                    <h1 class="view-title">MITRE ATT&CK Coverage</h1>
-                    <div class="mitre-grid" id="mitre-grid"></div>
-                </div>
-
-                <!-- Reports View -->
-                <div class="view" id="view-reports">
-                    <div class="view-header">
-                        <h1 class="view-title">Incident Reports</h1>
-                        <div class="tabs">
-                            <button class="tab active" data-report="executive">Executive</button>
-                            <button class="tab" data-report="technical">Technical</button>
-                        </div>
-                    </div>
-                    <div class="report-viewer" id="report-content"></div>
-                </div>
+                <!-- All views will be inserted here dynamically -->
+                <div id="view-container"></div>
             </div>
         </main>
     </div>
@@ -249,43 +155,20 @@
     <aside class="drawer" id="case-drawer">
         <div class="drawer-header">
             <div class="drawer-title">
-                <h2 id="case-id">CASE-0000-0000</h2>
-                <div class="drawer-meta">
-                    <select id="case-status" class="case-status-select">
-                        <option value="new">New</option>
-                        <option value="investigating">Investigating</option>
-                        <option value="contained">Contained</option>
-                        <option value="closed">Closed</option>
-                    </select>
-                    <div class="sla-chip" id="sla-chip">SLA: 00:00</div>
-                    <select id="case-assign" class="assign-select">
-                        <option value="unassigned">Unassigned</option>
-                        <option value="me">Me</option>
-                    </select>
-                </div>
+                <h2 id="drawer-case-id">CASE-0000-0000</h2>
+                <div class="drawer-meta" id="drawer-meta"></div>
             </div>
             <button class="drawer-close" id="drawer-close">&times;</button>
         </div>
 
-        <div class="drawer-tabs">
-            <button class="drawer-tab active" data-tab="summary">Summary</button>
-            <button class="drawer-tab" data-tab="evidence">Evidence</button>
-            <button class="drawer-tab" data-tab="mitre">MITRE</button>
-            <button class="drawer-tab" data-tab="response">Response</button>
-        </div>
-
-        <div class="drawer-content">
-            <div class="drawer-panel active" id="panel-summary"></div>
-            <div class="drawer-panel" id="panel-evidence"></div>
-            <div class="drawer-panel" id="panel-mitre"></div>
-            <div class="drawer-panel" id="panel-response"></div>
-        </div>
+        <div class="drawer-tabs" id="drawer-tabs"></div>
+        <div class="drawer-content" id="drawer-content"></div>
 
         <div class="war-room">
             <h3>War Room</h3>
             <div class="activity-feed" id="activity-feed"></div>
             <div class="note-input">
-                <textarea placeholder="Add note..." id="note-textarea"></textarea>
+                <textarea placeholder="Add investigation note..." id="note-textarea"></textarea>
                 <button id="add-note-btn">Add Note</button>
             </div>
         </div>
