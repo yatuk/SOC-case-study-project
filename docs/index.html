@@ -13,11 +13,7 @@
 <body class="density-comfortable">
     <!-- Auth Guard - Redirect if not authenticated -->
     <script src="auth.js"></script>
-    <script>
-        if (!Auth.getSession()) {
-            window.location.href = './login.html?next=' + encodeURIComponent(window.location.pathname);
-        }
-    </script>
+    <script src="auth-guard.js"></script>
 
     <!-- Simulation Notice -->
     <div class="simulation-badge">
