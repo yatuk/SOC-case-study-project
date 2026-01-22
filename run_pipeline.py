@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 SOC Case Study - Master Pipeline Orchestrator
-Generates comprehensive synthetic SIEM/SOAR/EDR data and exports to dashboard.
+Generates comprehensive synthetic SIEM/SOAR/EDR data with Turkish company simulation.
 
 Usage: python run_pipeline.py
 """
@@ -17,20 +17,22 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 def print_banner():
     banner = """
 ================================================================
-    SOC CASE STUDY - SECURITY PLATFORM DEMO
-    SIEM + SOAR + EDR Synthetic Data Generator
+    SOC VAKA CALISMASI - GUVENLIK PLATFORMU DEMO
+    SIEM + SOAR + EDR Sentetik Veri Ureteci
+    
+    Sirket: Anadolu Finans Holding (KURGUSAL)
 ================================================================
 """
     print(banner)
 
 
 def export_to_dashboard():
-    """Export outputs to dashboard/dashboard_data/ for GitHub Pages."""
+    """Export outputs to docs/dashboard_data/ for GitHub Pages."""
     source_dir = Path("outputs")
-    dest_dir = Path("dashboard") / "dashboard_data"
+    dest_dir = Path("docs") / "dashboard_data"
     
     if not source_dir.exists():
-        print("[ERROR] outputs/ directory not found")
+        print("[HATA] outputs/ klasoru bulunamadi")
         return False
     
     dest_dir.mkdir(parents=True, exist_ok=True)
@@ -42,160 +44,163 @@ def export_to_dashboard():
             shutil.copy2(file, dest_file)
             count += 1
     
-    print(f"[EXPORT] Copied {count} files to {dest_dir}")
+    print(f"[EXPORT] {count} dosya {dest_dir} klasorune kopyalandi")
     return True
 
 
 def generate_reports():
-    """Generate markdown reports."""
+    """Generate markdown reports in Turkish."""
     from datetime import datetime
     
     output_dir = Path("outputs")
     
     # Executive Report
-    exec_report = f"""# Security Incident Executive Summary
+    exec_report = f"""# Guvenlik Olayi Yonetici Ozeti
 
-**Generated:** {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+**Olusturulma:** {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
-## Overview
+## Genel Bakis
 
-This report summarizes security incidents detected across ACME Corp's infrastructure over the past 14 days.
+Bu rapor, Anadolu Finans Holding altyapisinda son 14 gun icinde tespit edilen guvenlik olaylarini ozetlemektedir.
 
-## Key Findings
+**ONEMLI: Bu tamamen KURGUSAL bir veri setidir. Gercek sirketlerle iliskisi yoktur.**
 
-- **8 Active Security Incidents** requiring investigation
-- **Multiple Attack Vectors** including phishing, credential theft, and malware
-- **High-Risk Entities** identified across Finance, IT, and Executive departments
+## Temel Bulgular
 
-## Incident Categories
+- **9 Aktif Guvenlik Olayi** inceleme gerektirmektedir
+- **Coklu Saldiri Vektorleri**: Oltalama, kimlik bilgisi hirsizligi, zararli yazilim
+- **Yuksek Riskli Varliklar**: Finans, BT ve Yonetim departmanlarinda tanimlanmistir
 
-1. **Phishing Attacks (3 cases)** - Credential harvesting, OAuth consent abuse
-2. **Account Compromise (2 cases)** - MFA fatigue, password spray
-3. **Malware/C2 Activity (1 case)** - Macro-based malware with C2 beacon
-4. **Data Exfiltration (2 cases)** - BEC wire fraud, cloud storage abuse
+## Olay Kategorileri
 
-## Recommended Actions
+1. **Oltalama Saldirilari (3 vaka)** - Kimlik bilgisi toplama, OAuth izin kotu kullanimi
+2. **Hesap Ele Gecirme (2 vaka)** - MFA yorgunlugu, parola puskürtme
+3. **Zararli Yazilim/C2 Aktivitesi (1 vaka)** - Makro tabanli zararli yazilim ve C2 beacon
+4. **Veri Sizdirma (2 vaka)** - BEC havale dolandiriciligi, bulut depolama kotu kullanimi
+5. **Yanlis Pozitif (1 vaka)** - VPN kaynakli imkansiz seyahat
 
-1. Enforce phishing-resistant MFA across all accounts
-2. Implement conditional access policies
-3. Deploy endpoint detection and response
-4. Conduct security awareness training
+## Onerilen Aksiyonlar
 
-## Timeline
+1. Tum hesaplarda oltalamaya direncli MFA uygula
+2. Kosullu erisim politikalari devreye al
+3. Uc nokta algilama ve yanit cozumu dagit
+4. Guvenlik farkindalik egitimi duzenle
 
-All incidents occurred within a 14-day observation window, with the most critical being the malware infection with active C2 communication.
+## Zaman Cizelgesi
+
+Tum olaylar 14 gunluk gozlem penceresinde gerceklesti. En kritik olay, aktif C2 iletisimi olan zararli yazilim enfeksiyonudur.
 
 ---
-*This is a synthetic dataset for demonstration purposes.*
+*Bu bir egitim/simulasyon amacli sentetik veri setidir.*
 """
     
-    with open(output_dir / "report_executive.md", "w") as f:
+    with open(output_dir / "report_executive.md", "w", encoding="utf-8") as f:
         f.write(exec_report)
     
     # Technical Report
-    tech_report = f"""# Technical Incident Analysis Report
+    tech_report = f"""# Teknik Olay Analiz Raporu
 
-**Generated:** {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+**Olusturulma:** {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
-## Detection Overview
+## Algilama Genel Bakisi
 
-### Data Sources Analyzed
-- Email Gateway Logs
-- Identity Provider (IdP) Logs
-- M365 Audit Logs
-- Proxy/DNS Logs
-- EDR Telemetry
+### Analiz Edilen Veri Kaynaklari
+- E-posta Gecidi Kayitlari
+- Kimlik Saglayici (IdP) Kayitlari
+- M365 Denetim Kayitlari
+- Proxy/DNS Kayitlari
+- EDR Telemetrisi
 
-### Event Statistics
-- Total Events: 400+
-- Security Alerts: 20+
-- Active Cases: 8
-- Affected Users: 8
-- Affected Devices: 10+
+### Olay Istatistikleri
+- Toplam Olay: 500+
+- Guvenlik Uyarilari: 20+
+- Aktif Vakalar: 9
+- Etkilenen Kullanicilar: 10+
+- Etkilenen Cihazlar: 15+
 
-## MITRE ATT&CK Coverage
+## MITRE ATT&CK Kapsami
 
-### Techniques Detected
-- T1566.001 - Phishing: Spearphishing Attachment
-- T1566.002 - Phishing: Spearphishing Link
-- T1078 - Valid Accounts
-- T1528 - Steal Application Access Token
-- T1098 - Account Manipulation
-- T1114.002 - Remote Email Collection
+### Tespit Edilen Teknikler
+- T1566.001 - Oltalama: Hedefli Ek Dosya
+- T1566.002 - Oltalama: Hedefli Baglanti
+- T1078 - Gecerli Hesaplar
+- T1528 - Uygulama Erisim Jetonu Calma
+- T1098 - Hesap Manipulasyonu
+- T1114.002 - Uzak E-posta Erisimi
 - T1059.001 - PowerShell
-- T1547.001 - Registry Run Keys
-- T1071.001 - Web Protocols (C2)
-- T1567.002 - Exfil Over Cloud Storage
+- T1547.001 - Kayit Defteri Run Anahtarlari
+- T1071.001 - Web Protokolleri (C2)
+- T1567.002 - Bulut Depolama Uzerinden Sizdirma
 
-## Indicators of Compromise
+## Uzlasma Gostergeleri (IOC)
 
-### Malicious Domains
-- secure-login-verify.tk (phishing)
-- cdn-update.cf (C2)
-- invoice-payment.cf (BEC)
+### Zararli Alan Adlari
+- anadolu-giris-dogrula.example.tk (oltalama)
+- cdn-guncelleme.example.cf (C2)
+- fatura-odeme-sistemi.example.cf (BEC)
 
-### Suspicious IPs
-- 185.220.101.45 (Romania)
-- 192.42.116.180 (Russia)
-- 45.142.213.91 (China)
+### Suphe Edilen IP'ler
+- 198.51.100.45 (Romanya)
+- 203.0.113.180 (Rusya)
+- 198.51.100.91 (Cin)
 
-## Investigation Recommendations
+## Inceleme Onerileri
 
-1. **Endpoint Forensics** - Full memory and disk analysis on infected devices
-2. **Network Analysis** - Review all C2 beacon traffic patterns
-3. **Email Audit** - Trace all emails from compromised accounts
-4. **Access Review** - Audit all admin role assignments
+1. **Uc Nokta Adli Bilisimi** - Enfekte cihazlarda tam bellek ve disk analizi
+2. **Ag Analizi** - Tum C2 beacon trafik kaliplarini incele
+3. **E-posta Denetimi** - Ele gecirilen hesaplardan gelen tum e-postalari izle
+4. **Erisim Incelemesi** - Tum admin rol atamalarini denetle
 
 ---
-*This is a synthetic dataset for demonstration purposes.*
+*Bu bir egitim/simulasyon amacli sentetik veri setidir.*
 """
     
-    with open(output_dir / "report_technical.md", "w") as f:
+    with open(output_dir / "report_technical.md", "w", encoding="utf-8") as f:
         f.write(tech_report)
     
-    print("[REPORT] Generated executive and technical reports")
+    print("[RAPOR] Yonetici ve teknik raporlar olusturuldu")
 
 
 def main():
     print_banner()
     
-    print("\n[START] Running SOC data generation pipeline...\n")
+    print("\n[BASLANGIC] SOC veri uretim hatti calistiriliyor...\n")
     
     try:
         # Generate synthetic data
         print("=" * 60)
-        print("STEP 1: SYNTHETIC DATA GENERATION")
+        print("ADIM 1: SENTETIK VERI URETIMI")
         print("=" * 60)
         
-        from synthetic_data_generator import EventGenerator, save_outputs
+        from turkish_soc_generator import TurkishSOCGenerator, save_outputs
         
-        gen = EventGenerator()
+        gen = TurkishSOCGenerator()
         data = gen.generate_all()
         save_outputs(data)
         
         # Generate reports
         print("\n" + "=" * 60)
-        print("STEP 2: REPORT GENERATION")
+        print("ADIM 2: RAPOR URETIMI")
         print("=" * 60)
         
         generate_reports()
         
-        # Export to dashboard
+        # Export to dashboard (docs/ for GitHub Pages)
         print("\n" + "=" * 60)
-        print("STEP 3: DASHBOARD EXPORT")
+        print("ADIM 3: DASHBOARD EXPORT")
         print("=" * 60)
         
         if export_to_dashboard():
-            print("\n[SUCCESS] Pipeline complete!")
-            print("\n[NEXT STEPS]")
-            print("  1. cd dashboard && python -m http.server 8000")
-            print("  2. Open http://localhost:8000")
-            print("  3. Or commit and push for GitHub Pages deployment")
+            print("\n[BASARI] Pipeline tamamlandi!")
+            print("\n[SONRAKI ADIMLAR]")
+            print("  1. cd docs && python -m http.server 8000")
+            print("  2. http://localhost:8000 adresini acin")
+            print("  3. Veya GitHub Pages dagitimi icin commit ve push yapin")
         
         return 0
         
     except Exception as e:
-        print(f"\n[ERROR] Pipeline failed: {e}")
+        print(f"\n[HATA] Pipeline basarisiz: {e}")
         import traceback
         traceback.print_exc()
         return 1

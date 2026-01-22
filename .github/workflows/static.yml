@@ -1,5 +1,5 @@
-# SOC Dashboard deployment to GitHub Pages
-name: Deploy SOC Dashboard
+# Deploy SOC Console to GitHub Pages
+name: Deploy SOC Console
 
 on:
   push:
@@ -39,7 +39,7 @@ jobs:
       - name: Upload Dashboard
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dashboard'
+          path: './docs'
       
       - name: Deploy to GitHub Pages
         id: deployment
