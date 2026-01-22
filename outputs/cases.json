@@ -6,8 +6,8 @@
       "severity": "critical",
       "status": "contained",
       "owner": "unassigned",
-      "created_at": "2026-01-09T17:41:59.826046",
-      "updated_at": "2026-01-09T20:41:59.826046",
+      "created_at": "2026-01-09T18:12:06.524515",
+      "updated_at": "2026-01-09T21:12:06.524515",
       "affected_users": [
         "ayse.demir@anadolufinans.example.tr"
       ],
@@ -34,8 +34,8 @@
       "severity": "high",
       "status": "investigating",
       "owner": "analyst-2",
-      "created_at": "2026-01-11T17:41:59.826046",
-      "updated_at": "2026-01-11T21:41:59.826046",
+      "created_at": "2026-01-11T18:12:06.524515",
+      "updated_at": "2026-01-11T22:12:06.524515",
       "affected_users": [
         "mehmet.kaya@anadolufinans.example.tr"
       ],
@@ -60,8 +60,8 @@
       "severity": "critical",
       "status": "investigating",
       "owner": "analyst-2",
-      "created_at": "2026-01-13T17:41:59.826046",
-      "updated_at": "2026-01-13T18:41:59.826046",
+      "created_at": "2026-01-13T18:12:06.524515",
+      "updated_at": "2026-01-13T19:12:06.524515",
       "affected_users": [
         "elif.yilmaz@anadolufinans.example.tr"
       ],
@@ -86,8 +86,8 @@
       "severity": "high",
       "status": "contained",
       "owner": "analyst-1",
-      "created_at": "2026-01-15T17:41:59.826046",
-      "updated_at": "2026-01-15T19:41:59.826046",
+      "created_at": "2026-01-15T18:12:06.524515",
+      "updated_at": "2026-01-15T20:12:06.524515",
       "affected_users": [
         "mustafa.arslan@anadolufinans.example.tr"
       ],
@@ -110,8 +110,8 @@
       "severity": "critical",
       "status": "contained",
       "owner": "analyst-2",
-      "created_at": "2026-01-16T17:41:59.826046",
-      "updated_at": "2026-01-16T22:41:59.826046",
+      "created_at": "2026-01-16T18:12:06.524515",
+      "updated_at": "2026-01-16T23:12:06.524515",
       "affected_users": [
         "fatma.sahin@anadolufinans.example.tr"
       ],
@@ -134,8 +134,8 @@
       "severity": "critical",
       "status": "investigating",
       "owner": "unassigned",
-      "created_at": "2026-01-17T17:41:59.826046",
-      "updated_at": "2026-01-17T20:41:59.826046",
+      "created_at": "2026-01-17T18:12:06.524515",
+      "updated_at": "2026-01-17T21:12:06.524515",
       "affected_users": [
         "zeynep.celik@anadolufinans.example.tr"
       ],
@@ -162,8 +162,8 @@
       "severity": "high",
       "status": "investigating",
       "owner": "analyst-1",
-      "created_at": "2026-01-18T17:41:59.826046",
-      "updated_at": "2026-01-18T18:41:59.826046",
+      "created_at": "2026-01-18T18:12:06.524515",
+      "updated_at": "2026-01-18T19:12:06.524515",
       "affected_users": [
         "ahmet.yildiz@anadolufinans.example.tr"
       ],
@@ -187,8 +187,8 @@
       "severity": "high",
       "status": "investigating",
       "owner": "analyst-2",
-      "created_at": "2026-01-19T17:41:59.826046",
-      "updated_at": "2026-01-19T19:41:59.826046",
+      "created_at": "2026-01-19T18:12:06.524515",
+      "updated_at": "2026-01-19T20:12:06.524515",
       "affected_users": [
         "deniz.aydin@anadolufinans.example.tr"
       ],
@@ -211,8 +211,8 @@
       "severity": "low",
       "status": "closed",
       "owner": "analyst-1",
-      "created_at": "2026-01-20T17:41:59.826046",
-      "updated_at": "2026-01-20T18:11:59.826046",
+      "created_at": "2026-01-20T18:12:06.524515",
+      "updated_at": "2026-01-20T18:42:06.524515",
       "affected_users": [
         "burak.polat@anadolufinans.example.tr"
       ],

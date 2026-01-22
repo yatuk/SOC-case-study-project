@@ -6,15 +6,15 @@
       "os": "Windows 11 Pro",
       "owner": "ayse.demir@anadolufinans.example.tr",
       "location": "İstanbul",
-      "first_seen": "2026-01-08T21:07:59.826046",
-      "last_seen": "2026-01-22T10:54:59.826046",
+      "first_seen": "2026-01-08T21:38:06.524515",
+      "last_seen": "2026-01-22T11:25:06.524515",
       "risk_score": 20,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-11T10:12:59.826046"
+          "timestamp": "2026-01-11T10:43:06.524515"
         }
       ],
       "recent_connections": []
@@ -25,30 +25,30 @@
       "os": "Windows 11 Pro",
       "owner": "mehmet.kaya@anadolufinans.example.tr",
       "location": "İstanbul",
-      "first_seen": "2026-01-09T17:46:59.826046",
-      "last_seen": "2026-01-22T01:10:59.826046",
+      "first_seen": "2026-01-09T18:17:06.524515",
+      "last_seen": "2026-01-22T01:41:06.524515",
       "risk_score": 10,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-14T16:54:59.826046"
+          "timestamp": "2026-01-14T17:25:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-14T18:38:59.826046"
+          "timestamp": "2026-01-14T19:09:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-16T13:08:59.826046"
+          "timestamp": "2026-01-16T13:39:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-17T00:59:59.826046"
+          "timestamp": "2026-01-17T01:30:06.524515"
         }
       ],
       "recent_connections": []
@@ -59,25 +59,25 @@
       "os": "macOS 14 Sonoma",
       "owner": "elif.yilmaz@anadolufinans.example.tr",
       "location": "Ankara",
-      "first_seen": "2026-01-08T18:28:59.826046",
-      "last_seen": "2026-01-22T11:13:59.826046",
+      "first_seen": "2026-01-08T18:59:06.524515",
+      "last_seen": "2026-01-22T11:44:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-18T00:58:59.826046"
+          "timestamp": "2026-01-18T01:29:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-19T02:42:59.826046"
+          "timestamp": "2026-01-19T03:13:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-19T04:06:59.826046"
+          "timestamp": "2026-01-19T04:37:06.524515"
         }
       ],
       "recent_connections": []
@@ -88,15 +88,15 @@
       "os": "Windows 11 Pro",
       "owner": "mustafa.arslan@anadolufinans.example.tr",
       "location": "İstanbul",
-      "first_seen": "2026-01-14T01:02:59.826046",
-      "last_seen": "2026-01-22T05:55:59.826046",
+      "first_seen": "2026-01-14T01:33:06.524515",
+      "last_seen": "2026-01-22T06:26:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-20T15:18:59.826046"
+          "timestamp": "2026-01-20T15:49:06.524515"
         }
       ],
       "recent_connections": []
@@ -107,82 +107,82 @@
       "os": "Windows 11 Pro",
       "owner": "zeynep.celik@anadolufinans.example.tr",
       "location": "İstanbul",
-      "first_seen": "2026-01-09T11:16:59.826046",
-      "last_seen": "2026-01-22T16:08:59.826046",
+      "first_seen": "2026-01-09T11:47:06.524515",
+      "last_seen": "2026-01-22T16:39:06.524515",
       "risk_score": 10,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-09T14:09:59.826046"
+          "timestamp": "2026-01-09T14:40:06.524515"
         },
         {
           "process": "WINWORD.EXE",
           "parent": "",
-          "timestamp": "2026-01-17T17:46:59.826046"
+          "timestamp": "2026-01-17T18:17:06.524515"
         },
         {
           "process": "powershell.exe",
           "parent": "WINWORD.EXE",
-          "timestamp": "2026-01-17T17:47:59.826046"
+          "timestamp": "2026-01-17T18:18:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-19T07:58:59.826046"
+          "timestamp": "2026-01-19T08:29:06.524515"
         }
       ],
       "recent_connections": [
         {
           "domain": "cdn-guncelleme.example.cf",
           "ip": "203.0.113.78",
-          "timestamp": "2026-01-17T17:56:59.826046"
+          "timestamp": "2026-01-17T18:27:06.524515"
         },
         {
           "domain": "cdn-guncelleme.example.cf",
           "ip": "203.0.113.78",
-          "timestamp": "2026-01-17T18:06:59.826046"
+          "timestamp": "2026-01-17T18:37:06.524515"
         },
         {
           "domain": "cdn-guncelleme.example.cf",
           "ip": "203.0.113.78",
-          "timestamp": "2026-01-17T18:16:59.826046"
+          "timestamp": "2026-01-17T18:47:06.524515"
         },
         {
           "domain": "cdn-guncelleme.example.cf",
           "ip": "203.0.113.78",
-          "timestamp": "2026-01-17T18:26:59.826046"
+          "timestamp": "2026-01-17T18:57:06.524515"
         },
         {
           "domain": "cdn-guncelleme.example.cf",
           "ip": "203.0.113.78",
-          "timestamp": "2026-01-17T18:36:59.826046"
+          "timestamp": "2026-01-17T19:07:06.524515"
         },
         {
           "domain": "cdn-guncelleme.example.cf",
           "ip": "203.0.113.78",
-          "timestamp": "2026-01-17T18:46:59.826046"
+          "timestamp": "2026-01-17T19:17:06.524515"
         },
         {
           "domain": "cdn-guncelleme.example.cf",
           "ip": "203.0.113.78",
-          "timestamp": "2026-01-17T18:56:59.826046"
+          "timestamp": "2026-01-17T19:27:06.524515"
         },
         {
           "domain": "cdn-guncelleme.example.cf",
           "ip": "203.0.113.78",
-          "timestamp": "2026-01-17T19:06:59.826046"
+          "timestamp": "2026-01-17T19:37:06.524515"
         },
         {
           "domain": "cdn-guncelleme.example.cf",
           "ip": "203.0.113.78",
-          "timestamp": "2026-01-17T19:16:59.826046"
+          "timestamp": "2026-01-17T19:47:06.524515"
         },
         {
           "domain": "cdn-guncelleme.example.cf",
           "ip": "203.0.113.78",
-          "timestamp": "2026-01-17T19:26:59.826046"
+          "timestamp": "2026-01-17T19:57:06.524515"
         }
       ]
     },
@@ -192,25 +192,25 @@
       "os": "macOS 14 Sonoma",
       "owner": "ali.ozturk@anadolufinans.example.tr",
       "location": "İzmir",
-      "first_seen": "2026-01-09T05:39:59.826046",
-      "last_seen": "2026-01-22T03:18:59.826046",
+      "first_seen": "2026-01-09T06:10:06.524515",
+      "last_seen": "2026-01-22T03:49:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-10T16:45:59.826046"
+          "timestamp": "2026-01-10T17:16:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-11T08:54:59.826046"
+          "timestamp": "2026-01-11T09:25:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-22T03:18:59.826046"
+          "timestamp": "2026-01-22T03:49:06.524515"
         }
       ],
       "recent_connections": []
@@ -221,25 +221,25 @@
       "os": "Windows 11 Pro",
       "owner": "fatma.sahin@anadolufinans.example.tr",
       "location": "İstanbul",
-      "first_seen": "2026-01-08T17:47:59.826046",
-      "last_seen": "2026-01-22T03:53:59.826046",
+      "first_seen": "2026-01-08T18:18:06.524515",
+      "last_seen": "2026-01-22T04:24:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-09T18:42:59.826046"
+          "timestamp": "2026-01-09T19:13:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-16T05:10:59.826046"
+          "timestamp": "2026-01-16T05:41:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-21T21:46:59.826046"
+          "timestamp": "2026-01-21T22:17:06.524515"
         }
       ],
       "recent_connections": []
@@ -250,20 +250,20 @@
       "os": "Windows 11 Pro",
       "owner": "ahmet.yildiz@anadolufinans.example.tr",
       "location": "İstanbul",
-      "first_seen": "2026-01-08T18:30:59.826046",
-      "last_seen": "2026-01-22T00:14:59.826046",
+      "first_seen": "2026-01-08T19:01:06.524515",
+      "last_seen": "2026-01-22T00:45:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-09T21:41:59.826046"
+          "timestamp": "2026-01-09T22:12:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-11T23:16:59.826046"
+          "timestamp": "2026-01-11T23:47:06.524515"
         }
       ],
       "recent_connections": []
@@ -274,25 +274,25 @@
       "os": "macOS 14 Sonoma",
       "owner": "selin.aksoy@anadolufinans.example.tr",
       "location": "Ankara",
-      "first_seen": "2026-01-08T19:22:59.826046",
-      "last_seen": "2026-01-22T15:35:59.826046",
+      "first_seen": "2026-01-08T19:53:06.524515",
+      "last_seen": "2026-01-22T16:06:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-10T22:32:59.826046"
+          "timestamp": "2026-01-10T23:03:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-12T01:51:59.826046"
+          "timestamp": "2026-01-12T02:22:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-21T16:25:59.826046"
+          "timestamp": "2026-01-21T16:56:06.524515"
         }
       ],
       "recent_connections": []
@@ -303,35 +303,35 @@
       "os": "Windows 11 Pro",
       "owner": "emre.korkmaz@anadolufinans.example.tr",
       "location": "İstanbul",
-      "first_seen": "2026-01-10T11:50:59.826046",
-      "last_seen": "2026-01-22T13:27:59.826046",
+      "first_seen": "2026-01-10T12:21:06.524515",
+      "last_seen": "2026-01-22T13:58:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-16T01:54:59.826046"
+          "timestamp": "2026-01-16T02:25:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-16T08:51:59.826046"
+          "timestamp": "2026-01-16T09:22:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-17T00:37:59.826046"
+          "timestamp": "2026-01-17T01:08:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-20T00:42:59.826046"
+          "timestamp": "2026-01-20T01:13:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-20T08:49:59.826046"
+          "timestamp": "2026-01-20T09:20:06.524515"
         }
       ],
       "recent_connections": []
@@ -342,20 +342,20 @@
       "os": "Ubuntu 22.04 LTS",
       "owner": "deniz.aydin@anadolufinans.example.tr",
       "location": "İstanbul",
-      "first_seen": "2026-01-09T07:36:59.826046",
-      "last_seen": "2026-01-22T10:06:59.826046",
+      "first_seen": "2026-01-09T08:07:06.524515",
+      "last_seen": "2026-01-22T10:37:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-10T12:43:59.826046"
+          "timestamp": "2026-01-10T13:14:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-17T13:15:59.826046"
+          "timestamp": "2026-01-17T13:46:06.524515"
         }
       ],
       "recent_connections": []
@@ -366,8 +366,8 @@
       "os": "Windows 11 Pro",
       "owner": "burak.polat@anadolufinans.example.tr",
       "location": "Bursa",
-      "first_seen": "2026-01-08T18:50:59.826046",
-      "last_seen": "2026-01-22T15:50:59.826046",
+      "first_seen": "2026-01-08T19:21:06.524515",
+      "last_seen": "2026-01-22T16:21:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [],
@@ -379,35 +379,35 @@
       "os": "Windows 11 Pro",
       "owner": "ceren.erdogan@anadolufinans.example.tr",
       "location": "İstanbul",
-      "first_seen": "2026-01-08T21:23:59.826046",
-      "last_seen": "2026-01-21T12:45:59.826046",
+      "first_seen": "2026-01-08T21:54:06.524515",
+      "last_seen": "2026-01-21T13:16:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-09T11:37:59.826046"
+          "timestamp": "2026-01-09T12:08:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-10T06:26:59.826046"
+          "timestamp": "2026-01-10T06:57:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-14T03:45:59.826046"
+          "timestamp": "2026-01-14T04:16:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-17T01:09:59.826046"
+          "timestamp": "2026-01-17T01:40:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-17T17:04:59.826046"
+          "timestamp": "2026-01-17T17:35:06.524515"
         }
       ],
       "recent_connections": []
@@ -418,35 +418,35 @@
       "os": "Windows 11 Pro",
       "owner": "oguz.tekin@anadolufinans.example.tr",
       "location": "İstanbul",
-      "first_seen": "2026-01-08T17:46:59.826046",
-      "last_seen": "2026-01-22T16:54:59.826046",
+      "first_seen": "2026-01-08T18:17:06.524515",
+      "last_seen": "2026-01-22T17:25:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-12T17:42:59.826046"
+          "timestamp": "2026-01-12T18:13:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-14T13:11:59.826046"
+          "timestamp": "2026-01-14T13:42:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-14T21:27:59.826046"
+          "timestamp": "2026-01-14T21:58:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-16T02:12:59.826046"
+          "timestamp": "2026-01-16T02:43:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-17T18:12:59.826046"
+          "timestamp": "2026-01-17T18:43:06.524515"
         }
       ],
       "recent_connections": []
@@ -457,20 +457,20 @@
       "os": "Windows 11 Pro",
       "owner": "gulsen.dogan@anadolufinans.example.tr",
       "location": "İstanbul",
-      "first_seen": "2026-01-09T05:04:59.826046",
-      "last_seen": "2026-01-22T15:15:59.826046",
+      "first_seen": "2026-01-09T05:35:06.524515",
+      "last_seen": "2026-01-22T15:46:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-10T21:34:59.826046"
+          "timestamp": "2026-01-10T22:05:06.524515"
         },
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-12T11:00:59.826046"
+          "timestamp": "2026-01-12T11:31:06.524515"
         }
       ],
       "recent_connections": []
@@ -533,15 +533,15 @@
       "os": "iOS 17",
       "owner": "ahmet.yildiz@anadolufinans.example.tr",
       "location": "İstanbul",
-      "first_seen": "2026-01-09T12:01:59.826046",
-      "last_seen": "2026-01-21T13:19:59.826046",
+      "first_seen": "2026-01-09T12:32:06.524515",
+      "last_seen": "2026-01-21T13:50:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [
         {
           "process": "explorer.exe",
           "parent": "",
-          "timestamp": "2026-01-20T21:40:59.826046"
+          "timestamp": "2026-01-20T22:11:06.524515"
         }
       ],
       "recent_connections": []
@@ -552,8 +552,8 @@
       "os": "Android 14",
       "owner": "mustafa.arslan@anadolufinans.example.tr",
       "location": "İstanbul",
-      "first_seen": "2026-01-11T14:08:59.826046",
-      "last_seen": "2026-01-21T06:55:59.826046",
+      "first_seen": "2026-01-11T14:39:06.524515",
+      "last_seen": "2026-01-21T07:26:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [],
@@ -565,8 +565,8 @@
       "os": "Windows 10 Pro",
       "owner": "external-consultant@external.example.tr",
       "location": "İzmir",
-      "first_seen": "2026-01-18T17:41:59.826046",
-      "last_seen": "2026-01-18T17:46:59.826046",
+      "first_seen": "2026-01-18T18:12:06.524515",
+      "last_seen": "2026-01-18T18:17:06.524515",
       "risk_score": 0,
       "open_alerts": 0,
       "recent_processes": [],
