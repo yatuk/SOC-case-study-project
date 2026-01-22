@@ -25,3 +25,10 @@ Thumbs.db
 
 # Outputs (optional - uncomment to exclude)
 # outputs/
+# Node.js / Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+.npm
+*.log
+npm-debug.log*
