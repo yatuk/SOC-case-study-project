@@ -1,0 +1,539 @@
+{
+  "devices": [
+    {
+      "id": "DEV-001",
+      "hostname": "LAPTOP-SCHEN01",
+      "os": "Windows 11",
+      "owner": "sarah.chen@acmecorp.com",
+      "first_seen": "2026-01-09T21:59:54.917762",
+      "last_seen": "2026-01-21T17:55:54.917762",
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-11T06:11:54.917762"
+        }
+      ],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-002",
+      "hostname": "LAPTOP-MROD01",
+      "os": "Windows 11",
+      "owner": "michael.rodriguez@acmecorp.com",
+      "first_seen": "2026-01-08T15:49:54.917762",
+      "last_seen": "2026-01-21T14:51:54.917762",
+      "risk_score": 10,
+      "open_alerts": 0,
+      "recent_processes": [
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-08T16:29:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-12T19:16:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-14T12:53:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-14T14:37:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-16T09:07:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-17T03:40:54.917762"
+        }
+      ],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-003",
+      "hostname": "MACBOOK-PPATEL",
+      "os": "macOS 14",
+      "owner": "priya.patel@acmecorp.com",
+      "first_seen": "2026-01-08T21:42:54.917762",
+      "last_seen": "2026-01-21T04:33:54.917762",
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-004",
+      "hostname": "LAPTOP-JKIM01",
+      "os": "Windows 11",
+      "owner": "james.kim@acmecorp.com",
+      "first_seen": "2026-01-09T21:08:54.917762",
+      "last_seen": "2026-01-21T15:34:54.917762",
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-20T11:17:54.917762"
+        }
+      ],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-005",
+      "hostname": "LAPTOP-EWATSON",
+      "os": "Windows 11",
+      "owner": "emily.watson@acmecorp.com",
+      "first_seen": "2026-01-09T07:15:54.917762",
+      "last_seen": "2026-01-21T09:00:54.917762",
+      "risk_score": 10,
+      "open_alerts": 0,
+      "recent_processes": [
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-10T18:39:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-11T19:42:54.917762"
+        },
+        {
+          "process": "WINWORD.EXE",
+          "parent": "",
+          "timestamp": "2026-01-17T13:45:54.917762"
+        },
+        {
+          "process": "powershell.exe",
+          "parent": "WINWORD.EXE",
+          "timestamp": "2026-01-17T13:46:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-19T22:19:54.917762"
+        }
+      ],
+      "recent_connections": [
+        {
+          "domain": "cdn-update.cf",
+          "ip": "5.188.206.78",
+          "timestamp": "2026-01-17T13:55:54.917762"
+        },
+        {
+          "domain": "cdn-update.cf",
+          "ip": "5.188.206.78",
+          "timestamp": "2026-01-17T14:05:54.917762"
+        },
+        {
+          "domain": "cdn-update.cf",
+          "ip": "5.188.206.78",
+          "timestamp": "2026-01-17T14:15:54.917762"
+        },
+        {
+          "domain": "cdn-update.cf",
+          "ip": "5.188.206.78",
+          "timestamp": "2026-01-17T14:25:54.917762"
+        },
+        {
+          "domain": "cdn-update.cf",
+          "ip": "5.188.206.78",
+          "timestamp": "2026-01-17T14:35:54.917762"
+        },
+        {
+          "domain": "cdn-update.cf",
+          "ip": "5.188.206.78",
+          "timestamp": "2026-01-17T14:45:54.917762"
+        },
+        {
+          "domain": "cdn-update.cf",
+          "ip": "5.188.206.78",
+          "timestamp": "2026-01-17T14:55:54.917762"
+        },
+        {
+          "domain": "cdn-update.cf",
+          "ip": "5.188.206.78",
+          "timestamp": "2026-01-17T15:05:54.917762"
+        },
+        {
+          "domain": "cdn-update.cf",
+          "ip": "5.188.206.78",
+          "timestamp": "2026-01-17T15:15:54.917762"
+        },
+        {
+          "domain": "cdn-update.cf",
+          "ip": "5.188.206.78",
+          "timestamp": "2026-01-17T15:25:54.917762"
+        }
+      ]
+    },
+    {
+      "id": "DEV-006",
+      "hostname": "MACBOOK-DBROWN",
+      "os": "macOS 14",
+      "owner": "david.brown@acmecorp.com",
+      "first_seen": "2026-01-08T23:13:54.917762",
+      "last_seen": "2026-01-22T10:17:54.917762",
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-08T23:13:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-11T04:53:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-14T20:51:54.917762"
+        }
+      ],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-007",
+      "hostname": "LAPTOP-LNGUYEN",
+      "os": "Windows 11",
+      "owner": "lisa.nguyen@acmecorp.com",
+      "first_seen": "2026-01-08T20:13:54.917762",
+      "last_seen": "2026-01-21T02:31:54.917762",
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-09T14:41:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-11T17:45:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-20T12:29:54.917762"
+        }
+      ],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-008",
+      "hostname": "LAPTOP-RTAYLOR",
+      "os": "Windows 11",
+      "owner": "robert.taylor@acmecorp.com",
+      "first_seen": "2026-01-08T16:00:54.917762",
+      "last_seen": "2026-01-21T11:57:54.917762",
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-09T17:40:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-16T03:04:54.917762"
+        }
+      ],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-009",
+      "hostname": "MACBOOK-ACLARK",
+      "os": "macOS 14",
+      "owner": "amanda.clark@acmecorp.com",
+      "first_seen": "2026-01-08T17:30:54.917762",
+      "last_seen": "2026-01-22T11:34:54.917762",
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-10T18:31:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-11T19:15:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-11T21:50:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-21T12:24:54.917762"
+        }
+      ],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-010",
+      "hostname": "LAPTOP-KLEE01",
+      "os": "Windows 11",
+      "owner": "kevin.lee@acmecorp.com",
+      "first_seen": "2026-01-09T06:51:54.917762",
+      "last_seen": "2026-01-22T11:14:54.917762",
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-09T10:08:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-16T04:50:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-16T20:36:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-19T20:41:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-20T04:48:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-21T12:51:54.917762"
+        }
+      ],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-011",
+      "hostname": "WORKSTATION-JWHITE",
+      "os": "Ubuntu 22.04",
+      "owner": "jennifer.white@acmecorp.com",
+      "first_seen": "2026-01-09T01:03:54.917762",
+      "last_seen": "2026-01-22T06:53:54.917762",
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-10T08:42:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-11T02:55:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-14T09:07:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-17T09:14:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-17T14:11:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-19T00:05:54.917762"
+        }
+      ],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-012",
+      "hostname": "LAPTOP-CMART01",
+      "os": "Windows 11",
+      "owner": "chris.martinez@acmecorp.com",
+      "first_seen": "2026-01-08T15:14:54.917762",
+      "last_seen": "2026-01-22T12:07:54.917762",
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-09T20:47:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-11T10:28:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-14T09:10:54.917762"
+        }
+      ],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-013",
+      "hostname": "SERVER-DC01",
+      "os": "Windows Server 2022",
+      "owner": "it-ops@acmecorp.com",
+      "first_seen": null,
+      "last_seen": null,
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-014",
+      "hostname": "SERVER-MAIL01",
+      "os": "Windows Server 2022",
+      "owner": "it-ops@acmecorp.com",
+      "first_seen": null,
+      "last_seen": null,
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-015",
+      "hostname": "SERVER-WEB01",
+      "os": "Ubuntu 22.04",
+      "owner": "it-ops@acmecorp.com",
+      "first_seen": null,
+      "last_seen": null,
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-016",
+      "hostname": "LAPTOP-SCHEN02",
+      "os": "Windows 11",
+      "owner": "sarah.chen@acmecorp.com",
+      "first_seen": "2026-01-09T11:59:54.917762",
+      "last_seen": "2026-01-22T03:16:54.917762",
+      "risk_score": 20,
+      "open_alerts": 0,
+      "recent_processes": [
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-19T16:27:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-21T00:13:54.917762"
+        }
+      ],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-017",
+      "hostname": "MOBILE-JKIM01",
+      "os": "iOS 17",
+      "owner": "james.kim@acmecorp.com",
+      "first_seen": "2026-01-12T19:56:54.917762",
+      "last_seen": "2026-01-21T02:54:54.917762",
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-12T19:56:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-16T13:44:54.917762"
+        }
+      ],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-018",
+      "hostname": "MOBILE-RTAYLOR",
+      "os": "iOS 17",
+      "owner": "robert.taylor@acmecorp.com",
+      "first_seen": "2026-01-08T18:49:54.917762",
+      "last_seen": "2026-01-21T03:34:54.917762",
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-019",
+      "hostname": "LAPTOP-CONTRACTOR01",
+      "os": "Windows 10",
+      "owner": "contractor@external.com",
+      "first_seen": "2026-01-18T13:40:54.917762",
+      "last_seen": "2026-01-18T13:45:54.917762",
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [],
+      "recent_connections": []
+    },
+    {
+      "id": "DEV-020",
+      "hostname": "MACBOOK-PPATEL2",
+      "os": "macOS 14",
+      "owner": "priya.patel@acmecorp.com",
+      "first_seen": "2026-01-10T19:12:54.917762",
+      "last_seen": "2026-01-22T06:57:54.917762",
+      "risk_score": 0,
+      "open_alerts": 0,
+      "recent_processes": [
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-17T20:57:54.917762"
+        },
+        {
+          "process": "explorer.exe",
+          "parent": "",
+          "timestamp": "2026-01-20T11:47:54.917762"
+        }
+      ],
+      "recent_connections": []
+    }
+  ]
+}

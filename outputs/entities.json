@@ -1,158 +1,609 @@
 {
   "users": {
-    "sarah.chen@acmecorp.example.com": {
+    "sarah.chen@acmecorp.com": {
       "type": "user",
-      "first_seen": "2026-01-09T16:30:20Z",
-      "last_seen": "2026-01-15T15:10:09.319475",
-      "event_count": 44,
-      "alert_count": 7,
-      "risk_score": 100,
-      "devices": [],
+      "email": "sarah.chen@acmecorp.com",
+      "name": "Sarah Chen",
+      "dept": "Finance",
+      "title": "Financial Analyst",
+      "first_seen": "2026-01-09T11:59:54.917762",
+      "last_seen": "2026-01-22T03:16:54.917762",
+      "event_count": 50,
+      "devices": [
+        "DEV-001",
+        "DEV-016"
+      ],
       "ips": [
         "185.220.101.45",
+        "1.1.1.1",
+        "10.0.0.1",
         "203.0.113.50",
-        "10.0.0.0"
+        "89.248.174.195",
+        "172.16.0.1",
+        "198.51.100.25",
+        "8.8.8.8",
+        "192.0.2.100"
       ],
-      "sources": [
-        null,
-        "email_gateway",
-        "identity_provider",
-        "cloud_mailbox",
-        "web_proxy"
-      ]
+      "risk_score": 0
     },
-    "john.smith@acmecorp.example.com": {
+    "michael.rodriguez@acmecorp.com": {
       "type": "user",
-      "first_seen": "2026-01-10T07:15:25Z",
-      "last_seen": "2026-01-10T11:05:40+00:00",
-      "event_count": 4,
-      "alert_count": 0,
-      "risk_score": 0,
-      "devices": [],
-      "ips": [],
-      "sources": [
-        null
-      ]
-    },
-    "marketing@partner.example.com": {
-      "type": "user",
-      "first_seen": "2026-01-10T07:45:33Z",
-      "last_seen": "2026-01-10T07:45:33Z",
-      "event_count": 1,
-      "alert_count": 0,
-      "risk_score": 0,
-      "devices": [],
-      "ips": [],
-      "sources": [
-        null
-      ]
-    },
-    "mike.jones@acmecorp.example.com": {
-      "type": "user",
-      "first_seen": "2026-01-10T09:00:18Z",
-      "last_seen": "2026-01-10T09:10:15+00:00",
-      "event_count": 3,
-      "alert_count": 0,
-      "risk_score": 0,
-      "devices": [],
-      "ips": [],
-      "sources": [
-        null
-      ]
-    },
-    "alerts@security-team.acmecorp.example.com": {
-      "type": "user",
-      "first_seen": "2026-01-10T10:05:44Z",
-      "last_seen": "2026-01-10T10:05:44Z",
-      "event_count": 1,
-      "alert_count": 0,
-      "risk_score": 0,
-      "devices": [],
-      "ips": [],
-      "sources": [
-        null
-      ]
-    },
-    "michael.rodriguez@acmecorp.example.com": {
-      "type": "user",
-      "first_seen": "2026-01-17T13:10:09.319475",
-      "last_seen": "2026-01-17T14:38:09.319475",
-      "event_count": 18,
-      "alert_count": 0,
-      "risk_score": 0,
-      "devices": [],
+      "email": "michael.rodriguez@acmecorp.com",
+      "name": "Michael Rodriguez",
+      "dept": "IT",
+      "title": "System Admin",
+      "first_seen": "2026-01-08T15:49:54.917762",
+      "last_seen": "2026-01-21T14:51:54.917762",
+      "event_count": 51,
+      "devices": [
+        "DEV-002"
+      ],
       "ips": [
+        "1.1.1.1",
         "192.42.116.180",
-        "10.0.0.0"
+        "10.0.0.1",
+        "203.0.113.50",
+        "89.248.174.195",
+        "172.16.0.1",
+        "198.51.100.25",
+        "8.8.8.8",
+        "192.0.2.100"
       ],
-      "sources": [
-        "cloud_mailbox",
-        "identity_provider",
-        "email_gateway"
-      ]
+      "risk_score": 0
     },
-    "priya.patel@acmecorp.example.com": {
+    "priya.patel@acmecorp.com": {
       "type": "user",
-      "first_seen": "2026-01-20T13:10:09.319475",
-      "last_seen": "2026-01-20T13:45:09.319475",
-      "event_count": 16,
-      "alert_count": 0,
-      "risk_score": 0,
-      "devices": [],
-      "ips": [
-        "45.142.213.91"
+      "email": "priya.patel@acmecorp.com",
+      "name": "Priya Patel",
+      "dept": "Engineering",
+      "title": "Software Engineer",
+      "first_seen": "2026-01-08T21:42:54.917762",
+      "last_seen": "2026-01-22T06:57:54.917762",
+      "event_count": 57,
+      "devices": [
+        "DEV-003",
+        "DEV-020"
       ],
-      "sources": [
-        "identity_provider",
-        "admin_portal"
-      ]
+      "ips": [
+        "10.0.0.1",
+        "203.0.113.50",
+        "45.142.213.91",
+        "89.248.174.195",
+        "172.16.0.1",
+        "198.51.100.25",
+        "1.1.1.1",
+        "192.0.2.100",
+        "8.8.8.8"
+      ],
+      "risk_score": 0
+    },
+    "james.kim@acmecorp.com": {
+      "type": "user",
+      "email": "james.kim@acmecorp.com",
+      "name": "James Kim",
+      "dept": "Sales",
+      "title": "Account Executive",
+      "first_seen": "2026-01-09T21:08:54.917762",
+      "last_seen": "2026-01-21T15:34:54.917762",
+      "event_count": 33,
+      "devices": [
+        "DEV-004",
+        "DEV-017"
+      ],
+      "ips": [
+        "1.1.1.1",
+        "10.0.0.1",
+        "203.0.113.50",
+        "89.248.174.195",
+        "172.16.0.1",
+        "198.51.100.25",
+        "8.8.8.8",
+        "192.0.2.100"
+      ],
+      "risk_score": 0
+    },
+    "emily.watson@acmecorp.com": {
+      "type": "user",
+      "email": "emily.watson@acmecorp.com",
+      "name": "Emily Watson",
+      "dept": "HR",
+      "title": "HR Manager",
+      "first_seen": "2026-01-09T07:15:54.917762",
+      "last_seen": "2026-01-21T09:00:54.917762",
+      "event_count": 46,
+      "devices": [
+        "DEV-005"
+      ],
+      "ips": [
+        "10.0.0.1",
+        "203.0.113.50",
+        "5.188.206.78",
+        "89.248.174.195",
+        "172.16.0.1",
+        "198.51.100.25",
+        "1.1.1.1",
+        "192.0.2.100",
+        "8.8.8.8"
+      ],
+      "risk_score": 0
+    },
+    "david.brown@acmecorp.com": {
+      "type": "user",
+      "email": "david.brown@acmecorp.com",
+      "name": "David Brown",
+      "dept": "Marketing",
+      "title": "Marketing Lead",
+      "first_seen": "2026-01-08T23:13:54.917762",
+      "last_seen": "2026-01-22T10:17:54.917762",
+      "event_count": 37,
+      "devices": [
+        "DEV-006"
+      ],
+      "ips": [
+        "10.0.0.1",
+        "203.0.113.50",
+        "89.248.174.195",
+        "198.51.100.25",
+        "172.16.0.1",
+        "1.1.1.1",
+        "192.0.2.100",
+        "8.8.8.8"
+      ],
+      "risk_score": 0
+    },
+    "lisa.nguyen@acmecorp.com": {
+      "type": "user",
+      "email": "lisa.nguyen@acmecorp.com",
+      "name": "Lisa Nguyen",
+      "dept": "Finance",
+      "title": "Controller",
+      "first_seen": "2026-01-08T20:13:54.917762",
+      "last_seen": "2026-01-21T02:31:54.917762",
+      "event_count": 32,
+      "devices": [
+        "DEV-007"
+      ],
+      "ips": [
+        "141.98.10.54",
+        "10.0.0.1",
+        "203.0.113.50",
+        "198.51.100.25",
+        "1.1.1.1",
+        "192.0.2.100",
+        "8.8.8.8"
+      ],
+      "risk_score": 0
+    },
+    "robert.taylor@acmecorp.com": {
+      "type": "user",
+      "email": "robert.taylor@acmecorp.com",
+      "name": "Robert Taylor",
+      "dept": "Executive",
+      "title": "CFO",
+      "first_seen": "2026-01-08T16:00:54.917762",
+      "last_seen": "2026-01-21T11:57:54.917762",
+      "event_count": 26,
+      "devices": [
+        "DEV-019",
+        "DEV-018",
+        "DEV-008"
+      ],
+      "ips": [
+        "1.1.1.1",
+        "10.0.0.1",
+        "203.0.113.50",
+        "89.248.174.195",
+        "172.16.0.1",
+        "198.51.100.25",
+        "8.8.8.8",
+        "192.0.2.100"
+      ],
+      "risk_score": 0
+    },
+    "amanda.clark@acmecorp.com": {
+      "type": "user",
+      "email": "amanda.clark@acmecorp.com",
+      "name": "Amanda Clark",
+      "dept": "Legal",
+      "title": "Legal Counsel",
+      "first_seen": "2026-01-08T17:30:54.917762",
+      "last_seen": "2026-01-22T11:34:54.917762",
+      "event_count": 37,
+      "devices": [
+        "DEV-009"
+      ],
+      "ips": [
+        "10.0.0.1",
+        "203.0.113.50",
+        "172.16.0.1",
+        "198.51.100.25",
+        "1.1.1.1",
+        "192.0.2.100",
+        "8.8.8.8"
+      ],
+      "risk_score": 0
+    },
+    "kevin.lee@acmecorp.com": {
+      "type": "user",
+      "email": "kevin.lee@acmecorp.com",
+      "name": "Kevin Lee",
+      "dept": "IT",
+      "title": "Security Analyst",
+      "first_seen": "2026-01-09T06:51:54.917762",
+      "last_seen": "2026-01-22T11:14:54.917762",
+      "event_count": 35,
+      "devices": [
+        "DEV-010"
+      ],
+      "ips": [
+        "10.0.0.1",
+        "203.0.113.50",
+        "198.51.100.25",
+        "172.16.0.1",
+        "1.1.1.1",
+        "192.0.2.100",
+        "8.8.8.8"
+      ],
+      "risk_score": 0
+    },
+    "jennifer.white@acmecorp.com": {
+      "type": "user",
+      "email": "jennifer.white@acmecorp.com",
+      "name": "Jennifer White",
+      "dept": "Engineering",
+      "title": "DevOps Engineer",
+      "first_seen": "2026-01-09T01:03:54.917762",
+      "last_seen": "2026-01-22T06:53:54.917762",
+      "event_count": 39,
+      "devices": [
+        "DEV-011"
+      ],
+      "ips": [
+        "1.1.1.1",
+        "10.0.0.1",
+        "203.0.113.50",
+        "45.33.32.156",
+        "198.51.100.25",
+        "172.16.0.1",
+        "8.8.8.8",
+        "192.0.2.100"
+      ],
+      "risk_score": 0
+    },
+    "chris.martinez@acmecorp.com": {
+      "type": "user",
+      "email": "chris.martinez@acmecorp.com",
+      "name": "Chris Martinez",
+      "dept": "Sales",
+      "title": "Sales Director",
+      "first_seen": "2026-01-08T15:14:54.917762",
+      "last_seen": "2026-01-22T12:07:54.917762",
+      "event_count": 34,
+      "devices": [
+        "DEV-012"
+      ],
+      "ips": [
+        "1.1.1.1",
+        "10.0.0.1",
+        "203.0.113.50",
+        "172.16.0.1",
+        "198.51.100.25",
+        "8.8.8.8",
+        "192.0.2.100"
+      ],
+      "risk_score": 0
     }
   },
   "ips": {
-    "185.220.101.45": {
+    "192.0.2.100": {
       "type": "ip",
-      "first_seen": "2026-01-15T14:10:09.319475",
-      "last_seen": "2026-01-15T15:10:09.319475",
-      "event_count": 2,
+      "first_seen": "2026-01-08T15:14:54.917762",
+      "last_seen": "2026-01-22T11:14:54.917762",
       "users": [
-        "sarah.chen@acmecorp.example.com"
+        "robert.taylor@acmecorp.com",
+        "amanda.clark@acmecorp.com",
+        "chris.martinez@acmecorp.com",
+        "priya.patel@acmecorp.com",
+        "kevin.lee@acmecorp.com",
+        "jennifer.white@acmecorp.com",
+        "david.brown@acmecorp.com",
+        "sarah.chen@acmecorp.com",
+        "emily.watson@acmecorp.com",
+        "lisa.nguyen@acmecorp.com",
+        "michael.rodriguez@acmecorp.com",
+        "james.kim@acmecorp.com"
       ],
-      "geo": "Romania",
-      "reputation": "malicious"
+      "reputation": "clean"
+    },
+    "198.51.100.25": {
+      "type": "ip",
+      "first_seen": "2026-01-08T15:49:54.917762",
+      "last_seen": "2026-01-22T11:34:54.917762",
+      "users": [
+        "robert.taylor@acmecorp.com",
+        "amanda.clark@acmecorp.com",
+        "chris.martinez@acmecorp.com",
+        "priya.patel@acmecorp.com",
+        "kevin.lee@acmecorp.com",
+        "jennifer.white@acmecorp.com",
+        "david.brown@acmecorp.com",
+        "sarah.chen@acmecorp.com",
+        "emily.watson@acmecorp.com",
+        "lisa.nguyen@acmecorp.com",
+        "michael.rodriguez@acmecorp.com",
+        "james.kim@acmecorp.com"
+      ],
+      "reputation": "clean"
+    },
+    "8.8.8.8": {
+      "type": "ip",
+      "first_seen": "2026-01-08T16:00:54.917762",
+      "last_seen": "2026-01-22T12:07:54.917762",
+      "users": [
+        "robert.taylor@acmecorp.com",
+        "amanda.clark@acmecorp.com",
+        "chris.martinez@acmecorp.com",
+        "priya.patel@acmecorp.com",
+        "kevin.lee@acmecorp.com",
+        "jennifer.white@acmecorp.com",
+        "david.brown@acmecorp.com",
+        "sarah.chen@acmecorp.com",
+        "emily.watson@acmecorp.com",
+        "lisa.nguyen@acmecorp.com",
+        "michael.rodriguez@acmecorp.com",
+        "james.kim@acmecorp.com"
+      ],
+      "reputation": "clean"
+    },
+    "1.1.1.1": {
+      "type": "ip",
+      "first_seen": "2026-01-08T17:30:54.917762",
+      "last_seen": "2026-01-22T10:17:54.917762",
+      "users": [
+        "robert.taylor@acmecorp.com",
+        "amanda.clark@acmecorp.com",
+        "chris.martinez@acmecorp.com",
+        "priya.patel@acmecorp.com",
+        "kevin.lee@acmecorp.com",
+        "jennifer.white@acmecorp.com",
+        "david.brown@acmecorp.com",
+        "sarah.chen@acmecorp.com",
+        "emily.watson@acmecorp.com",
+        "lisa.nguyen@acmecorp.com",
+        "michael.rodriguez@acmecorp.com",
+        "james.kim@acmecorp.com"
+      ],
+      "reputation": "clean"
+    },
+    "172.16.0.1": {
+      "type": "ip",
+      "first_seen": "2026-01-09T06:10:54.917762",
+      "last_seen": "2026-01-21T21:52:54.917762",
+      "users": [
+        "robert.taylor@acmecorp.com",
+        "amanda.clark@acmecorp.com",
+        "chris.martinez@acmecorp.com",
+        "priya.patel@acmecorp.com",
+        "kevin.lee@acmecorp.com",
+        "jennifer.white@acmecorp.com",
+        "david.brown@acmecorp.com",
+        "sarah.chen@acmecorp.com",
+        "emily.watson@acmecorp.com",
+        "michael.rodriguez@acmecorp.com",
+        "james.kim@acmecorp.com"
+      ],
+      "reputation": "clean"
     },
     "203.0.113.50": {
       "type": "ip",
-      "first_seen": "2026-01-15T14:40:09.319475",
-      "last_seen": "2026-01-15T14:40:09.319475",
-      "event_count": 1,
+      "first_seen": "2026-01-09T13:40:54.917762",
+      "last_seen": "2026-01-22T06:53:54.917762",
       "users": [
-        "sarah.chen@acmecorp.example.com"
+        "robert.taylor@acmecorp.com",
+        "amanda.clark@acmecorp.com",
+        "chris.martinez@acmecorp.com",
+        "priya.patel@acmecorp.com",
+        "kevin.lee@acmecorp.com",
+        "jennifer.white@acmecorp.com",
+        "david.brown@acmecorp.com",
+        "sarah.chen@acmecorp.com",
+        "emily.watson@acmecorp.com",
+        "lisa.nguyen@acmecorp.com",
+        "michael.rodriguez@acmecorp.com",
+        "james.kim@acmecorp.com"
       ],
-      "geo": "US",
       "reputation": "clean"
+    },
+    "185.220.101.45": {
+      "type": "ip",
+      "first_seen": "2026-01-09T14:40:54.917762",
+      "last_seen": "2026-01-09T15:10:54.917762",
+      "users": [
+        "sarah.chen@acmecorp.com"
+      ],
+      "reputation": "malicious"
     },
     "192.42.116.180": {
       "type": "ip",
-      "first_seen": "2026-01-17T14:10:09.319475",
-      "last_seen": "2026-01-17T14:38:09.319475",
-      "event_count": 16,
+      "first_seen": "2026-01-11T14:40:54.917762",
+      "last_seen": "2026-01-11T15:50:54.917762",
       "users": [
-        "michael.rodriguez@acmecorp.example.com"
+        "michael.rodriguez@acmecorp.com"
       ],
-      "geo": "Romania",
       "reputation": "malicious"
     },
     "45.142.213.91": {
       "type": "ip",
-      "first_seen": "2026-01-20T13:10:09.319475",
-      "last_seen": "2026-01-20T13:45:09.319475",
-      "event_count": 16,
+      "first_seen": "2026-01-13T13:40:54.917762",
+      "last_seen": "2026-01-13T14:20:54.917762",
       "users": [
-        "priya.patel@acmecorp.example.com"
+        "priya.patel@acmecorp.com"
       ],
-      "geo": "Romania",
       "reputation": "malicious"
+    },
+    "89.248.174.195": {
+      "type": "ip",
+      "first_seen": "2026-01-15T13:40:54.917762",
+      "last_seen": "2026-01-18T13:55:54.917762",
+      "users": [
+        "robert.taylor@acmecorp.com",
+        "priya.patel@acmecorp.com",
+        "david.brown@acmecorp.com",
+        "sarah.chen@acmecorp.com",
+        "emily.watson@acmecorp.com",
+        "michael.rodriguez@acmecorp.com",
+        "james.kim@acmecorp.com"
+      ],
+      "reputation": "malicious"
+    },
+    "141.98.10.54": {
+      "type": "ip",
+      "first_seen": "2026-01-16T13:50:54.917762",
+      "last_seen": "2026-01-16T14:00:54.917762",
+      "users": [
+        "lisa.nguyen@acmecorp.com"
+      ],
+      "reputation": "malicious"
+    },
+    "5.188.206.78": {
+      "type": "ip",
+      "first_seen": "2026-01-17T13:55:54.917762",
+      "last_seen": "2026-01-17T15:25:54.917762",
+      "users": [
+        "emily.watson@acmecorp.com"
+      ],
+      "reputation": "malicious"
+    },
+    "45.33.32.156": {
+      "type": "ip",
+      "first_seen": "2026-01-19T14:40:54.917762",
+      "last_seen": "2026-01-19T14:40:54.917762",
+      "users": [
+        "jennifer.white@acmecorp.com"
+      ],
+      "reputation": "unknown"
     }
   },
-  "domains": {}
+  "devices": {
+    "DEV-001": {
+      "id": "DEV-001",
+      "hostname": "LAPTOP-SCHEN01",
+      "os": "Windows 11",
+      "owner": "sarah.chen@acmecorp.com"
+    },
+    "DEV-002": {
+      "id": "DEV-002",
+      "hostname": "LAPTOP-MROD01",
+      "os": "Windows 11",
+      "owner": "michael.rodriguez@acmecorp.com"
+    },
+    "DEV-003": {
+      "id": "DEV-003",
+      "hostname": "MACBOOK-PPATEL",
+      "os": "macOS 14",
+      "owner": "priya.patel@acmecorp.com"
+    },
+    "DEV-004": {
+      "id": "DEV-004",
+      "hostname": "LAPTOP-JKIM01",
+      "os": "Windows 11",
+      "owner": "james.kim@acmecorp.com"
+    },
+    "DEV-005": {
+      "id": "DEV-005",
+      "hostname": "LAPTOP-EWATSON",
+      "os": "Windows 11",
+      "owner": "emily.watson@acmecorp.com"
+    },
+    "DEV-006": {
+      "id": "DEV-006",
+      "hostname": "MACBOOK-DBROWN",
+      "os": "macOS 14",
+      "owner": "david.brown@acmecorp.com"
+    },
+    "DEV-007": {
+      "id": "DEV-007",
+      "hostname": "LAPTOP-LNGUYEN",
+      "os": "Windows 11",
+      "owner": "lisa.nguyen@acmecorp.com"
+    },
+    "DEV-008": {
+      "id": "DEV-008",
+      "hostname": "LAPTOP-RTAYLOR",
+      "os": "Windows 11",
+      "owner": "robert.taylor@acmecorp.com"
+    },
+    "DEV-009": {
+      "id": "DEV-009",
+      "hostname": "MACBOOK-ACLARK",
+      "os": "macOS 14",
+      "owner": "amanda.clark@acmecorp.com"
+    },
+    "DEV-010": {
+      "id": "DEV-010",
+      "hostname": "LAPTOP-KLEE01",
+      "os": "Windows 11",
+      "owner": "kevin.lee@acmecorp.com"
+    },
+    "DEV-011": {
+      "id": "DEV-011",
+      "hostname": "WORKSTATION-JWHITE",
+      "os": "Ubuntu 22.04",
+      "owner": "jennifer.white@acmecorp.com"
+    },
+    "DEV-012": {
+      "id": "DEV-012",
+      "hostname": "LAPTOP-CMART01",
+      "os": "Windows 11",
+      "owner": "chris.martinez@acmecorp.com"
+    },
+    "DEV-013": {
+      "id": "DEV-013",
+      "hostname": "SERVER-DC01",
+      "os": "Windows Server 2022",
+      "owner": "it-ops@acmecorp.com"
+    },
+    "DEV-014": {
+      "id": "DEV-014",
+      "hostname": "SERVER-MAIL01",
+      "os": "Windows Server 2022",
+      "owner": "it-ops@acmecorp.com"
+    },
+    "DEV-015": {
+      "id": "DEV-015",
+      "hostname": "SERVER-WEB01",
+      "os": "Ubuntu 22.04",
+      "owner": "it-ops@acmecorp.com"
+    },
+    "DEV-016": {
+      "id": "DEV-016",
+      "hostname": "LAPTOP-SCHEN02",
+      "os": "Windows 11",
+      "owner": "sarah.chen@acmecorp.com"
+    },
+    "DEV-017": {
+      "id": "DEV-017",
+      "hostname": "MOBILE-JKIM01",
+      "os": "iOS 17",
+      "owner": "james.kim@acmecorp.com"
+    },
+    "DEV-018": {
+      "id": "DEV-018",
+      "hostname": "MOBILE-RTAYLOR",
+      "os": "iOS 17",
+      "owner": "robert.taylor@acmecorp.com"
+    },
+    "DEV-019": {
+      "id": "DEV-019",
+      "hostname": "LAPTOP-CONTRACTOR01",
+      "os": "Windows 10",
+      "owner": "contractor@external.com"
+    },
+    "DEV-020": {
+      "id": "DEV-020",
+      "hostname": "MACBOOK-PPATEL2",
+      "os": "macOS 14",
+      "owner": "priya.patel@acmecorp.com"
+    }
+  }
 }

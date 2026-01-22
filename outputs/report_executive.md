@@ -1,90 +1,34 @@
-# Executive Incident Report
-## Phishing-Led Account Compromise
+# Security Incident Executive Summary
 
-**Date:** January 10, 2026  
-**Incident ID:** INC-2026-010-001  
-**Status:** Contained and Eradicated  
-**Severity:** HIGH
+**Generated:** 2026-01-22 13:40:54
 
----
+## Overview
 
-## Executive Summary
+This report summarizes security incidents detected across ACME Corp's infrastructure over the past 14 days.
 
-On January 10, 2026, our Security Operations Center detected and responded to an account compromise incident affecting a marketing team member. The attack began with a phishing email, led to credential theft, and resulted in unauthorized access to the user's email account.
+## Key Findings
 
-**Key Points:**
-- **Attack Vector:** Phishing email with malicious link
-- **Impact:** One user account compromised, 4 critical security alerts generated
-- **Data at Risk:** 47 email messages accessed by attacker
-- **Response Time:** Detection within 2 hours 15 minutes of initial phishing email
-- **Current Status:** Threat contained, no data loss confirmed
+- **8 Active Security Incidents** requiring investigation
+- **Multiple Attack Vectors** including phishing, credential theft, and malware
+- **High-Risk Entities** identified across Finance, IT, and Executive departments
 
----
+## Incident Categories
 
-## What Happened
+1. **Phishing Attacks (3 cases)** - Credential harvesting, OAuth consent abuse
+2. **Account Compromise (2 cases)** - MFA fatigue, password spray
+3. **Malware/C2 Activity (1 case)** - Macro-based malware with C2 beacon
+4. **Data Exfiltration (2 cases)** - BEC wire fraud, cloud storage abuse
 
-1. **Initial Access (08:15 UTC):** User received a phishing email impersonating Microsoft, containing a link to a fake login page
-2. **Credential Theft (08:18 UTC):** User clicked the link and entered credentials on the fraudulent website
-3. **Account Compromise (08:47 UTC):** Attacker successfully logged in from Romania using stolen credentials
-4. **Malicious Activity (08:52 UTC):** Attacker created email forwarding rule and searched for sensitive documents
-5. **Detection (09:35 UTC):** SOC detected impossible travel alert
-6. **Containment (10:05 UTC):** All sessions revoked, password reset enforced
-7. **Eradication (11:30 UTC):** Malicious forwarding rule removed
+## Recommended Actions
 
----
+1. Enforce phishing-resistant MFA across all accounts
+2. Implement conditional access policies
+3. Deploy endpoint detection and response
+4. Conduct security awareness training
 
-## Business Impact
+## Timeline
 
-**Affected Assets:**
-- 1 user account (sarah.chen@acmecorp.example.com)
-- 47 email messages accessed by attacker
-- No confirmed data exfiltration
-
-**Operational Impact:**
-- User productivity disrupted for approximately 2 hours
-- No impact to business operations or customer data
-
-**Financial Impact:**
-- Minimal - limited to incident response labor costs
-- No ransom demands or data breach penalties
+All incidents occurred within a 14-day observation window, with the most critical being the malware infection with active C2 communication.
 
 ---
-
-## Actions Taken
-
-✅ Revoked all active sessions for affected account  
-✅ Forced password reset with MFA enforcement  
-✅ Removed malicious email forwarding rule  
-✅ Blocked phishing domain at network perimeter  
-✅ Reviewed all emails accessed by attacker - no sensitive data exfiltrated  
-✅ Notified affected user and security awareness team
-
----
-
-## Recommendations
-
-### Immediate (Next 7 Days)
-1. Deploy email link rewriting/sandboxing technology
-2. Enforce conditional access policies for cloud apps
-3. Conduct targeted security awareness training for marketing team
-
-### Short-term (Next 30 Days)
-1. Implement FIDO2 hardware keys for high-risk users
-2. Enable advanced threat protection for email
-3. Review and update phishing response playbooks
-
-### Long-term (Next 90 Days)
-1. Evaluate EDR deployment for all endpoints
-2. Implement SIEM correlation rules for impossible travel
-3. Conduct red team exercise simulating similar attack
-
----
-
-## Conclusion
-
-This incident demonstrates the effectiveness of our layered security controls and SOC monitoring capabilities. While the initial phishing attempt was successful, our detection and response mechanisms prevented data loss and quickly restored normal operations.
-
-The incident highlights the ongoing need for security awareness training and technical controls to prevent phishing attacks.
-
-**Report Prepared By:** SOC Analysis Team  
-**Date:** 2026-01-22
+*This is a synthetic dataset for demonstration purposes.*

@@ -1,62 +1,70 @@
 {
-  "incident_id": "INC-2026-010-001",
-  "incident_date": "2026-01-10",
-  "status": "contained_eradicated",
-  "severity": "high",
+  "generated_at": "2026-01-22T13:40:54.975768",
+  "seed": 1337,
   "metrics": {
-    "total_events_analyzed": 47,
-    "total_alerts_generated": 4,
+    "total_events_analyzed": 477,
+    "total_alerts_generated": 18,
+    "total_cases": 8,
+    "affected_users": 12,
+    "affected_devices": 17,
     "alerts_by_severity": {
-      "critical": 2,
-      "high": 2,
-      "medium": 0,
+      "critical": 8,
+      "high": 9,
+      "medium": 1,
       "low": 0
-    },
-    "affected_users": 5,
-    "high_risk_users": 1,
-    "mitre_techniques_detected": 8,
-    "ioc_hits": 12
+    }
   },
-  "timeline": {
-    "initial_access": "2026-01-10T08:15:23Z",
-    "compromise_confirmed": "2026-01-10T08:47:18Z",
-    "detection": "2026-01-10T09:35:00Z",
-    "containment": "2026-01-10T10:05:00Z",
-    "eradication": "2026-01-10T11:30:00Z",
-    "time_to_detect_minutes": 80,
-    "time_to_contain_minutes": 110
-  },
-  "attack_chain": [
-    "Initial Access (Phishing)",
-    "Credential Access (Phishing)",
-    "Persistence (Mailbox Rule)",
-    "Discovery (Mailbox Enumeration)",
-    "Collection (Email Search)",
-    "Containment (SOC Response)"
+  "users": [
+    "sarah.chen@acmecorp.com",
+    "michael.rodriguez@acmecorp.com",
+    "priya.patel@acmecorp.com",
+    "james.kim@acmecorp.com",
+    "emily.watson@acmecorp.com",
+    "david.brown@acmecorp.com",
+    "lisa.nguyen@acmecorp.com",
+    "robert.taylor@acmecorp.com",
+    "amanda.clark@acmecorp.com",
+    "kevin.lee@acmecorp.com",
+    "jennifer.white@acmecorp.com",
+    "chris.martinez@acmecorp.com"
+  ],
+  "devices": [
+    "DEV-001",
+    "DEV-002",
+    "DEV-003",
+    "DEV-004",
+    "DEV-005",
+    "DEV-006",
+    "DEV-007",
+    "DEV-008",
+    "DEV-009",
+    "DEV-010",
+    "DEV-011",
+    "DEV-012",
+    "DEV-013",
+    "DEV-014",
+    "DEV-015",
+    "DEV-016",
+    "DEV-017",
+    "DEV-018",
+    "DEV-019",
+    "DEV-020"
   ],
   "mitre_techniques": [
-    "T1078.004 - Valid Accounts: Cloud Accounts",
-    "T1589.001 - Credentials from Password Stores",
-    "T1566.002 - Phishing: Spearphishing Link",
-    "T1087 - Account Discovery",
-    "T1114 - Email Collection",
-    "T1114.002 - Email Collection: Remote Email Collection",
-    "T1078 - Valid Accounts",
-    "T1114.003 - Email Collection: Email Forwarding Rule"
-  ],
-  "affected_entities": {
-    "users": [
-      "sarah.chen@acmecorp.example.com",
-      "john.smith@acmecorp.example.com",
-      "marketing@partner.example.com",
-      "mike.jones@acmecorp.example.com",
-      "alerts@security-team.acmecorp.example.com"
-    ],
-    "high_risk_ips": [
-      "89.34.126.77"
-    ],
-    "compromised_devices": [
-      "Unknown Linux device"
-    ]
-  }
+    "T1566.001",
+    "T1566.002",
+    "T1078",
+    "T1078.004",
+    "T1114.002",
+    "T1098",
+    "T1098.001",
+    "T1528",
+    "T1556",
+    "T1059.001",
+    "T1059.005",
+    "T1547.001",
+    "T1071.001",
+    "T1567.002",
+    "T1110.003"
+  ]
 }

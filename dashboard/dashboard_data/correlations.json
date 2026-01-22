@@ -1,98 +1,1096 @@
 {
-  "correlations": [
+  "edges": [
     {
-      "correlation_id": "phishing_chain_sarah.chen@acmecorp.example.com",
-      "pattern": "phishing_click_login",
-      "user": "sarah.chen@acmecorp.example.com",
-      "events": [
-        "330ea5cc-2b6b-4951-abec-5ddfecd8f8c1",
-        "fc41398c-d700-4b77-81af-f64a45697deb",
-        "993dfdbe-1417-46f3-8a2e-80c0500a9140",
-        "8cf3189d-7f91-4b6b-874e-55f10bc019bc",
-        "67d11fe8-1e69-43de-9ad1-3e60e9ef638c"
-      ],
-      "description": "User received phishing email, clicked link, and suspicious login followed"
+      "source": "chris.martinez@acmecorp.com",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 8
     },
     {
-      "correlation_id": "impossible_travel_sarah.chen@acmecorp.example.com",
-      "pattern": "impossible_travel",
-      "user": "sarah.chen@acmecorp.example.com",
-      "events": [
-        "67d11fe8-1e69-43de-9ad1-3e60e9ef638c",
-        "4da8f1ce-6fd9-45a1-ba77-9d4c47756566"
-      ],
-      "description": "User authenticated from geographically distant locations within short timeframe"
+      "source": "michael.rodriguez@acmecorp.com",
+      "target": "198.51.100.25",
+      "type": "user_ip",
+      "weight": 4
     },
     {
-      "correlation_id": "post_compromise_sarah.chen@acmecorp.example.com",
-      "pattern": "post_compromise_activity",
-      "user": "sarah.chen@acmecorp.example.com",
-      "events": [
-        "67d11fe8-1e69-43de-9ad1-3e60e9ef638c",
-        "cef028b2-acbc-4580-a11f-4b86a0d46a05",
-        "b19cad0b-e9a7-47b0-a360-b6b58cedbae7",
-        "a0efecc0-f330-4c49-8c0f-0a988c1f38a7"
-      ],
-      "description": "Suspicious mailbox activity detected after suspicious login"
+      "source": "robert.taylor@acmecorp.com",
+      "target": "8.8.8.8",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "amanda.clark@acmecorp.com",
+      "target": "1.1.1.1",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "priya.patel@acmecorp.com",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "chris.martinez@acmecorp.com",
+      "target": "198.51.100.25",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "david.brown@acmecorp.com",
+      "target": "1.1.1.1",
+      "type": "user_ip",
+      "weight": 8
+    },
+    {
+      "source": "jennifer.white@acmecorp.com",
+      "target": "198.51.100.25",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "david.brown@acmecorp.com",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "lisa.nguyen@acmecorp.com",
+      "target": "1.1.1.1",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "chris.martinez@acmecorp.com",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "kevin.lee@acmecorp.com",
+      "target": "198.51.100.25",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "emily.watson@acmecorp.com",
+      "target": "198.51.100.25",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "robert.taylor@acmecorp.com",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "kevin.lee@acmecorp.com",
+      "target": "1.1.1.1",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "kevin.lee@acmecorp.com",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "david.brown@acmecorp.com",
+      "target": "198.51.100.25",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "lisa.nguyen@acmecorp.com",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "sarah.chen@acmecorp.com",
+      "target": "8.8.8.8",
+      "type": "user_ip",
+      "weight": 9
+    },
+    {
+      "source": "priya.patel@acmecorp.com",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "chris.martinez@acmecorp.com",
+      "target": "8.8.8.8",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "sarah.chen@acmecorp.com",
+      "target": "203.0.113.50",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "sarah.chen@acmecorp.com",
+      "target": "185.220.101.45",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "michael.rodriguez@acmecorp.com",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "robert.taylor@acmecorp.com",
+      "target": "1.1.1.1",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "michael.rodriguez@acmecorp.com",
+      "target": "8.8.8.8",
+      "type": "user_ip",
+      "weight": 8
+    },
+    {
+      "source": "david.brown@acmecorp.com",
+      "target": "8.8.8.8",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "jennifer.white@acmecorp.com",
+      "target": "203.0.113.50",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "james.kim@acmecorp.com",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "sarah.chen@acmecorp.com",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "sarah.chen@acmecorp.com",
+      "target": "1.1.1.1",
+      "type": "user_ip",
+      "weight": 8
+    },
+    {
+      "source": "kevin.lee@acmecorp.com",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "amanda.clark@acmecorp.com",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "chris.martinez@acmecorp.com",
+      "target": "203.0.113.50",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "michael.rodriguez@acmecorp.com",
+      "target": "203.0.113.50",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "jennifer.white@acmecorp.com",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "jennifer.white@acmecorp.com",
+      "target": "8.8.8.8",
+      "type": "user_ip",
+      "weight": 8
+    },
+    {
+      "source": "jennifer.white@acmecorp.com",
+      "target": "1.1.1.1",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "lisa.nguyen@acmecorp.com",
+      "target": "8.8.8.8",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "sarah.chen@acmecorp.com",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "amanda.clark@acmecorp.com",
+      "target": "203.0.113.50",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "priya.patel@acmecorp.com",
+      "target": "203.0.113.50",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "priya.patel@acmecorp.com",
+      "target": "1.1.1.1",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "amanda.clark@acmecorp.com",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "sarah.chen@acmecorp.com",
+      "target": "198.51.100.25",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "david.brown@acmecorp.com",
+      "target": "203.0.113.50",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "david.brown@acmecorp.com",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "emily.watson@acmecorp.com",
+      "target": "203.0.113.50",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "michael.rodriguez@acmecorp.com",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "michael.rodriguez@acmecorp.com",
+      "target": "192.42.116.180",
+      "type": "user_ip",
+      "weight": 15
+    },
+    {
+      "source": "lisa.nguyen@acmecorp.com",
+      "target": "198.51.100.25",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "emily.watson@acmecorp.com",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "priya.patel@acmecorp.com",
+      "target": "8.8.8.8",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "priya.patel@acmecorp.com",
+      "target": "198.51.100.25",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "michael.rodriguez@acmecorp.com",
+      "target": "1.1.1.1",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "amanda.clark@acmecorp.com",
+      "target": "198.51.100.25",
+      "type": "user_ip",
+      "weight": 9
+    },
+    {
+      "source": "kevin.lee@acmecorp.com",
+      "target": "203.0.113.50",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "robert.taylor@acmecorp.com",
+      "target": "203.0.113.50",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "james.kim@acmecorp.com",
+      "target": "8.8.8.8",
+      "type": "user_ip",
+      "weight": 8
+    },
+    {
+      "source": "james.kim@acmecorp.com",
+      "target": "1.1.1.1",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "priya.patel@acmecorp.com",
+      "target": "45.142.213.91",
+      "type": "user_ip",
+      "weight": 18
+    },
+    {
+      "source": "kevin.lee@acmecorp.com",
+      "target": "8.8.8.8",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "lisa.nguyen@acmecorp.com",
+      "target": "203.0.113.50",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "james.kim@acmecorp.com",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "james.kim@acmecorp.com",
+      "target": "203.0.113.50",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "james.kim@acmecorp.com",
+      "target": "198.51.100.25",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "robert.taylor@acmecorp.com",
+      "target": "198.51.100.25",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "emily.watson@acmecorp.com",
+      "target": "8.8.8.8",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "chris.martinez@acmecorp.com",
+      "target": "1.1.1.1",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "jennifer.white@acmecorp.com",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "emily.watson@acmecorp.com",
+      "target": "1.1.1.1",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "sarah.chen@acmecorp.com",
+      "target": "89.248.174.195",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "michael.rodriguez@acmecorp.com",
+      "target": "89.248.174.195",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "priya.patel@acmecorp.com",
+      "target": "89.248.174.195",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "james.kim@acmecorp.com",
+      "target": "89.248.174.195",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "emily.watson@acmecorp.com",
+      "target": "89.248.174.195",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "david.brown@acmecorp.com",
+      "target": "89.248.174.195",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "robert.taylor@acmecorp.com",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "lisa.nguyen@acmecorp.com",
+      "target": "141.98.10.54",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "emily.watson@acmecorp.com",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "emily.watson@acmecorp.com",
+      "target": "5.188.206.78",
+      "type": "user_ip",
+      "weight": 10
+    },
+    {
+      "source": "robert.taylor@acmecorp.com",
+      "target": "89.248.174.195",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "jennifer.white@acmecorp.com",
+      "target": "45.33.32.156",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "amanda.clark@acmecorp.com",
+      "target": "8.8.8.8",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "CASE-2026-0001",
+      "target": "ALR-0001-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0001",
+      "target": "ALR-0001-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0001",
+      "target": "ALR-0001-003",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0002",
+      "target": "ALR-0002-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0002",
+      "target": "ALR-0002-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0003",
+      "target": "ALR-0003-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0003",
+      "target": "ALR-0003-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0004",
+      "target": "ALR-0004-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0004",
+      "target": "ALR-0004-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0005",
+      "target": "ALR-0005-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0005",
+      "target": "ALR-0005-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0006",
+      "target": "ALR-0006-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0006",
+      "target": "ALR-0006-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0006",
+      "target": "ALR-0006-003",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0007",
+      "target": "ALR-0007-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0007",
+      "target": "ALR-0007-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0008",
+      "target": "ALR-0008-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0008",
+      "target": "ALR-0008-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0001-001",
+      "target": "EVT-000001",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0001-001",
+      "target": "EVT-000002",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0001-001",
+      "target": "EVT-000003",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0001-002",
+      "target": "EVT-000004",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0001-003",
+      "target": "EVT-000005",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-001",
+      "target": "EVT-000006",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-001",
+      "target": "EVT-000007",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000008",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000009",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000010",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000011",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000012",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000013",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000014",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000015",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000016",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000017",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000018",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000019",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000020",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000021",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000022",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000023",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000024",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000025",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000026",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000027",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000028",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000029",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000030",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000031",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000032",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000033",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000034",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000035",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000036",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000037",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-002",
+      "target": "EVT-000038",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-002",
+      "target": "EVT-000039",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-002",
+      "target": "EVT-000040",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-001",
+      "target": "EVT-000041",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-001",
+      "target": "EVT-000042",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-001",
+      "target": "EVT-000043",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-001",
+      "target": "EVT-000044",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-001",
+      "target": "EVT-000045",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-001",
+      "target": "EVT-000046",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-002",
+      "target": "EVT-000047",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-002",
+      "target": "EVT-000048",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-002",
+      "target": "EVT-000049",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0005-001",
+      "target": "EVT-000050",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0005-001",
+      "target": "EVT-000051",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0005-001",
+      "target": "EVT-000052",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0005-002",
+      "target": "EVT-000053",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-001",
+      "target": "EVT-000054",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-001",
+      "target": "EVT-000055",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-001",
+      "target": "EVT-000056",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-001",
+      "target": "EVT-000057",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-002",
+      "target": "EVT-000058",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000059",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000060",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000061",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000062",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000063",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000064",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000065",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000066",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000067",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000068",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0007-001",
+      "target": "EVT-000069",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0007-001",
+      "target": "EVT-000070",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0007-002",
+      "target": "EVT-000071",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0008-001",
+      "target": "EVT-000072",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0008-001",
+      "target": "EVT-000073",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0008-001",
+      "target": "EVT-000074",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0008-001",
+      "target": "EVT-000075",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0008-001",
+      "target": "EVT-000076",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0008-002",
+      "target": "EVT-000077",
+      "type": "alert_evidence",
+      "weight": 1
     }
   ],
-  "user_timelines": {
-    "sarah.chen@acmecorp.example.com": [
-      "7c7a2bb3-80f1-4ae1-8e8f-e2b2e1cbe9bb",
-      "26baec8c-1722-47cd-be9a-8caa5a304b1c",
-      "d994e763-7a65-4ea0-becc-a3cc4f7e44fd",
-      "10a2b52c-8900-429a-9071-961ac6ab3059",
-      "e52eb315-d0e0-4dde-bb3a-362cf430dd60",
-      "8ae57117-e752-41d5-873f-9b2fc0141bb0",
-      "0bc49ab1-f9a0-45a6-83b8-5b8214161e8c",
-      "9b34bf18-565a-4167-8d63-73f2f1c451dc",
-      "056786c0-11a1-482a-88a7-c46a4340f4cb",
-      "330ea5cc-2b6b-4951-abec-5ddfecd8f8c1",
-      "43efb77f-9cad-4d61-b261-31d3320b0450",
-      "fc41398c-d700-4b77-81af-f64a45697deb",
-      "53ecf2ef-fadd-4e28-8c15-8f4baa49fabe",
-      "0540c719-c4dc-427b-afc7-fb2af4b730d3",
-      "d2ca2e09-6c85-432b-b998-e87c27eead43",
-      "993dfdbe-1417-46f3-8a2e-80c0500a9140",
-      "8cf3189d-7f91-4b6b-874e-55f10bc019bc",
-      "67d11fe8-1e69-43de-9ad1-3e60e9ef638c",
-      "3f2cccae-60d0-4909-ae60-48b64c95b6e4",
-      "3788db7b-982b-47f6-b27b-608a10bf3fe6",
-      "cef028b2-acbc-4580-a11f-4b86a0d46a05",
-      "b19cad0b-e9a7-47b0-a360-b6b58cedbae7",
-      "e5e4eb07-6878-4287-98dc-1fa615b700fd",
-      "85c21b04-d29f-49aa-bf9f-6acfa51fcac7",
-      "ef4612bd-8202-4e3b-8e39-1cb6edc09a88",
-      "94a1a0fe-1681-4844-b11a-ba05d12172d8",
-      "4da8f1ce-6fd9-45a1-ba77-9d4c47756566",
-      "fa4b95b4-860c-41bb-ae6e-0153332ee9b7",
-      "c364d809-1cbd-4fe2-9550-a99114338241",
-      "cf777aca-14f2-4921-8315-91f13a2caa83",
-      "193d5ee9-5b8c-4c82-8a11-0c5e6edcad8f",
-      "e6c59152-35ec-4cef-b333-0e02c6b7ec4f",
-      "9b896041-3390-474e-af90-746c6baa80f9",
-      "d0d7c1f4-f957-4c43-9edc-90263de86b98",
-      "5ecf872d-a914-446d-b571-a2c32e7593e9",
-      "a0efecc0-f330-4c49-8c0f-0a988c1f38a7",
-      "e05409db-f429-4107-aa93-99a61de6c0e4",
-      "4b0266ab-f0ff-4afc-96fd-fc277e6eb3a6"
-    ],
-    "john.smith@acmecorp.example.com": [
-      "9afb2718-410e-4771-8a48-1ec992b7986a",
-      "c5b55826-834d-4db1-9f4d-384d18ca3496",
-      "8f125cad-5828-41ca-b7c9-231bda7f6dd4",
-      "bbd062e7-db71-4919-aac2-9b4a7e4db50d"
-    ],
-    "marketing@partner.example.com": [
-      "6d49d9e4-5fad-4296-a3df-d8266a6c4999"
-    ],
-    "mike.jones@acmecorp.example.com": [
-      "f0d500b2-f095-48fc-b566-2689b8a59a03",
-      "15a89fe3-2aa6-4fa0-a137-b87d8bf6b8bd",
-      "5415cddc-47c8-464b-a70f-0b54fa6987c4"
-    ],
-    "alerts@security-team.acmecorp.example.com": [
-      "57c5a72b-c909-4ea2-a47c-2d41c84e021b"
-    ]
-  }
+  "patterns": [
+    {
+      "name": "phishing_chain",
+      "description": "Phishing email \u2192 click \u2192 credential theft"
+    },
+    {
+      "name": "impossible_travel",
+      "description": "Login from distant locations"
+    },
+    {
+      "name": "mfa_fatigue",
+      "description": "Multiple MFA pushes followed by approval"
+    },
+    {
+      "name": "c2_beacon",
+      "description": "Periodic outbound connections to C2"
+    }
+  ]
 }

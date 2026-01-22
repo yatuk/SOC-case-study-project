@@ -5,15 +5,14 @@
       "title": "Phishing-Led Account Compromise",
       "severity": "critical",
       "status": "contained",
-      "owner": "tier2_analyst",
-      "created_at": "2026-01-15T13:10:09.319475",
-      "updated_at": "2026-01-15T21:10:09.319475",
+      "owner": "unassigned",
+      "created_at": "2026-01-09T13:40:54.917762",
+      "updated_at": "2026-01-09T16:40:54.917762",
       "affected_users": [
-        "sarah.chen@acmecorp.example.com"
+        "sarah.chen@acmecorp.com"
       ],
-      "impacted_assets": [
-        "corporate_mailbox",
-        "identity_provider"
+      "affected_devices": [
+        "DEV-016"
       ],
       "mitre_techniques": [
         "T1566.002",
@@ -21,57 +20,190 @@
         "T1114.002",
         "T1098"
       ],
-      "narrative": "User received credential phishing email, clicked malicious link, submitted credentials. Attacker authenticated from foreign IP and created mailbox forwarding rule for persistence.",
-      "alert_count": 4,
-      "evidence_count": 47
+      "narrative": "User received credential phishing email, clicked malicious link, submitted credentials. Attacker authenticated from foreign IP and created mailbox forwarding rule.",
+      "alert_ids": [
+        "ALR-0001-001",
+        "ALR-0001-002",
+        "ALR-0001-003"
+      ],
+      "evidence_count": 5
     },
     {
       "case_id": "CASE-2026-0002",
       "title": "OAuth Consent Phishing - Token Abuse",
       "severity": "high",
       "status": "investigating",
-      "owner": "tier1_analyst",
-      "created_at": "2026-01-17T13:10:09.319475",
-      "updated_at": "2026-01-17T17:10:09.319475",
+      "owner": "analyst-2",
+      "created_at": "2026-01-11T13:40:54.917762",
+      "updated_at": "2026-01-11T17:40:54.917762",
       "affected_users": [
-        "michael.rodriguez@acmecorp.example.com"
+        "michael.rodriguez@acmecorp.com"
       ],
-      "impacted_assets": [
-        "oauth_apps",
-        "cloud_mailbox"
+      "affected_devices": [
+        "DEV-002"
       ],
       "mitre_techniques": [
         "T1566.002",
         "T1528",
         "T1114.002"
       ],
-      "narrative": "User granted OAuth consent to malicious app. Attacker used token to access mailbox and exfiltrate emails without authentication.",
-      "alert_count": 3,
-      "evidence_count": 28
+      "narrative": "User granted OAuth consent to malicious app. Attacker used token to access mailbox and exfiltrate emails.",
+      "alert_ids": [
+        "ALR-0002-001",
+        "ALR-0002-002"
+      ],
+      "evidence_count": 17
     },
     {
       "case_id": "CASE-2026-0003",
-      "title": "MFA Fatigue - Session Hijacking",
-      "severity": "high",
-      "status": "new",
-      "owner": "unassigned",
-      "created_at": "2026-01-20T13:10:09.319475",
-      "updated_at": "2026-01-20T13:10:09.319475",
+      "title": "MFA Fatigue Attack - Session Hijacking",
+      "severity": "critical",
+      "status": "investigating",
+      "owner": "analyst-2",
+      "created_at": "2026-01-13T13:40:54.917762",
+      "updated_at": "2026-01-13T14:40:54.917762",
       "affected_users": [
-        "priya.patel@acmecorp.example.com"
+        "priya.patel@acmecorp.com"
       ],
-      "impacted_assets": [
-        "identity_provider",
-        "admin_portal"
+      "affected_devices": [
+        "DEV-020"
       ],
       "mitre_techniques": [
         "T1078",
         "T1556",
         "T1098.001"
       ],
-      "narrative": "Attacker bombarded user with MFA push notifications until approved. Used session to access admin portal and modify account permissions.",
-      "alert_count": 3,
-      "evidence_count": 35
+      "narrative": "Attacker bombarded user with MFA push notifications until approved. Used session to access admin portal and escalate privileges.",
+      "alert_ids": [
+        "ALR-0003-001",
+        "ALR-0003-002"
+      ],
+      "evidence_count": 18
+    },
+    {
+      "case_id": "CASE-2026-0004",
+      "title": "Password Spray - Email Exfiltration",
+      "severity": "high",
+      "status": "contained",
+      "owner": "analyst-1",
+      "created_at": "2026-01-15T13:40:54.917762",
+      "updated_at": "2026-01-15T15:40:54.917762",
+      "affected_users": [
+        "james.kim@acmecorp.com"
+      ],
+      "affected_devices": [],
+      "mitre_techniques": [
+        "T1110.003",
+        "T1078",
+        "T1114.002"
+      ],
+      "narrative": "Password spray attack succeeded against user. Attacker searched mailbox for sensitive terms and exported emails.",
+      "alert_ids": [
+        "ALR-0004-001",
+        "ALR-0004-002"
+      ],
+      "evidence_count": 9
+    },
+    {
+      "case_id": "CASE-2026-0005",
+      "title": "Business Email Compromise - Invoice Fraud",
+      "severity": "critical",
+      "status": "contained",
+      "owner": "analyst-2",
+      "created_at": "2026-01-16T13:40:54.917762",
+      "updated_at": "2026-01-16T18:40:54.917762",
+      "affected_users": [
+        "lisa.nguyen@acmecorp.com"
+      ],
+      "affected_devices": [],
+      "mitre_techniques": [
+        "T1566.002",
+        "T1098",
+        "T1114.002"
+      ],
+      "narrative": "Finance user compromised. Attacker set up forwarding and sent fraudulent wire transfer requests to partners.",
+      "alert_ids": [
+        "ALR-0005-001",
+        "ALR-0005-002"
+      ],
+      "evidence_count": 4
+    },
+    {
+      "case_id": "CASE-2026-0006",
+      "title": "Malware Infection - C2 Communication",
+      "severity": "critical",
+      "status": "investigating",
+      "owner": "unassigned",
+      "created_at": "2026-01-17T13:40:54.917762",
+      "updated_at": "2026-01-17T16:40:54.917762",
+      "affected_users": [
+        "emily.watson@acmecorp.com"
+      ],
+      "affected_devices": [
+        "DEV-005"
+      ],
+      "mitre_techniques": [
+        "T1566.001",
+        "T1059.005",
+        "T1547.001",
+        "T1071.001"
+      ],
+      "narrative": "User opened malicious attachment containing VBA macro. Malware established persistence and initiated C2 communication.",
+      "alert_ids": [
+        "ALR-0006-001",
+        "ALR-0006-002",
+        "ALR-0006-003"
+      ],
+      "evidence_count": 15
+    },
+    {
+      "case_id": "CASE-2026-0007",
+      "title": "New Device Anomaly - Admin Role Assignment",
+      "severity": "high",
+      "status": "investigating",
+      "owner": "analyst-1",
+      "created_at": "2026-01-18T13:40:54.917762",
+      "updated_at": "2026-01-18T14:40:54.917762",
+      "affected_users": [
+        "robert.taylor@acmecorp.com"
+      ],
+      "affected_devices": [
+        "DEV-019"
+      ],
+      "mitre_techniques": [
+        "T1078.004",
+        "T1098.001"
+      ],
+      "narrative": "Unknown device registered to executive account followed by suspicious admin role assignment.",
+      "alert_ids": [
+        "ALR-0007-001",
+        "ALR-0007-002"
+      ],
+      "evidence_count": 3
+    },
+    {
+      "case_id": "CASE-2026-0008",
+      "title": "Data Exfiltration via Cloud Share",
+      "severity": "high",
+      "status": "investigating",
+      "owner": "analyst-2",
+      "created_at": "2026-01-19T13:40:54.917762",
+      "updated_at": "2026-01-19T15:40:54.917762",
+      "affected_users": [
+        "jennifer.white@acmecorp.com"
+      ],
+      "affected_devices": [
+        "DEV-011"
+      ],
+      "mitre_techniques": [
+        "T1567.002"
+      ],
+      "narrative": "User created public sharing links for sensitive files and shared externally.",
+      "alert_ids": [
+        "ALR-0008-001",
+        "ALR-0008-002"
+      ],
+      "evidence_count": 6
     }
   ]
 }
