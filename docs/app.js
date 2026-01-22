@@ -15,11 +15,13 @@ const App = {
             cases: [],
             devices: [],
             iocs: [],
+            normalizedIocs: [],
             playbooks: [],
             playbookRuns: [],
             riskScores: {},
             correlations: {},
-            mitreCoverage: null
+            mitreCoverage: null,
+            datasetProfile: null
         },
         filters: {
             severity: [],
@@ -166,11 +168,13 @@ const App = {
             { file: 'cases.json', prop: 'cases', isArray: true },
             { file: 'edr_devices.json', prop: 'devices', isArray: true },
             { file: 'iocs.json', prop: 'iocs', isArray: true },
+            { file: 'iocs.jsonl', prop: 'normalizedIocs', jsonl: true },
             { file: 'playbooks.json', prop: 'playbooks', isArray: 'playbooks' },
             { file: 'playbook_runs.jsonl', prop: 'playbookRuns', jsonl: true },
             { file: 'risk_scores.json', prop: 'riskScores' },
             { file: 'correlations.json', prop: 'correlations' },
-            { file: 'mitre_coverage.json', prop: 'mitreCoverage' }
+            { file: 'mitre_coverage.json', prop: 'mitreCoverage' },
+            { file: 'dataset_profile.json', prop: 'datasetProfile' }
         ];
 
         const results = await Promise.allSettled(files.map(f => this.loadFile(f)));
@@ -568,14 +572,20 @@ const App = {
     },
 
     renderEventRow(e, isNew = false) {
+        // Handle both flat and nested event formats
+        const user = typeof e.user === 'object' ? (e.user?.display || e.user?.email || '—') : (e.user || '—');
+        const device = typeof e.device === 'object' ? (e.device?.hostname || '—') : (e.device || '—');
+        const srcIp = typeof e.network === 'object' ? (e.network?.src_ip || '—') : (e.src_ip || '—');
+        const severity = e.severity ? (typeof e.severity === 'number' ? this.numToSeverity(e.severity) : e.severity) : 'info';
+        
         return `
-            <tr data-event-id="${this.esc(e.event_id || e.id)}" class="event-row${isNew ? ' live-new' : ''}">
+            <tr data-event-id="${this.esc(e.event_id || e.id)}" class="event-row${isNew ? ' live-new' : ''}" onclick="App.openEventDrawer('${this.esc(e.event_id || e.id)}')">
                 <td><code>${this.formatTime(e.ts || e.timestamp)}</code></td>
-                <td><span class="badge badge-neutral">${this.esc(e.source || '—')}</span></td>
+                <td><span class="badge badge-${severity === 'critical' || severity === 'high' ? 'danger' : 'neutral'}">${this.esc(e.source || '—')}</span></td>
                 <td>${this.esc(e.event_type || '—')}</td>
-                <td>${this.esc(e.user || '—')}</td>
-                <td>${this.esc(e.device || '—')}</td>
-                <td><code>${this.esc(e.src_ip || '—')}</code></td>
+                <td>${this.esc(user)}</td>
+                <td>${this.esc(device)}</td>
+                <td><code>${this.esc(srcIp)}</code></td>
                 <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">${this.esc(e.summary || '—')}</td>
             </tr>
         `;
@@ -993,20 +1003,71 @@ const App = {
     // INTEL (IOCs)
     // ==========================================
     renderIntel() {
-        const iocs = this.state.data.iocs || [];
+        // Merge synthetic IOCs with normalized IOCs
+        const syntheticIocs = this.state.data.iocs || [];
+        const normalizedIocs = this.state.data.normalizedIocs || [];
+        const profile = this.state.data.datasetProfile;
+        
+        // Convert normalized IOCs to display format
+        const allIocs = [
+            ...syntheticIocs.map(ioc => ({
+                indicator: ioc.indicator,
+                type: ioc.type,
+                confidence: ioc.confidence,
+                tags: ioc.tags || [],
+                first_seen: ioc.first_seen,
+                last_seen: ioc.last_seen,
+                source: 'synthetic'
+            })),
+            ...normalizedIocs.slice(0, 200).map(ioc => ({
+                indicator: ioc.value || ioc.domain || '',
+                type: ioc.type || 'unknown',
+                confidence: ioc.confidence || 0.5,
+                tags: ioc.tags || [],
+                label: ioc.label,
+                first_seen: null,
+                last_seen: null,
+                source: ioc.source || 'normalized'
+            }))
+        ];
+        
+        // Stats
+        const phishingCount = normalizedIocs.filter(i => i.label === 'phishing').length;
+        const benignCount = normalizedIocs.filter(i => i.label === 'benign').length;
         
         return `
             <div class="page-header">
                 <div class="page-header-top">
                     <div>
                         <h1 class="page-title">Tehdit İstihbaratı</h1>
-                        <p class="page-subtitle">${iocs.length} gösterge (IOC)</p>
+                        <p class="page-subtitle">${syntheticIocs.length} sentetik + ${normalizedIocs.length} normalize edilmiş IOC</p>
                     </div>
                     <div class="page-actions">
                         <button class="btn btn-secondary btn-sm" onclick="App.exportIOCs()">CSV İndir</button>
                     </div>
                 </div>
             </div>
+            
+            ${profile ? `
+            <div class="cards-row" style="margin-bottom: var(--space-4);">
+                <div class="kpi-card">
+                    <div class="kpi-label">Dataset Dosyaları</div>
+                    <div class="kpi-value">${profile.total_files || 0}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Normalize Edilen Olay</div>
+                    <div class="kpi-value">${(profile.total_events_normalized || 0).toLocaleString()}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Phishing IOC</div>
+                    <div class="kpi-value">${phishingCount.toLocaleString()}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Benign IOC</div>
+                    <div class="kpi-value">${benignCount.toLocaleString()}</div>
+                </div>
+            </div>
+            ` : ''}
             
             <div class="data-grid-container">
                 <table class="data-grid">
@@ -1015,24 +1076,23 @@ const App = {
                             <th>Gösterge</th>
                             <th>Tip</th>
                             <th>Güven</th>
-                            <th>Etiketler</th>
-                            <th>İlk Görülme</th>
-                            <th>Son Görülme</th>
+                            <th>Etiket</th>
+                            <th>Kaynak</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${iocs.map(ioc => `
+                        ${allIocs.slice(0, 100).map(ioc => `
                             <tr data-ioc="${this.esc(ioc.indicator)}" class="ioc-row">
-                                <td><code>${this.esc(ioc.indicator)}</code></td>
+                                <td><code class="ioc-value">${this.esc((ioc.indicator || '').substring(0, 60))}${(ioc.indicator || '').length > 60 ? '...' : ''}</code></td>
                                 <td><span class="badge badge-neutral">${this.esc(ioc.type)}</span></td>
                                 <td>${this.renderConfidenceBadge(ioc.confidence)}</td>
-                                <td>${(ioc.tags || []).map(t => `<span class="chip">${this.esc(t)}</span>`).join(' ')}</td>
-                                <td>${this.formatTime(ioc.first_seen)}</td>
-                                <td>${this.formatTime(ioc.last_seen)}</td>
+                                <td>${ioc.label ? `<span class="badge ${ioc.label === 'phishing' ? 'badge-danger' : 'badge-info'}">${this.esc(ioc.label)}</span>` : '-'}</td>
+                                <td><span class="chip">${this.esc(ioc.source)}</span></td>
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
+                ${allIocs.length > 100 ? `<p style="padding: var(--space-3); color: var(--text-muted);">İlk 100 IOC gösteriliyor (toplam: ${allIocs.length.toLocaleString()})</p>` : ''}
             </div>
         `;
     },
@@ -2003,6 +2063,181 @@ const App = {
     getSeverityLabel(sev) {
         const labels = { critical: 'Kritik', high: 'Yüksek', medium: 'Orta', low: 'Düşük', info: 'Bilgi' };
         return labels[sev] || sev;
+    },
+
+    numToSeverity(num) {
+        if (num >= 8) return 'critical';
+        if (num >= 6) return 'high';
+        if (num >= 4) return 'medium';
+        if (num >= 2) return 'low';
+        return 'info';
+    },
+
+    openEventDrawer(eventId) {
+        const events = this.state.data.events || [];
+        const event = events.find(e => (e.event_id || e.id) === eventId);
+        if (!event) return;
+
+        const title = document.getElementById('drawer-title');
+        const subtitle = document.getElementById('drawer-subtitle');
+        const tabs = document.getElementById('drawer-tabs');
+        const body = document.getElementById('drawer-body');
+
+        if (title) title.textContent = event.event_type || 'Olay Detayı';
+        if (subtitle) subtitle.textContent = eventId;
+        
+        // Hide tabs for event view
+        if (tabs) tabs.innerHTML = '';
+
+        // Build event details
+        const user = typeof event.user === 'object' ? event.user : { display: event.user };
+        const device = typeof event.device === 'object' ? event.device : { hostname: event.device };
+        const network = typeof event.network === 'object' ? event.network : { src_ip: event.src_ip };
+        const process = event.process || {};
+        const artifact = event.artifact || {};
+        const tags = event.tags || [];
+
+        if (body) {
+            body.innerHTML = `
+                <div class="drawer-section">
+                    <div class="drawer-section-title">Genel Bilgi</div>
+                    <div class="detail-grid">
+                        <div class="detail-row">
+                            <span class="detail-label">Olay ID</span>
+                            <code class="detail-value">${this.esc(eventId)}</code>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Zaman</span>
+                            <span class="detail-value">${this.formatTime(event.ts || event.timestamp)}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Kaynak</span>
+                            <span class="badge badge-neutral">${this.esc(event.source || '—')}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Olay Tipi</span>
+                            <span class="detail-value">${this.esc(event.event_type || '—')}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Seviye</span>
+                            ${this.renderSeverityBadge(event.severity)}
+                        </div>
+                    </div>
+                </div>
+
+                ${user.display || user.email ? `
+                <div class="drawer-section">
+                    <div class="drawer-section-title">Kullanıcı</div>
+                    <div class="detail-grid">
+                        <div class="detail-row">
+                            <span class="detail-label">Ad</span>
+                            <span class="detail-value">${this.esc(user.display || '—')}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">E-posta</span>
+                            <code class="detail-value">${this.esc(user.email || '—')}</code>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Kullanıcı ID</span>
+                            <code class="detail-value">${this.esc(user.id || '—')}</code>
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
+
+                ${device.hostname ? `
+                <div class="drawer-section">
+                    <div class="drawer-section-title">Cihaz</div>
+                    <div class="detail-grid">
+                        <div class="detail-row">
+                            <span class="detail-label">Hostname</span>
+                            <code class="detail-value">${this.esc(device.hostname)}</code>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">İşletim Sistemi</span>
+                            <span class="detail-value">${this.esc(device.os || '—')}</span>
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
+
+                ${network.src_ip || network.dst_ip ? `
+                <div class="drawer-section">
+                    <div class="drawer-section-title">Ağ</div>
+                    <div class="detail-grid">
+                        <div class="detail-row">
+                            <span class="detail-label">Kaynak IP</span>
+                            <code class="detail-value">${this.esc(network.src_ip || '—')}</code>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Hedef IP</span>
+                            <code class="detail-value">${this.esc(network.dst_ip || '—')}</code>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Kaynak Geo</span>
+                            <span class="detail-value">${this.esc(network.src_geo || '—')}</span>
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
+
+                ${process.name ? `
+                <div class="drawer-section">
+                    <div class="drawer-section-title">Süreç</div>
+                    <div class="detail-grid">
+                        <div class="detail-row">
+                            <span class="detail-label">İsim</span>
+                            <code class="detail-value">${this.esc(process.name)}</code>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Komut Satırı</span>
+                            <code class="detail-value" style="word-break: break-all;">${this.esc((process.cmdline || '—').substring(0, 200))}</code>
+                        </div>
+                        ${process.parent_name ? `
+                        <div class="detail-row">
+                            <span class="detail-label">Üst Süreç</span>
+                            <code class="detail-value">${this.esc(process.parent_name)}</code>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+                ` : ''}
+
+                ${tags.length ? `
+                <div class="drawer-section">
+                    <div class="drawer-section-title">Etiketler</div>
+                    <div class="tags-list">
+                        ${tags.map(t => `<span class="chip ${t.startsWith('mitre:') ? 'chip-mitre' : ''}">${this.esc(t)}</span>`).join(' ')}
+                    </div>
+                </div>
+                ` : ''}
+
+                ${event.raw ? `
+                <div class="drawer-section">
+                    <div class="drawer-section-title">Ham Veri (Önizleme)</div>
+                    <pre class="raw-data">${this.esc(JSON.stringify(event.raw, null, 2).substring(0, 1000))}</pre>
+                </div>
+                ` : ''}
+            `;
+        }
+
+        // Open drawer
+        document.getElementById('drawer-overlay')?.classList.add('open');
+        document.getElementById('drawer')?.classList.add('open');
+    },
+
+    renderSeverityBadge(severity) {
+        if (typeof severity === 'number') {
+            severity = this.numToSeverity(severity);
+        }
+        const classes = {
+            critical: 'badge-critical',
+            high: 'badge-high',
+            medium: 'badge-medium',
+            low: 'badge-low',
+            info: 'badge-info'
+        };
+        return `<span class="badge ${classes[severity] || 'badge-neutral'}">${this.getSeverityLabel(severity)}</span>`;
     }
 };
 
