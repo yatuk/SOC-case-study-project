@@ -4,192 +4,172 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self';">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <title>SOC Konsolu - Anadolu Finans</title>
+    <title>SOC Konsol - Anadolu Finans</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="density-comfortable">
-    <!-- Auth Guard - Redirect if not authenticated -->
-    <script src="auth.js"></script>
-    <script src="auth-guard.js"></script>
-
-    <!-- Simulation Notice -->
-    <div class="simulation-badge">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        Simülasyon Modu
-    </div>
-
+<body>
+    <!-- Simulation Badge -->
+    <div class="sim-badge">SİMÜLASYON</div>
+    
     <!-- Toast Container -->
     <div class="toast-container" id="toast-container"></div>
-
-    <!-- Command Palette -->
-    <div class="command-palette-overlay" id="cmd-palette">
-        <div class="command-palette">
-            <div class="cmd-search">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-                </svg>
-                <input type="text" id="cmd-input" placeholder="Arama veya komut yazın..." autofocus>
-                <kbd>ESC</kbd>
-            </div>
-            <div class="cmd-results" id="cmd-results"></div>
-            <div class="cmd-footer">
-                <span><kbd>↑↓</kbd> Gezin</span>
-                <span><kbd>Enter</kbd> Seç</span>
-                <span><kbd>Esc</kbd> Kapat</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- User Management Modal -->
-    <div class="modal-overlay" id="user-modal" style="display: none;">
-        <div class="modal">
-            <div class="modal-header">
-                <h2>Kullanıcı Yönetimi</h2>
-                <button class="modal-close" id="close-user-modal">&times;</button>
-            </div>
-            <div class="modal-body" id="user-modal-body"></div>
-        </div>
-    </div>
-
-    <!-- Main Shell -->
-    <div class="shell">
+    
+    <!-- App Shell -->
+    <div class="app-shell">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <svg class="logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg class="sidebar-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                 </svg>
-                <span class="logo-text">SOC Konsolu</span>
+                <span class="sidebar-title">SOC Konsol</span>
             </div>
-            <nav class="nav" id="main-nav">
-                <a href="#" class="nav-item active" data-view="overview">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <div class="nav-section">Ana</div>
+                <div class="nav-item active" data-view="overview">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
                     <span>Genel Bakış</span>
-                </a>
-                <a href="#" class="nav-item" data-view="cases">
-                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <div class="nav-item" data-view="cases">
+                    <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
                     <span>Vakalar</span>
-                    <span class="nav-badge" id="cases-badge">0</span>
-                </a>
-                <a href="#" class="nav-item" data-view="alerts">
+                    <span class="nav-badge" id="badge-cases">0</span>
+                </div>
+                <div class="nav-item" data-view="alerts">
                     <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                     <span>Uyarılar</span>
-                    <span class="nav-badge critical" id="alerts-badge">0</span>
-                </a>
-                <a href="#" class="nav-item" data-view="search">
-                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <span class="nav-badge critical" id="badge-alerts">0</span>
+                </div>
+                
+                <div class="nav-section">SIEM</div>
+                <div class="nav-item" data-view="events">
+                    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                     <span>Olay Arama</span>
-                </a>
-                <a href="#" class="nav-item" data-view="entities">
+                </div>
+                <div class="nav-item" data-view="entities">
                     <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     <span>Varlıklar</span>
-                </a>
-                <a href="#" class="nav-item" data-view="edr">
-                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                    <span>EDR</span>
-                </a>
-                <a href="#" class="nav-item" data-view="timeline">
-                    <svg viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                    <span>Zaman Çizelgesi</span>
-                </a>
-                <a href="#" class="nav-item" data-view="mitre">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-                    <span>MITRE ATT&CK</span>
-                </a>
-                <a href="#" class="nav-item" data-view="intel">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                    <span>İstihbarat</span>
-                </a>
-                <a href="#" class="nav-item" data-view="automations">
-                    <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
-                    <span>Otomasyonlar</span>
-                </a>
-                <a href="#" class="nav-item" data-view="reports">
-                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                    <span>Raporlar</span>
-                </a>
-                <a href="#" class="nav-item" data-view="settings" data-role="admin">
+                </div>
+                
+                <div class="nav-section">EDR</div>
+                <div class="nav-item" data-view="devices">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    <span>Cihazlar</span>
+                </div>
+                
+                <div class="nav-section">SOAR</div>
+                <div class="nav-item" data-view="automations">
                     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                    <span>Ayarlar</span>
-                </a>
+                    <span>Playbook'lar</span>
+                </div>
+                
+                <div class="nav-section">Analiz</div>
+                <div class="nav-item" data-view="timeline">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>Zaman Çizelgesi</span>
+                </div>
+                <div class="nav-item" data-view="mitre">
+                    <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                    <span>MITRE ATT&amp;CK</span>
+                </div>
+                <div class="nav-item" data-view="intel">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <span>İstihbarat</span>
+                </div>
+                <div class="nav-item" data-view="reports">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    <span>Raporlar</span>
+                </div>
             </nav>
+            
             <div class="sidebar-footer">
-                <div class="user-info" id="user-info">
-                    <span class="user-avatar" id="user-avatar">?</span>
-                    <div class="user-details">
-                        <span class="user-name" id="user-name">—</span>
-                        <span class="user-role" id="user-role">—</span>
+                <div class="user-menu" id="user-menu">
+                    <div class="user-avatar" id="user-avatar">A</div>
+                    <div class="user-info">
+                        <div class="user-name" id="user-display-name">Admin</div>
+                        <div class="user-role" id="user-display-role">Yönetici</div>
                     </div>
                 </div>
-                <button class="btn-icon" id="lock-btn" title="Oturumu Kilitle">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                    </svg>
-                </button>
             </div>
         </aside>
-
+        
         <!-- Main Content -->
-        <main class="main">
-            <!-- Command Bar -->
-            <header class="command-bar">
-                <div class="search-box" id="search-box">
-                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                    <input type="text" placeholder="Ara (Ctrl+K)..." id="global-search" readonly>
-                    <div class="search-hint"><kbd>Ctrl</kbd><kbd>K</kbd></div>
+        <div class="main-content">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <div class="topbar-search">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="global-search" placeholder="Ara... (Ctrl+K)">
                 </div>
-                <div class="command-actions">
-                    <button class="cmd-btn" id="refresh-btn" title="Yenile">
+                
+                <div class="topbar-actions">
+                    <button class="topbar-btn" id="btn-refresh" title="Yenile">
                         <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
                     </button>
-                    <button class="cmd-btn" id="export-btn" title="Dışa Aktar">
+                    <button class="topbar-btn" id="btn-export" title="Dışa Aktar">
                         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                     </button>
-                    <div class="status-pill" id="status-pill">
+                    
+                    <button class="btn btn-sm" id="btn-live" style="display: none;">
+                        <span class="live-dot"></span>
+                        LIVE
+                    </button>
+                    
+                    <div class="topbar-status" id="data-status">
                         <span class="status-dot"></span>
-                        <span class="status-text">Yükleniyor...</span>
+                        <span>Hazır</span>
                     </div>
-                    <span class="last-loaded" id="last-loaded">—</span>
+                    
+                    <span class="topbar-time" id="last-loaded">--:--</span>
                 </div>
             </header>
-
-            <!-- Content Area -->
-            <div class="content-area" id="content-area">
-                <!-- Loading Skeleton -->
-                <div class="skeleton-container" id="skeleton">
-                    <div class="skeleton-row">
-                        <div class="skeleton-card"></div>
-                        <div class="skeleton-card"></div>
-                        <div class="skeleton-card"></div>
-                        <div class="skeleton-card"></div>
+            
+            <!-- Page Content -->
+            <div class="page-content" id="page-content">
+                <!-- Skeleton Loading -->
+                <div class="main-view" id="skeleton-loader">
+                    <div class="page-header">
+                        <div class="skeleton" style="width: 200px; height: 24px;"></div>
                     </div>
-                    <div class="skeleton-table"></div>
+                    <div class="data-grid-container">
+                        <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+                        <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+                        <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+                        <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+                        <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+                    </div>
                 </div>
                 
                 <!-- View Container -->
-                <div id="view-container"></div>
+                <div class="main-view" id="view-container" style="display: none;"></div>
             </div>
-        </main>
+        </div>
     </div>
-
-    <!-- Right Drawer -->
+    
+    <!-- Drawer Overlay -->
     <div class="drawer-overlay" id="drawer-overlay"></div>
+    
+    <!-- Drawer -->
     <aside class="drawer" id="drawer">
-        <div class="drawer-header" id="drawer-header">
-            <h2 id="drawer-title">Detaylar</h2>
-            <button class="drawer-close" id="drawer-close">&times;</button>
+        <div class="drawer-header">
+            <div class="drawer-header-content">
+                <div class="drawer-title" id="drawer-title">Detay</div>
+                <div class="drawer-subtitle" id="drawer-subtitle"></div>
+            </div>
+            <button class="drawer-close" id="drawer-close">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
         </div>
         <div class="drawer-tabs" id="drawer-tabs"></div>
-        <div class="drawer-content" id="drawer-content"></div>
+        <div class="drawer-body" id="drawer-body"></div>
         <div class="drawer-footer" id="drawer-footer"></div>
     </aside>
-
+    
     <script src="security.js"></script>
+    <script src="auth.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

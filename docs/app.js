@@ -1,130 +1,96 @@
 /**
- * SOC Console v5.0 - Full SIEM + SOAR + EDR Platform
- * Live Feed, EDR Actions, Playbook Runner
- * All actions are SIMULATED - no real system changes
+ * SOC Console - Enterprise Security Dashboard
+ * Microsoft Defender / QRadar / XSOAR inspired UI
+ * Vanilla JS, no frameworks
  */
 
 const App = {
-    // ============================================
-    // STATE
-    // ============================================
+    // State
     state: {
         view: 'overview',
-        session: null,
         data: {
-            events: [],
-            alerts: [],
-            cases: [],
-            iocs: [],
-            devices: [],
-            entities: null,
-            mitre: null,
-            playbooks: [],
-            playbookLibrary: [],
-            kpi: null,
             summary: null,
-            risk: null,
-            correlations: null
+            alerts: [],
+            events: [],
+            cases: [],
+            devices: [],
+            iocs: [],
+            playbooks: [],
+            playbookRuns: [],
+            riskScores: {},
+            correlations: {},
+            mitreCoverage: null
         },
-        // Live feed state
-        live: {
-            enabled: false,
-            speed: 1,
-            paused: false,
-            buffer: [],
-            maxBuffer: 500,
-            lastEventTime: null,
-            intervalId: null,
-            muted: false,
-            autoScroll: true,
-            dropped: 0
-        },
-        // EDR state (localStorage backed)
-        edr: {
-            deviceStates: {},
-            actions: []
-        },
-        // SOAR state
-        soar: {
-            activeRuns: [],
-            completedRuns: []
-        },
-        // Filters
         filters: {
-            severity: 'all',
-            status: 'all',
+            severity: [],
+            status: [],
+            category: [],
             search: ''
         },
-        // Drawer
         drawer: {
             open: false,
             type: null,
             id: null,
-            tab: 'summary'
+            tab: 0
         },
-        cmdPalette: false,
-        density: 'comfortable'
+        live: {
+            enabled: false,
+            interval: null,
+            speed: 2000,
+            eventCount: 0
+        },
+        edr: {},
+        soar: { runs: [], active: null }
     },
 
-    // ============================================
-    // SEEDED RANDOM (Deterministic)
-    // ============================================
-    _seed: 1337,
-    
-    seededRandom() {
-        this._seed = (this._seed * 1103515245 + 12345) & 0x7fffffff;
-        return this._seed / 0x7fffffff;
-    },
-    
-    resetSeed(seed) {
-        this._seed = seed || parseInt(localStorage.getItem('soc_seed')) || 1337;
+    // Escape HTML helper
+    esc(str) {
+        return Security.escapeHtml(str);
     },
 
-    // ============================================
-    // INITIALIZATION
-    // ============================================
-    init() {
-        console.log('[SOC] Initializing...');
-        
-        // Check session
-        this.state.session = Auth.getSession();
-        if (!this.state.session) {
-            window.location.href = './login.html';
-            return;
+    // Initialize
+    async init() {
+        // Check auth
+        if (typeof Auth !== 'undefined') {
+            const session = Auth.getSession();
+            if (!session) {
+                window.location.href = './login.html';
+                return;
+            }
+            this.updateUserDisplay(session);
         }
-
-        // Load persisted state
-        this.loadPersistedState();
         
-        // Setup UI
-        this.updateUserDisplay();
-        this.applyRBAC();
         this.bindEvents();
-        this.initKeyboardShortcuts();
+        this.loadPersistedState();
+        await this.loadData();
+    },
+
+    updateUserDisplay(session) {
+        const avatar = document.getElementById('user-avatar');
+        const name = document.getElementById('user-display-name');
+        const role = document.getElementById('user-display-role');
         
-        // Load data
-        this.loadData();
-        
-        console.log('[SOC] Initialized');
+        if (avatar && session.displayName) {
+            avatar.textContent = session.displayName.charAt(0).toUpperCase();
+        }
+        if (name) {
+            name.textContent = session.displayName || session.username;
+        }
+        if (role) {
+            const roles = { admin: 'Yönetici', analyst: 'Analist', viewer: 'İzleyici' };
+            role.textContent = roles[session.role] || session.role;
+        }
     },
 
     loadPersistedState() {
         try {
-            const edrState = localStorage.getItem('soc_edr_state');
-            if (edrState) {
-                this.state.edr = JSON.parse(edrState);
-            }
-            const soarState = localStorage.getItem('soc_soar_state');
-            if (soarState) {
-                this.state.soar = JSON.parse(soarState);
-            }
-            const density = localStorage.getItem('soc_density');
-            if (density) {
-                this.state.density = density;
-                document.body.className = `density-${density}`;
-            }
+            const edr = localStorage.getItem('soc_edr_state');
+            if (edr) this.state.edr = JSON.parse(edr);
+            
+            const soar = localStorage.getItem('soc_soar_state');
+            if (soar) this.state.soar = JSON.parse(soar);
         } catch (e) {
-            console.warn('Failed to load persisted state:', e);
+            console.warn('Failed to load persisted state');
         }
     },
 
@@ -136,169 +102,109 @@ const App = {
         localStorage.setItem('soc_soar_state', JSON.stringify(this.state.soar));
     },
 
-    updateUserDisplay() {
-        const s = this.state.session;
-        const nameEl = document.getElementById('user-name');
-        const roleEl = document.getElementById('user-role');
-        const avatarEl = document.getElementById('user-avatar');
-        if (nameEl) nameEl.textContent = s.displayName || s.username;
-        if (roleEl) roleEl.textContent = this.getRoleLabel(s.role);
-        if (avatarEl) avatarEl.textContent = (s.displayName || s.username).charAt(0).toUpperCase();
-    },
-
-    getRoleLabel(role) {
-        return { admin: 'Yönetici', analyst: 'Analist', viewer: 'İzleyici' }[role] || role;
-    },
-
-    applyRBAC() {
-        document.querySelectorAll('[data-role="admin"]').forEach(el => {
-            if (!Auth.hasRole('admin')) el.classList.add('hidden');
-        });
-    },
-
-    // ============================================
-    // EVENT BINDING
-    // ============================================
     bindEvents() {
         // Navigation
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                const view = item.dataset.view;
-                if (view) this.switchView(view);
+        document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+            item.addEventListener('click', () => {
+                this.switchView(item.dataset.view);
             });
         });
 
-        // Search box -> command palette
-        const searchBox = document.getElementById('search-box');
-        if (searchBox) searchBox.addEventListener('click', () => this.openCmdPalette());
+        // Global search
+        document.getElementById('global-search')?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const q = e.target.value.trim();
+                if (q) {
+                    this.state.filters.search = q;
+                    this.switchView('events');
+                }
+            }
+        });
 
-        // Command bar
-        const refreshBtn = document.getElementById('refresh-btn');
-        if (refreshBtn) refreshBtn.addEventListener('click', () => this.refreshData());
-        
-        const exportBtn = document.getElementById('export-btn');
-        if (exportBtn) exportBtn.addEventListener('click', () => this.exportData());
+        // Refresh
+        document.getElementById('btn-refresh')?.addEventListener('click', () => this.refreshData());
 
-        // Lock button
-        const lockBtn = document.getElementById('lock-btn');
-        if (lockBtn) lockBtn.addEventListener('click', () => this.lockScreen());
-
-        // Drawer
-        const drawerOverlay = document.getElementById('drawer-overlay');
-        if (drawerOverlay) drawerOverlay.addEventListener('click', () => this.closeDrawer());
-        
-        const drawerClose = document.getElementById('drawer-close');
-        if (drawerClose) drawerClose.addEventListener('click', () => this.closeDrawer());
-
-        // Command Palette
-        const cmdPalette = document.getElementById('cmd-palette');
-        if (cmdPalette) {
-            cmdPalette.addEventListener('click', (e) => {
-                if (e.target.id === 'cmd-palette') this.closeCmdPalette();
-            });
-        }
-        
-        const cmdInput = document.getElementById('cmd-input');
-        if (cmdInput) cmdInput.addEventListener('input', (e) => this.handleCmdSearch(e.target.value));
-
-        // Modal close
-        const closeUserModal = document.getElementById('close-user-modal');
-        if (closeUserModal) {
-            closeUserModal.addEventListener('click', () => {
-                document.getElementById('user-modal').style.display = 'none';
-            });
-        }
+        // Export
+        document.getElementById('btn-export')?.addEventListener('click', () => this.exportCurrentView());
 
         // Live toggle
-        const liveToggle = document.getElementById('live-toggle');
-        if (liveToggle) liveToggle.addEventListener('click', () => this.toggleLive());
-    },
+        document.getElementById('btn-live')?.addEventListener('click', () => this.toggleLive());
 
-    initKeyboardShortcuts() {
+        // Drawer close
+        document.getElementById('drawer-close')?.addEventListener('click', () => this.closeDrawer());
+        document.getElementById('drawer-overlay')?.addEventListener('click', () => this.closeDrawer());
+
+        // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault();
-                this.openCmdPalette();
-            }
             if (e.key === 'Escape') {
-                if (this.state.cmdPalette) this.closeCmdPalette();
-                else if (this.state.drawer.open) this.closeDrawer();
+                this.closeDrawer();
+            }
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('global-search')?.focus();
+            }
+        });
+
+        // User menu
+        document.getElementById('user-menu')?.addEventListener('click', () => {
+            if (typeof Auth !== 'undefined') {
+                Auth.logout();
+                window.location.href = './login.html';
             }
         });
     },
 
-    lockScreen() {
-        this.stopLive();
-        Auth.logout();
-        window.location.href = './login.html';
-    },
-
-    // ============================================
-    // DATA LOADING
-    // ============================================
+    // Data Loading
     async loadData() {
         this.showSkeleton();
         this.updateStatus('loading', 'Yükleniyor...');
+
+        const files = [
+            { file: 'summary.json', prop: 'summary' },
+            { file: 'alerts.jsonl', prop: 'alerts', jsonl: true },
+            { file: 'events.jsonl', prop: 'events', jsonl: true },
+            { file: 'cases.json', prop: 'cases', isArray: true },
+            { file: 'edr_devices.json', prop: 'devices', isArray: true },
+            { file: 'iocs.json', prop: 'iocs', isArray: true },
+            { file: 'playbooks.json', prop: 'playbooks', isArray: 'playbooks' },
+            { file: 'playbook_runs.jsonl', prop: 'playbookRuns', jsonl: true },
+            { file: 'risk_scores.json', prop: 'riskScores' },
+            { file: 'correlations.json', prop: 'correlations' },
+            { file: 'mitre_coverage.json', prop: 'mitreCoverage' }
+        ];
+
+        const results = await Promise.allSettled(files.map(f => this.loadFile(f)));
         
-        try {
-            const files = [
-                { key: 'events', file: 'events.jsonl', jsonl: true },
-                { key: 'alerts', file: 'alerts.jsonl', jsonl: true },
-                { key: 'cases', file: 'cases.json', prop: 'cases' },
-                { key: 'iocs', file: 'iocs.json', prop: 'iocs' },
-                { key: 'devices', file: 'edr_devices.json', prop: 'devices' },
-                { key: 'entities', file: 'entities.json' },
-                { key: 'mitre', file: 'mitre_coverage.json' },
-                { key: 'playbooks', file: 'playbook_runs.jsonl', jsonl: true },
-                { key: 'playbookLibrary', file: 'playbooks.json', prop: 'playbooks' },
-                { key: 'kpi', file: 'kpi_timeseries.json' },
-                { key: 'summary', file: 'summary.json' },
-                { key: 'risk', file: 'risk_scores.json' },
-                { key: 'correlations', file: 'correlations.json' }
-            ];
+        let successCount = 0;
+        results.forEach((r, i) => {
+            if (r.status === 'fulfilled' && r.value !== null) {
+                successCount++;
+            }
+        });
 
-            const results = await Promise.allSettled(
-                files.map(f => this.loadFile(f))
-            );
-
-            let loaded = 0;
-            results.forEach((r, i) => {
-                if (r.status === 'fulfilled' && r.value !== null) {
-                    this.state.data[files[i].key] = r.value;
-                    loaded++;
-                }
-            });
-
-            console.log(`[SOC] Loaded ${loaded}/${files.length} data files`);
-            
-            this.updateStatus('ok', 'Veri Yüklendi');
-            this.updateBadges();
+        if (successCount === 0) {
             this.hideSkeleton();
-            this.renderView();
-            this.updateLastLoaded();
-
-        } catch (err) {
-            console.error('Data load failed:', err);
-            this.updateStatus('error', 'Yükleme Hatası');
-            this.hideSkeleton();
-            this.showEmptyState('Veri yüklenemedi. Konsolu kontrol edin.');
+            this.showEmptyState('Veri dosyaları bulunamadı. Lütfen pipeline\'ı çalıştırın:<br><code>python run_pipeline.py</code>');
+            this.updateStatus('error', 'Veri yok');
+            return;
         }
+
+        this.updateBadges();
+        this.updateLastLoaded();
+        this.hideSkeleton();
+        this.updateStatus('ok', 'Veri yüklendi');
+        this.renderView();
     },
 
-    async loadFile({ file, jsonl, prop }) {
+    async loadFile({ file, prop, jsonl, isArray }) {
         try {
             const res = await fetch(`./dashboard_data/${file}`);
-            if (!res.ok) {
-                console.warn(`Failed to fetch ${file}: ${res.status}`);
-                return null;
-            }
-            
+            if (!res.ok) return null;
             const text = await res.text();
-            if (!text.trim()) return jsonl ? [] : null;
             
             if (jsonl) {
-                return text.trim().split('\n')
+                this.state.data[prop] = text.trim().split('\n')
+                    .filter(line => line.trim())
                     .map(line => {
                         try { return JSON.parse(line); }
                         catch { return null; }
@@ -306,30 +212,42 @@ const App = {
                     .filter(Boolean);
             } else {
                 const json = JSON.parse(text);
-                return prop ? (json[prop] || json) : json;
+                if (isArray === true) {
+                    this.state.data[prop] = Array.isArray(json) ? json : (json.cases || json.devices || json.iocs || []);
+                } else if (typeof isArray === 'string') {
+                    this.state.data[prop] = json[isArray] || [];
+                } else {
+                    this.state.data[prop] = json;
+                }
             }
-        } catch (err) {
-            console.warn(`Error loading ${file}:`, err);
-            return jsonl ? [] : null;
+            return this.state.data[prop];
+        } catch (e) {
+            console.warn(`Failed to load ${file}:`, e);
+            return null;
         }
     },
 
     async refreshData() {
-        const btn = document.getElementById('refresh-btn');
-        if (btn) btn.classList.add('spinning');
+        this.showSkeleton();
         await this.loadData();
-        if (btn) btn.classList.remove('spinning');
-        this.toast('Veri yenilendi', 'success');
+        this.toast('Veriler yenilendi', 'success');
     },
 
-    // ============================================
-    // VIEW MANAGEMENT
-    // ============================================
+    // View Management
     switchView(view) {
         this.state.view = view;
+        
+        // Update nav
         document.querySelectorAll('.nav-item').forEach(item => {
             item.classList.toggle('active', item.dataset.view === view);
         });
+
+        // Show/hide live button
+        const liveBtn = document.getElementById('btn-live');
+        if (liveBtn) {
+            liveBtn.style.display = (view === 'events') ? 'flex' : 'none';
+        }
+
         this.renderView();
     },
 
@@ -337,1204 +255,1135 @@ const App = {
         const container = document.getElementById('view-container');
         if (!container) return;
 
-        const renderers = {
+        container.style.display = 'flex';
+        
+        const views = {
             overview: () => this.renderOverview(),
             cases: () => this.renderCases(),
             alerts: () => this.renderAlerts(),
-            search: () => this.renderSearch(),
+            events: () => this.renderEvents(),
             entities: () => this.renderEntities(),
-            edr: () => this.renderEDR(),
-            timeline: () => this.renderTimeline(),
-            mitre: () => this.renderMITRE(),
-            intel: () => this.renderIntel(),
+            devices: () => this.renderDevices(),
             automations: () => this.renderAutomations(),
-            reports: () => this.renderReports(),
-            settings: () => this.renderSettings()
+            timeline: () => this.renderTimeline(),
+            mitre: () => this.renderMitre(),
+            intel: () => this.renderIntel(),
+            reports: () => this.renderReports()
         };
 
-        const html = renderers[this.state.view]?.() || '<div class="empty-state">Sayfa bulunamadı</div>';
-        container.innerHTML = html;
-
-        // Restart animation
-        container.style.animation = 'none';
-        container.offsetHeight;
-        container.style.animation = null;
+        const renderer = views[this.state.view] || views.overview;
+        container.innerHTML = renderer();
+        this.bindViewEvents();
     },
 
-    // ============================================
-    // LIVE FEED (SIEM)
-    // ============================================
-    toggleLive() {
-        if (this.state.live.enabled) {
-            this.stopLive();
-        } else {
-            this.startLive();
-        }
-        this.updateLiveUI();
-    },
-
-    startLive() {
-        this.state.live.enabled = true;
-        this.state.live.paused = false;
-        this.resetSeed();
-        
-        const baseInterval = 1500; // ms
-        
-        this.state.live.intervalId = setInterval(() => {
-            if (!this.state.live.paused) {
-                this.generateLiveEvent();
-            }
-        }, baseInterval / this.state.live.speed);
-        
-        this.toast('Live Feed başlatıldı', 'success');
-    },
-
-    stopLive() {
-        this.state.live.enabled = false;
-        if (this.state.live.intervalId) {
-            clearInterval(this.state.live.intervalId);
-            this.state.live.intervalId = null;
-        }
-        this.toast('Live Feed durduruldu', 'info');
-    },
-
-    setLiveSpeed(speed) {
-        this.state.live.speed = speed;
-        if (this.state.live.enabled) {
-            this.stopLive();
-            this.startLive();
-        }
-    },
-
-    generateLiveEvent() {
-        const r = this.seededRandom();
-        let eventType, severity, tags;
-        
-        // Distribution: 55% benign, 25% low, 15% medium, 5% high/critical
-        if (r < 0.55) {
-            eventType = this.pickRandom(['login_success', 'email_delivered', 'url_visited', 'file_accessed', 'process_start']);
-            severity = 'info';
-            tags = [];
-        } else if (r < 0.80) {
-            eventType = this.pickRandom(['new_device', 'geo_anomaly_low', 'uncommon_domain', 'mfa_challenge']);
-            severity = 'low';
-            tags = ['anomaly'];
-        } else if (r < 0.95) {
-            eventType = this.pickRandom(['mfa_push_burst', 'dns_query_spike', 'inbox_search', 'failed_login_burst']);
-            severity = 'medium';
-            tags = ['suspicious'];
-        } else {
-            eventType = this.pickRandom(['impossible_travel', 'inbox_rule_created', 'oauth_app_granted', 'malicious_process']);
-            severity = 'high';
-            tags = ['critical', 'alert'];
-        }
-
-        const users = this.state.data.entities?.users ? Object.keys(this.state.data.entities.users) : ['user@example.tr'];
-        const devices = this.state.data.devices || [];
-        
-        const event = {
-            event_id: `LIVE-${Date.now()}-${Math.floor(this.seededRandom() * 1000)}`,
-            timestamp: new Date().toISOString(),
-            source: this.pickRandom(['idp_auth', 'email_gateway', 'proxy_dns', 'endpoint_edr_sim', 'm365_audit']),
-            event_type: eventType,
-            user: this.pickRandom(users),
-            device_id: devices.length ? this.pickRandom(devices).id : 'DEV-LIVE',
-            src_ip: `10.${Math.floor(this.seededRandom()*255)}.${Math.floor(this.seededRandom()*255)}.${Math.floor(this.seededRandom()*255)}`,
-            geo: { city: this.pickRandom(['İstanbul', 'Ankara', 'İzmir']), country: 'Türkiye' },
-            tags: tags,
-            severity: severity,
-            summary: `[LIVE] ${eventType} - ${severity}`,
-            _live: true
-        };
-
-        // Add to buffer
-        if (this.state.live.buffer.length >= this.state.live.maxBuffer) {
-            this.state.live.buffer.shift();
-            this.state.live.dropped++;
-        }
-        this.state.live.buffer.unshift(event);
-        this.state.live.lastEventTime = event.timestamp;
-
-        // Update UI if on search view
-        if (this.state.view === 'search') {
-            this.addLiveEventToUI(event);
-        }
-
-        // Toast for high severity
-        if (severity === 'high' && !this.state.live.muted) {
-            this.toast(`⚠️ ${eventType}`, 'error');
-        }
-    },
-
-    addLiveEventToUI(event) {
-        const tbody = document.getElementById('events-tbody');
-        if (!tbody) return;
-
-        const tr = document.createElement('tr');
-        tr.className = 'live-event-new';
-        tr.innerHTML = `
-            <td class="mono muted" style="font-size:var(--text-xs)">${this.formatTime(event.timestamp)}</td>
-            <td><span class="badge info">${this.esc(event.source)}</span></td>
-            <td>${this.esc(event.event_type)}</td>
-            <td><span class="chip">${this.esc(event.user?.split('@')[0] || '—')}</span></td>
-            <td class="mono">${this.esc(event.src_ip || '—')}</td>
-            <td class="truncate" style="max-width:300px">${this.esc(event.summary)}</td>
-        `;
-        tr.onclick = () => this.openDrawer('event', event.event_id);
-        
-        tbody.insertBefore(tr, tbody.firstChild);
-
-        // Remove glow after animation
-        setTimeout(() => tr.classList.remove('live-event-new'), 1500);
-
-        // Keep table size manageable
-        while (tbody.children.length > 100) {
-            tbody.removeChild(tbody.lastChild);
-        }
-    },
-
-    updateLiveUI() {
-        const toggle = document.getElementById('live-toggle');
-        if (toggle) {
-            toggle.classList.toggle('active', this.state.live.enabled);
-            toggle.innerHTML = this.state.live.enabled 
-                ? '<span class="live-dot"></span> LIVE' 
-                : '<span class="live-dot off"></span> LIVE';
-        }
-    },
-
-    pickRandom(arr) {
-        return arr[Math.floor(this.seededRandom() * arr.length)];
-    },
-
-    // ============================================
-    // EDR ACTIONS (SIMULATED)
-    // ============================================
-    getDeviceState(deviceId) {
-        return this.state.edr.deviceStates[deviceId] || {
-            isolated: false,
-            lastAvScan: null,
-            quarantinedFiles: [],
-            blockedIps: [],
-            blockedDomains: []
-        };
-    },
-
-    performEdrAction(deviceId, action, params = {}) {
-        if (!Auth.hasRole('analyst')) {
-            this.toast('EDR aksiyonları için analist yetkisi gerekli', 'error');
-            return;
-        }
-
-        const state = this.getDeviceState(deviceId);
-        const timestamp = new Date().toISOString();
-        const device = this.state.data.devices?.find(d => d.id === deviceId);
-        
-        let actionResult = { success: true, message: '' };
-
-        switch (action) {
-            case 'isolate':
-                state.isolated = true;
-                actionResult.message = `${device?.hostname || deviceId} izole edildi (SİMÜLASYON)`;
-                break;
-            case 'release':
-                state.isolated = false;
-                actionResult.message = `${device?.hostname || deviceId} izolasyonu kaldırıldı (SİMÜLASYON)`;
-                break;
-            case 'av_scan':
-                state.lastAvScan = timestamp;
-                actionResult.message = `AV taraması başlatıldı: ${params.type || 'quick'} (SİMÜLASYON)`;
-                break;
-            case 'kill_process':
-                actionResult.message = `Process sonlandırıldı: ${params.process || 'unknown'} (SİMÜLASYON)`;
-                break;
-            case 'quarantine_file':
-                state.quarantinedFiles.push({ path: params.path, time: timestamp });
-                actionResult.message = `Dosya karantinaya alındı: ${params.path} (SİMÜLASYON)`;
-                break;
-            case 'collect_triage':
-                actionResult.message = `Triyaj paketi toplanıyor (SİMÜLASYON)`;
-                setTimeout(() => this.toast('Triyaj paketi hazır (SİMÜLASYON)', 'success'), 2000);
-                break;
-            case 'block_ip':
-                state.blockedIps.push(params.ip);
-                actionResult.message = `IP engellendi: ${params.ip} (SİMÜLASYON)`;
-                break;
-            case 'block_domain':
-                state.blockedDomains.push(params.domain);
-                actionResult.message = `Domain engellendi: ${params.domain} (SİMÜLASYON)`;
-                break;
-        }
-
-        // Save state
-        this.state.edr.deviceStates[deviceId] = state;
-        
-        // Log action
-        const actionLog = {
-            id: `EDR-${Date.now()}`,
-            timestamp,
-            deviceId,
-            action,
-            params,
-            result: actionResult,
-            user: this.state.session.username
-        };
-        this.state.edr.actions.push(actionLog);
-        this.saveEdrState();
-
-        // Add to live feed
-        if (this.state.live.enabled) {
-            this.state.live.buffer.unshift({
-                event_id: actionLog.id,
-                timestamp,
-                source: 'edr_action',
-                event_type: action,
-                device_id: deviceId,
-                user: this.state.session.username,
-                tags: ['simulated', 'edr'],
-                summary: actionResult.message,
-                _live: true
-            });
-        }
-
-        // Toast
-        this.toast(actionResult.message, 'success');
-
-        // Re-render if on EDR view
-        if (this.state.view === 'edr') {
-            this.renderView();
-        }
-
-        return actionResult;
-    },
-
-    // ============================================
-    // SOAR PLAYBOOK RUNNER
-    // ============================================
-    async runPlaybook(playbookId, caseId) {
-        if (!Auth.hasRole('analyst')) {
-            this.toast('Playbook çalıştırmak için analist yetkisi gerekli', 'error');
-            return;
-        }
-
-        const playbook = this.state.data.playbookLibrary?.find(p => p.id === playbookId);
-        if (!playbook) {
-            this.toast('Playbook bulunamadı', 'error');
-            return;
-        }
-
-        const run = {
-            id: `RUN-${Date.now()}`,
-            playbookId,
-            playbookName: playbook.name,
-            caseId,
-            startedAt: new Date().toISOString(),
-            status: 'running',
-            currentStep: 0,
-            steps: playbook.steps.map(s => ({ ...s, status: 'pending', result: null })),
-            user: this.state.session.username
-        };
-
-        this.state.soar.activeRuns.push(run);
-        this.saveSoarState();
-
-        this.toast(`Playbook başlatıldı: ${playbook.name}`, 'info');
-
-        // Execute steps
-        await this.executePlaybookSteps(run);
-
-        return run;
-    },
-
-    async executePlaybookSteps(run) {
-        for (let i = 0; i < run.steps.length; i++) {
-            run.currentStep = i;
-            const step = run.steps[i];
-            step.status = 'running';
-            this.saveSoarState();
-
-            // Update UI
-            if (this.state.drawer.open && this.state.drawer.type === 'playbook-run') {
-                this.renderDrawerContent();
-            }
-
-            // Check for approval
-            if (step.type === 'approval') {
-                step.status = 'waiting_approval';
-                this.saveSoarState();
-                
-                // Wait for approval (in real app, this would be async)
-                const approved = await this.waitForApproval(run.id, step.id);
-                if (!approved) {
-                    step.status = 'rejected';
-                    run.status = 'cancelled';
-                    break;
-                }
-            }
-
-            // Simulate step execution
-            await this.sleep(800 + Math.random() * 1200);
-
-            step.status = 'completed';
-            step.result = `${step.name} tamamlandı (SİMÜLASYON)`;
-            step.completedAt = new Date().toISOString();
-
-            // If step has EDR action, execute it
-            if (step.edr_action && run.caseId) {
-                const caseData = this.state.data.cases?.find(c => c.case_id === run.caseId);
-                if (caseData?.affected_devices?.length) {
-                    this.performEdrAction(caseData.affected_devices[0], step.edr_action);
-                }
-            }
-
-            this.saveSoarState();
-        }
-
-        // Complete run
-        run.status = 'completed';
-        run.completedAt = new Date().toISOString();
-        
-        // Move to completed
-        const idx = this.state.soar.activeRuns.findIndex(r => r.id === run.id);
-        if (idx > -1) {
-            this.state.soar.activeRuns.splice(idx, 1);
-            this.state.soar.completedRuns.unshift(run);
-        }
-        this.saveSoarState();
-
-        // Add war room note
-        if (run.caseId) {
-            this.addWarRoomNote(run.caseId, `Playbook tamamlandı: ${run.playbookName}`);
-        }
-
-        this.toast(`Playbook tamamlandı: ${run.playbookName}`, 'success');
-
-        if (this.state.view === 'automations') {
-            this.renderView();
-        }
-    },
-
-    async waitForApproval(runId, stepId) {
-        // In this simulation, auto-approve after showing dialog
-        return new Promise(resolve => {
-            const confirmed = confirm('Bu adımı onaylıyor musunuz? (SİMÜLASYON)');
-            resolve(confirmed);
-        });
-    },
-
-    approveStep(runId, stepId) {
-        const run = this.state.soar.activeRuns.find(r => r.id === runId);
-        if (run) {
-            const step = run.steps.find(s => s.id === stepId);
-            if (step) {
-                step.status = 'approved';
-                this.saveSoarState();
-            }
-        }
-    },
-
-    sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    },
-
-    // ============================================
-    // VIEW RENDERERS
-    // ============================================
+    // ==========================================
+    // OVERVIEW
+    // ==========================================
     renderOverview() {
-        const s = this.state.data.summary || {};
-        const m = s.metrics || {};
-        const cases = this.state.data.cases || [];
-        const alerts = this.state.data.alerts || [];
-        const activeCases = cases.filter(c => c.status !== 'closed').length;
-        const criticalAlerts = alerts.filter(a => a.severity === 'critical').length;
-        
+        const d = this.state.data;
+        const totalEvents = d.events?.length || d.summary?.total_events || 0;
+        const totalAlerts = d.alerts?.length || 0;
+        const criticalAlerts = d.alerts?.filter(a => a.severity === 'critical' || a.severity === 'high').length || 0;
+        const openCases = d.cases?.filter(c => c.status !== 'closed').length || 0;
+        const devices = d.devices?.length || 0;
+
         return `
-            <h1 class="view-title">Genel Bakış</h1>
+            <div class="page-header">
+                <div class="page-header-top">
+                    <div>
+                        <h1 class="page-title">Güvenlik Genel Bakışı</h1>
+                        <p class="page-subtitle">Anadolu Finans Holding - SOC Durumu</p>
+                    </div>
+                </div>
+            </div>
             
-            <div class="card-grid">
-                <div class="card card-clickable" onclick="App.switchView('cases')">
-                    <div class="card-label">Aktif Vakalar</div>
-                    <div class="card-value">${activeCases}</div>
-                    <div class="card-meta">${cases.length} toplam vaka</div>
+            <div class="summary-strip">
+                <div class="stat-tile">
+                    <span class="stat-label">Toplam Olay</span>
+                    <span class="stat-value">${totalEvents}</span>
                 </div>
-                <div class="card card-clickable" onclick="App.switchView('alerts')">
-                    <div class="card-label">Toplam Uyarı</div>
-                    <div class="card-value ${criticalAlerts > 0 ? 'critical' : ''}">${alerts.length}</div>
-                    <div class="card-meta">${criticalAlerts} kritik</div>
+                <div class="stat-tile">
+                    <span class="stat-label">Uyarılar</span>
+                    <span class="stat-value warning">${totalAlerts}</span>
                 </div>
-                <div class="card card-clickable" onclick="App.switchView('search')">
-                    <div class="card-label">Analiz Edilen Olay</div>
-                    <div class="card-value">${this.state.data.events?.length || 0}</div>
-                    <div class="card-meta">+ ${this.state.live.buffer.length} live</div>
+                <div class="stat-tile">
+                    <span class="stat-label">Kritik/Yüksek</span>
+                    <span class="stat-value danger">${criticalAlerts}</span>
                 </div>
-                <div class="card card-clickable" onclick="App.switchView('edr')">
-                    <div class="card-label">İzlenen Cihaz</div>
-                    <div class="card-value">${this.state.data.devices?.length || 0}</div>
-                    <div class="card-meta">${Object.values(this.state.edr.deviceStates).filter(s => s.isolated).length} izole</div>
+                <div class="stat-tile">
+                    <span class="stat-label">Açık Vakalar</span>
+                    <span class="stat-value primary">${openCases}</span>
+                </div>
+                <div class="stat-tile">
+                    <span class="stat-label">Cihazlar</span>
+                    <span class="stat-value">${devices}</span>
                 </div>
             </div>
-
-            <div class="section-header flex justify-between items-center mb-4">
-                <h2 class="section-title" style="margin:0">Son Vakalar</h2>
-                <button class="btn btn-secondary btn-sm" onclick="App.switchView('cases')">Tümünü Gör</button>
+            
+            <div class="data-grid-container" style="padding: var(--space-5);">
+                <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-4);">Son Uyarılar</h3>
+                ${this.renderAlertTable(d.alerts?.slice(0, 10) || [])}
             </div>
-            <div class="table-container">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Vaka ID</th>
-                            <th>Başlık</th>
-                            <th>Önem</th>
-                            <th>Durum</th>
-                            <th>Uyarılar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${cases.slice(0, 5).map(c => `
-                            <tr onclick="App.openDrawer('case', '${this.esc(c.case_id)}')">
-                                <td class="mono">${this.esc(c.case_id)}</td>
-                                <td class="truncate" style="max-width:250px">${this.esc(c.title)}</td>
-                                <td><span class="badge ${this.esc(c.severity)}${c.severity === 'critical' ? ' pulse' : ''}">${this.esc(c.severity)}</span></td>
-                                <td>${this.esc(c.status)}</td>
-                                <td>${c.alert_ids?.length || 0}</td>
-                            </tr>
-                        `).join('') || '<tr><td colspan="5" class="muted">Vaka bulunamadı</td></tr>'}
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="section-header flex justify-between items-center mb-4 mt-6">
-                <h2 class="section-title" style="margin:0">Aktif Playbook Çalışmaları</h2>
-            </div>
-            ${this.state.soar.activeRuns.length ? `
-                <div class="card-grid">
-                    ${this.state.soar.activeRuns.map(r => `
-                        <div class="card">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="badge info">${this.esc(r.playbookName)}</span>
-                                <span class="badge">${r.currentStep + 1}/${r.steps.length}</span>
-                            </div>
-                            <div class="muted">Vaka: ${this.esc(r.caseId)}</div>
-                            <div class="progress-bar mt-2">
-                                <div class="progress-fill" style="width:${((r.currentStep + 1) / r.steps.length) * 100}%"></div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            ` : '<div class="muted">Aktif playbook çalışması yok</div>'}
         `;
     },
 
+    // ==========================================
+    // CASES
+    // ==========================================
     renderCases() {
         const cases = this.state.data.cases || [];
         
         return `
-            <div class="view-header">
-                <h1 class="view-title" style="margin-bottom:0">Vakalar</h1>
-                <div class="flex gap-2">
-                    <select class="select select-sm" onchange="App.state.filters.status = this.value; App.renderView()">
-                        <option value="all">Tüm Durumlar</option>
+            <div class="page-header">
+                <div class="page-header-top">
+                    <div>
+                        <h1 class="page-title">Vakalar</h1>
+                        <p class="page-subtitle">${cases.length} vaka</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="toolbar">
+                <div class="toolbar-search">
+                    <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" placeholder="Vaka ara..." id="case-search">
+                </div>
+                <div class="toolbar-group">
+                    <select class="form-select" style="width: auto;" id="filter-case-status">
+                        <option value="">Tüm Durumlar</option>
                         <option value="new">Yeni</option>
-                        <option value="investigating">İnceleniyor</option>
-                        <option value="contained">Kontrol Altında</option>
+                        <option value="in_progress">İnceleniyor</option>
                         <option value="closed">Kapatıldı</option>
                     </select>
-                    <select class="select select-sm" onchange="App.state.filters.severity = this.value; App.renderView()">
-                        <option value="all">Tüm Önemler</option>
+                    <select class="form-select" style="width: auto;" id="filter-case-severity">
+                        <option value="">Tüm Seviyeler</option>
                         <option value="critical">Kritik</option>
                         <option value="high">Yüksek</option>
                         <option value="medium">Orta</option>
+                        <option value="low">Düşük</option>
                     </select>
                 </div>
             </div>
-
-            <div class="table-container">
-                <table class="table">
+            
+            <div class="data-grid-container">
+                <table class="data-grid">
                     <thead>
                         <tr>
                             <th>Vaka ID</th>
                             <th>Başlık</th>
-                            <th>Önem</th>
+                            <th>Seviye</th>
                             <th>Durum</th>
-                            <th>Sahip</th>
                             <th>Uyarılar</th>
-                            <th>Aksiyonlar</th>
+                            <th>Etkilenen</th>
+                            <th>Başlangıç</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${this.filterCases(cases).map(c => `
-                            <tr>
-                                <td class="mono" onclick="App.openDrawer('case', '${this.esc(c.case_id)}')" style="cursor:pointer">${this.esc(c.case_id)}</td>
-                                <td class="truncate" style="max-width:200px" onclick="App.openDrawer('case', '${this.esc(c.case_id)}')" style="cursor:pointer">${this.esc(c.title)}</td>
-                                <td><span class="badge ${this.esc(c.severity)}${c.severity === 'critical' ? ' pulse' : ''}">${this.esc(c.severity)}</span></td>
-                                <td>${this.esc(c.status)}</td>
-                                <td>${this.esc(c.owner || 'atanmamış')}</td>
+                        ${cases.map(c => `
+                            <tr data-case-id="${this.esc(c.case_id)}" class="case-row">
+                                <td><code>${this.esc(c.case_id)}</code></td>
+                                <td>${this.esc(c.title)}</td>
+                                <td>${this.renderSeverityBadge(c.severity)}</td>
+                                <td>${this.renderStatusBadge(c.status)}</td>
                                 <td>${c.alert_ids?.length || 0}</td>
-                                <td>
-                                    <button class="btn btn-secondary btn-sm" onclick="App.showPlaybookPicker('${this.esc(c.case_id)}')">
-                                        Playbook Çalıştır
-                                    </button>
-                                </td>
+                                <td>${c.affected_users?.length || 0} kullanıcı</td>
+                                <td>${this.formatTime(c.start_ts)}</td>
                             </tr>
-                        `).join('') || '<tr><td colspan="7" class="muted">Vaka bulunamadı</td></tr>'}
+                        `).join('')}
                     </tbody>
                 </table>
             </div>
         `;
     },
 
-    filterCases(cases) {
-        return cases.filter(c => {
-            if (this.state.filters.status !== 'all' && c.status !== this.state.filters.status) return false;
-            if (this.state.filters.severity !== 'all' && c.severity !== this.state.filters.severity) return false;
-            return true;
-        });
-    },
-
+    // ==========================================
+    // ALERTS
+    // ==========================================
     renderAlerts() {
         const alerts = this.state.data.alerts || [];
         
         return `
-            <h1 class="view-title">Uyarılar</h1>
-            
-            <div class="table-container">
-                <div class="table-toolbar">
-                    <input type="text" class="input" placeholder="Uyarı ara..." 
-                           style="width:300px" onkeyup="App.filterAlerts(this.value)">
-                    <span class="muted">${alerts.length} uyarı</span>
+            <div class="page-header">
+                <div class="page-header-top">
+                    <div>
+                        <h1 class="page-title">Uyarılar</h1>
+                        <p class="page-subtitle">${alerts.length} uyarı</p>
+                    </div>
                 </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Uyarı</th>
-                            <th>Önem</th>
-                            <th>Vaka</th>
-                            <th>Varlık</th>
-                            <th>MITRE</th>
-                        </tr>
-                    </thead>
-                    <tbody id="alerts-tbody">
-                        ${alerts.map(a => `
-                            <tr onclick="App.openDrawer('alert', '${this.esc(a.alert_id)}')">
-                                <td>
-                                    <div>${this.esc(a.name)}</div>
-                                    <div class="muted mono" style="font-size:var(--text-xs)">${this.esc(a.alert_id)}</div>
-                                </td>
-                                <td><span class="badge ${this.esc(a.severity)}${a.severity === 'critical' ? ' pulse' : ''}">${this.esc(a.severity)}</span></td>
-                                <td class="mono">${this.esc(a.case_id || '—')}</td>
-                                <td><span class="chip">${this.esc(a.entity?.user?.split('@')[0] || '—')}</span></td>
-                                <td>${a.mitre?.slice(0,2).map(m => `<span class="badge info">${this.esc(m.id)}</span>`).join(' ') || '—'}</td>
-                            </tr>
-                        `).join('') || '<tr><td colspan="5" class="muted">Uyarı bulunamadı</td></tr>'}
-                    </tbody>
-                </table>
+            </div>
+            
+            ${this.renderFilterBar('alerts')}
+            
+            <div class="data-grid-container">
+                ${this.renderAlertTable(alerts)}
             </div>
         `;
     },
 
-    renderSearch() {
-        const baseEvents = this.state.data.events || [];
-        const liveEvents = this.state.live.buffer;
-        const allEvents = [...liveEvents, ...baseEvents].slice(0, 100);
-        
-        return `
-            <div class="view-header">
-                <h1 class="view-title" style="margin-bottom:0">Olay Arama (SIEM)</h1>
-                <div class="flex gap-2 items-center">
-                    <button class="btn ${this.state.live.enabled ? 'btn-primary' : 'btn-secondary'}" id="live-toggle" onclick="App.toggleLive()">
-                        <span class="live-dot ${this.state.live.enabled ? '' : 'off'}"></span> LIVE
-                    </button>
-                    ${this.state.live.enabled ? `
-                        <select class="select select-sm" onchange="App.setLiveSpeed(parseInt(this.value))">
-                            <option value="1" ${this.state.live.speed === 1 ? 'selected' : ''}>x1</option>
-                            <option value="2" ${this.state.live.speed === 2 ? 'selected' : ''}>x2</option>
-                            <option value="5" ${this.state.live.speed === 5 ? 'selected' : ''}>x5</option>
-                        </select>
-                        <button class="btn btn-secondary btn-sm" onclick="App.state.live.buffer = []; App.renderView()">Temizle</button>
-                    ` : ''}
-                </div>
-            </div>
-            
-            <div class="live-stats mb-4 flex gap-4">
-                <span class="muted">Base: ${baseEvents.length}</span>
-                <span class="muted">Live Buffer: ${liveEvents.length}</span>
-                ${this.state.live.dropped > 0 ? `<span class="muted" style="color:var(--warning)">Dropped: ${this.state.live.dropped}</span>` : ''}
-            </div>
-
-            <div class="table-container">
-                <div class="table-toolbar">
-                    <input type="text" class="input" placeholder="Olay ara (user:, source:, type:)" 
-                           style="width:400px" id="event-search" onkeyup="App.searchEvents(this.value)">
-                </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Zaman</th>
-                            <th>Kaynak</th>
-                            <th>Tür</th>
-                            <th>Kullanıcı</th>
-                            <th>IP</th>
-                            <th>Özet</th>
-                        </tr>
-                    </thead>
-                    <tbody id="events-tbody">
-                        ${allEvents.slice(0, 50).map(e => `
-                            <tr class="${e._live ? 'live-event' : ''}" onclick="App.openDrawer('event', '${this.esc(e.event_id)}')">
-                                <td class="mono muted" style="font-size:var(--text-xs)">${this.formatTime(e.timestamp)}</td>
-                                <td><span class="badge info">${this.esc(e.source)}</span></td>
-                                <td>${this.esc(e.event_type)}</td>
-                                <td><span class="chip">${this.esc(e.user?.split('@')[0] || '—')}</span></td>
-                                <td class="mono">${this.esc(e.src_ip || '—')}</td>
-                                <td class="truncate" style="max-width:300px">${this.esc(e.summary)}</td>
-                            </tr>
-                        `).join('') || '<tr><td colspan="6" class="muted">Olay bulunamadı</td></tr>'}
-                    </tbody>
-                </table>
-            </div>
-        `;
-    },
-
-    searchEvents(query) {
-        const q = query.toLowerCase();
-        const baseEvents = this.state.data.events || [];
-        const allEvents = [...this.state.live.buffer, ...baseEvents];
-        
-        const filtered = allEvents.filter(e => {
-            if (!q) return true;
-            const searchable = [e.user, e.source, e.event_type, e.summary, e.src_ip].join(' ').toLowerCase();
-            return searchable.includes(q);
-        }).slice(0, 50);
-
-        const tbody = document.getElementById('events-tbody');
-        if (tbody) {
-            tbody.innerHTML = filtered.map(e => `
-                <tr class="${e._live ? 'live-event' : ''}" onclick="App.openDrawer('event', '${this.esc(e.event_id)}')">
-                    <td class="mono muted" style="font-size:var(--text-xs)">${this.formatTime(e.timestamp)}</td>
-                    <td><span class="badge info">${this.esc(e.source)}</span></td>
-                    <td>${this.esc(e.event_type)}</td>
-                    <td><span class="chip">${this.esc(e.user?.split('@')[0] || '—')}</span></td>
-                    <td class="mono">${this.esc(e.src_ip || '—')}</td>
-                    <td class="truncate" style="max-width:300px">${this.esc(e.summary)}</td>
-                </tr>
-            `).join('');
+    renderAlertTable(alerts) {
+        if (!alerts.length) {
+            return '<div class="empty-state"><p class="empty-state-title">Uyarı bulunamadı</p></div>';
         }
-    },
-
-    renderEntities() {
-        const users = this.state.data.entities?.users ? Object.entries(this.state.data.entities.users) : [];
-        const risk = this.state.data.risk?.entity_scores || {};
 
         return `
-            <h1 class="view-title">Varlıklar</h1>
-            
-            <div class="card-grid">
-                ${users.map(([email, data]) => {
-                    const score = risk[email]?.score || 0;
-                    const sev = score >= 80 ? 'critical' : score >= 60 ? 'high' : score >= 40 ? 'medium' : 'low';
-                    return `
-                        <div class="card card-clickable" onclick="App.openDrawer('entity', '${this.esc(email)}')">
-                            <div class="flex justify-between items-center mb-3">
-                                <div>
-                                    <div style="font-weight:600">${this.esc(data.name || email.split('@')[0])}</div>
-                                    <div class="muted" style="font-size:var(--text-xs)">${this.esc(email)}</div>
-                                </div>
-                                <span class="badge ${sev}">Risk: ${score}</span>
-                            </div>
-                            <div class="muted" style="font-size:var(--text-sm)">
-                                ${data.event_count || 0} olay • ${data.devices?.length || 0} cihaz
-                            </div>
-                        </div>
-                    `;
-                }).join('') || '<div class="empty-state">Varlık bulunamadı</div>'}
-            </div>
-        `;
-    },
-
-    renderEDR() {
-        const devices = this.state.data.devices || [];
-
-        return `
-            <div class="view-header">
-                <h1 class="view-title" style="margin-bottom:0">Uç Nokta Algılama ve Yanıt (EDR)</h1>
-                <div class="simulation-label">
-                    <span class="badge medium">SİMÜLASYON</span>
-                    <span class="muted">Gerçek cihazlara etki yok</span>
-                </div>
-            </div>
-            
-            <div class="table-container">
-                <div class="table-toolbar">
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" onchange="App.state.filters.isolatedOnly = this.checked; App.renderView()">
-                        Sadece İzole
-                    </label>
-                </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Hostname</th>
-                            <th>İşletim Sistemi</th>
-                            <th>Sahip</th>
-                            <th>Durum</th>
-                            <th>Risk</th>
-                            <th>Aksiyonlar</th>
+            <table class="data-grid">
+                <thead>
+                    <tr>
+                        <th>Zaman</th>
+                        <th>Uyarı</th>
+                        <th>Seviye</th>
+                        <th>Güven</th>
+                        <th>Kullanıcı</th>
+                        <th>Kaynak IP</th>
+                        <th>MITRE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${alerts.map(a => `
+                        <tr data-alert-id="${this.esc(a.alert_id || a.id)}" class="alert-row">
+                            <td><code>${this.formatTime(a.timestamp || a.ts)}</code></td>
+                            <td>${this.esc(a.alert_name || a.name || a.title)}</td>
+                            <td>${this.renderSeverityBadge(a.severity)}</td>
+                            <td><span class="badge badge-neutral">${a.confidence || 'N/A'}</span></td>
+                            <td>${this.esc(a.user || a.affected_user || '—')}</td>
+                            <td><code>${this.esc(a.src_ip || a.source_ip || '—')}</code></td>
+                            <td>${(a.mitre_techniques || a.techniques || []).slice(0, 2).map(t => `<span class="badge badge-info">${this.esc(t)}</span>`).join(' ')}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        ${devices.filter(d => !this.state.filters.isolatedOnly || this.getDeviceState(d.id).isolated).map(d => {
-                            const state = this.getDeviceState(d.id);
-                            return `
-                                <tr>
-                                    <td>
-                                        <span class="mono" style="cursor:pointer" onclick="App.openDrawer('device', '${this.esc(d.id)}')">${this.esc(d.hostname)}</span>
-                                        ${state.isolated ? '<span class="badge critical" style="margin-left:8px">İZOLE</span>' : ''}
-                                    </td>
-                                    <td>${this.esc(d.os)}</td>
-                                    <td><span class="chip">${this.esc(d.owner?.split('@')[0] || '—')}</span></td>
-                                    <td>${state.isolated ? '<span class="badge critical">İzole</span>' : '<span class="badge low">Aktif</span>'}</td>
-                                    <td><span class="badge ${d.risk_score >= 50 ? 'high' : 'low'}">${d.risk_score || 0}</span></td>
-                                    <td>
-                                        <div class="flex gap-1">
-                                            ${state.isolated 
-                                                ? `<button class="btn btn-secondary btn-sm" onclick="App.performEdrAction('${this.esc(d.id)}', 'release')">Serbest Bırak</button>`
-                                                : `<button class="btn btn-secondary btn-sm" onclick="App.performEdrAction('${this.esc(d.id)}', 'isolate')">İzole Et</button>`
-                                            }
-                                            <button class="btn btn-secondary btn-sm" onclick="App.performEdrAction('${this.esc(d.id)}', 'av_scan', {type:'quick'})">AV Tara</button>
-                                            <button class="btn btn-secondary btn-sm" onclick="App.performEdrAction('${this.esc(d.id)}', 'collect_triage')">Triyaj</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            `;
-                        }).join('') || '<tr><td colspan="6" class="muted">Cihaz bulunamadı</td></tr>'}
-                    </tbody>
-                </table>
-            </div>
-
-            <h2 class="section-title mt-6">EDR Aksiyon Geçmişi</h2>
-            <div class="table-container">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Zaman</th>
-                            <th>Cihaz</th>
-                            <th>Aksiyon</th>
-                            <th>Sonuç</th>
-                            <th>Kullanıcı</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${this.state.edr.actions.slice(-20).reverse().map(a => `
-                            <tr>
-                                <td class="mono muted">${this.formatTime(a.timestamp)}</td>
-                                <td class="mono">${this.esc(a.deviceId)}</td>
-                                <td><span class="badge info">${this.esc(a.action)}</span></td>
-                                <td>${this.esc(a.result?.message || '—')}</td>
-                                <td>${this.esc(a.user)}</td>
-                            </tr>
-                        `).join('') || '<tr><td colspan="5" class="muted">Aksiyon geçmişi yok</td></tr>'}
-                    </tbody>
-                </table>
-            </div>
+                    `).join('')}
+                </tbody>
+            </table>
         `;
     },
 
-    renderTimeline() {
-        const events = [...(this.state.live.buffer || []), ...(this.state.data.events || [])].slice(0, 30);
-
+    // ==========================================
+    // EVENTS (SIEM - QRadar Style)
+    // ==========================================
+    renderEvents() {
+        const events = this.state.data.events || [];
+        const categories = [...new Set(events.map(e => e.source || e.event_type).filter(Boolean))];
+        
         return `
-            <h1 class="view-title">Olay Zaman Çizelgesi</h1>
-            
-            <div class="timeline">
-                ${events.map(e => {
-                    const sev = e.tags?.includes('critical') || e.tags?.includes('suspicious') ? 'high' : '';
-                    return `
-                        <div class="timeline-item ${sev} ${e._live ? 'live' : ''}" onclick="App.openDrawer('event', '${this.esc(e.event_id)}')">
-                            <div class="timeline-marker"></div>
-                            <div class="timeline-time">${this.formatTime(e.timestamp)} ${e._live ? '<span class="badge info">LIVE</span>' : ''}</div>
-                            <div class="timeline-content">
-                                <div class="flex justify-between items-center">
-                                    <span class="badge info">${this.esc(e.source)}</span>
-                                    <span>${this.esc(e.event_type)}</span>
-                                </div>
-                                <div style="margin-top:var(--space-2)">${this.esc(e.summary)}</div>
-                            </div>
+            <div style="display: flex; flex: 1; overflow: hidden;">
+                <!-- Filter Pane (QRadar style) -->
+                <div class="filter-pane">
+                    <div class="filter-header">
+                        <span class="filter-title">Filtreler</span>
+                        <span class="filter-clear" onclick="App.clearFilters()">Temizle</span>
+                    </div>
+                    <div class="filter-body">
+                        <div class="filter-section">
+                            <div class="filter-section-title">Kaynak Tipi <span class="filter-section-count">(${categories.length})</span></div>
+                            ${categories.slice(0, 10).map(cat => `
+                                <label class="filter-option">
+                                    <input type="checkbox" value="${this.esc(cat)}" onchange="App.applyEventFilter()">
+                                    <span>${this.esc(cat)}</span>
+                                    <span class="filter-option-count">${events.filter(e => (e.source || e.event_type) === cat).length}</span>
+                                </label>
+                            `).join('')}
                         </div>
-                    `;
-                }).join('') || '<div class="empty-state">Olay bulunamadı</div>'}
-            </div>
-        `;
-    },
-
-    renderMITRE() {
-        const techniques = this.state.data.mitre?.techniques || [];
-
-        return `
-            <h1 class="view-title">MITRE ATT&CK Kapsamı</h1>
-            
-            <div class="mitre-grid">
-                ${techniques.map(t => `
-                    <div class="mitre-cell ${t.count > 0 ? 'active' : ''}">
-                        <div class="mitre-id">${this.esc(t.id)}</div>
-                        <div class="mitre-name">${this.esc(t.name)}</div>
-                        <div class="mitre-tactic">${this.esc(t.tactic)}</div>
-                        <div style="margin-top:var(--space-2)">
-                            <span class="badge">${t.count} gözlem</span>
+                        
+                        <div class="filter-section">
+                            <div class="filter-section-title">Seviye</div>
+                            ${['critical', 'high', 'medium', 'low', 'info'].map(sev => `
+                                <label class="filter-option">
+                                    <input type="checkbox" value="${sev}" class="filter-severity" onchange="App.applyEventFilter()">
+                                    <span>${this.getSeverityLabel(sev)}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="filter-section">
+                            <div class="filter-section-title">Zaman Aralığı</div>
+                            <select class="form-select" id="filter-time-range" onchange="App.applyEventFilter()">
+                                <option value="all">Tümü</option>
+                                <option value="1h">Son 1 saat</option>
+                                <option value="24h">Son 24 saat</option>
+                                <option value="7d">Son 7 gün</option>
+                            </select>
                         </div>
                     </div>
-                `).join('') || '<div class="empty-state">MITRE verisi bulunamadı</div>'}
+                </div>
+                
+                <!-- Main View -->
+                <div class="main-view">
+                    <div class="page-header">
+                        <div class="page-header-top">
+                            <div>
+                                <h1 class="page-title">Olay Arama</h1>
+                                <p class="page-subtitle">${events.length} olay</p>
+                            </div>
+                            <div class="page-actions">
+                                ${this.state.live.enabled ? `
+                                    <div class="live-indicator">
+                                        <span class="live-dot"></span>
+                                        CANLI - ${this.state.live.eventCount} yeni
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="toolbar">
+                        <div class="toolbar-search" style="max-width: 600px;">
+                            <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input type="text" id="event-search" placeholder="user:alice AND event_type:login" value="${this.esc(this.state.filters.search)}">
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="App.searchEvents()">Ara</button>
+                        <div class="toolbar-divider"></div>
+                        <button class="btn btn-ghost btn-sm" onclick="App.saveSearch()">Aramayı Kaydet</button>
+                        <button class="btn btn-ghost btn-sm" onclick="App.exportEvents()">CSV İndir</button>
+                    </div>
+                    
+                    <div class="data-grid-container" id="events-table">
+                        ${this.renderEventsTable(events.slice(0, 100))}
+                    </div>
+                </div>
             </div>
         `;
     },
 
+    renderEventsTable(events) {
+        if (!events.length) {
+            return '<div class="empty-state"><p class="empty-state-title">Olay bulunamadı</p></div>';
+        }
+
+        return `
+            <table class="data-grid">
+                <thead>
+                    <tr>
+                        <th style="width: 140px;">Zaman</th>
+                        <th>Kaynak</th>
+                        <th>Olay Tipi</th>
+                        <th>Kullanıcı</th>
+                        <th>Cihaz</th>
+                        <th>Kaynak IP</th>
+                        <th>Özet</th>
+                    </tr>
+                </thead>
+                <tbody id="events-tbody">
+                    ${events.map(e => this.renderEventRow(e)).join('')}
+                </tbody>
+            </table>
+        `;
+    },
+
+    renderEventRow(e, isNew = false) {
+        return `
+            <tr data-event-id="${this.esc(e.event_id || e.id)}" class="event-row${isNew ? ' live-new' : ''}">
+                <td><code>${this.formatTime(e.ts || e.timestamp)}</code></td>
+                <td><span class="badge badge-neutral">${this.esc(e.source || '—')}</span></td>
+                <td>${this.esc(e.event_type || '—')}</td>
+                <td>${this.esc(e.user || '—')}</td>
+                <td>${this.esc(e.device || '—')}</td>
+                <td><code>${this.esc(e.src_ip || '—')}</code></td>
+                <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">${this.esc(e.summary || '—')}</td>
+            </tr>
+        `;
+    },
+
+    // ==========================================
+    // ENTITIES
+    // ==========================================
+    renderEntities() {
+        const risk = this.state.data.riskScores || {};
+        const users = Object.entries(risk).map(([user, data]) => ({
+            user,
+            score: typeof data === 'number' ? data : data.total_score || data.score || 0,
+            factors: data.factors || []
+        }));
+        
+        users.sort((a, b) => b.score - a.score);
+        
+        return `
+            <div class="page-header">
+                <div class="page-header-top">
+                    <div>
+                        <h1 class="page-title">Varlıklar</h1>
+                        <p class="page-subtitle">${users.length} kullanıcı</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="users">Kullanıcılar</div>
+                <div class="tab" data-tab="ips">IP Adresleri</div>
+                <div class="tab" data-tab="domains">Domain'ler</div>
+            </div>
+            
+            <div class="data-grid-container">
+                <table class="data-grid">
+                    <thead>
+                        <tr>
+                            <th>Kullanıcı</th>
+                            <th>Risk Skoru</th>
+                            <th>Seviye</th>
+                            <th>Faktörler</th>
+                            <th>İlişkili Uyarılar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${users.map(u => `
+                            <tr data-user="${this.esc(u.user)}" class="entity-row">
+                                <td><strong>${this.esc(u.user)}</strong></td>
+                                <td>
+                                    <div class="risk-indicator">
+                                        ${this.renderRiskBar(u.score)}
+                                        <span>${u.score}</span>
+                                    </div>
+                                </td>
+                                <td>${this.renderRiskBadge(u.score)}</td>
+                                <td>${u.factors.slice(0, 2).map(f => `<span class="chip">${this.esc(f.name || f)}</span>`).join(' ')}</td>
+                                <td>${this.state.data.alerts?.filter(a => a.user === u.user || a.affected_user === u.user).length || 0}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    },
+
+    // ==========================================
+    // DEVICES (EDR - Microsoft Defender Style)
+    // ==========================================
+    renderDevices() {
+        const devices = this.state.data.devices || [];
+        const riskLevels = { critical: 0, high: 0, medium: 0, low: 0 };
+        
+        devices.forEach(d => {
+            const score = d.risk_score || 0;
+            if (score >= 80) riskLevels.critical++;
+            else if (score >= 60) riskLevels.high++;
+            else if (score >= 30) riskLevels.medium++;
+            else riskLevels.low++;
+        });
+
+        return `
+            <div style="display: flex; flex: 1; overflow: hidden;">
+                <!-- Filter Pane (MDE style) -->
+                <div class="filter-pane">
+                    <div class="filter-header">
+                        <span class="filter-title">Filtreler</span>
+                        <span class="filter-clear" onclick="App.clearDeviceFilters()">Temizle</span>
+                    </div>
+                    <div class="filter-body">
+                        <div class="filter-section">
+                            <div class="filter-section-title">Risk Seviyesi</div>
+                            <label class="filter-option">
+                                <input type="checkbox" value="critical" class="filter-device-risk">
+                                <span>Kritik</span>
+                                <span class="filter-option-count">${riskLevels.critical}</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" value="high" class="filter-device-risk">
+                                <span>Yüksek</span>
+                                <span class="filter-option-count">${riskLevels.high}</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" value="medium" class="filter-device-risk">
+                                <span>Orta</span>
+                                <span class="filter-option-count">${riskLevels.medium}</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" value="low" class="filter-device-risk">
+                                <span>Düşük</span>
+                                <span class="filter-option-count">${riskLevels.low}</span>
+                            </label>
+                        </div>
+                        
+                        <div class="filter-section">
+                            <div class="filter-section-title">İşletim Sistemi</div>
+                            <label class="filter-option">
+                                <input type="checkbox" value="windows" class="filter-device-os">
+                                <span>Windows</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" value="macos" class="filter-device-os">
+                                <span>macOS</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" value="linux" class="filter-device-os">
+                                <span>Linux</span>
+                            </label>
+                        </div>
+                        
+                        <div class="filter-section">
+                            <div class="filter-section-title">İzolasyon Durumu</div>
+                            <label class="filter-option">
+                                <input type="checkbox" value="isolated" class="filter-device-isolation">
+                                <span>İzole</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" value="not-isolated" class="filter-device-isolation">
+                                <span>Aktif</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main View -->
+                <div class="main-view">
+                    <div class="page-header">
+                        <div class="page-header-top">
+                            <div>
+                                <h1 class="page-title">Cihaz Envanteri</h1>
+                                <p class="page-subtitle">${devices.length} cihaz</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-strip">
+                        <div class="stat-tile">
+                            <span class="stat-label">Toplam</span>
+                            <span class="stat-value">${devices.length}</span>
+                        </div>
+                        <div class="stat-tile">
+                            <span class="stat-label">Yüksek Risk</span>
+                            <span class="stat-value danger">${riskLevels.critical + riskLevels.high}</span>
+                        </div>
+                        <div class="stat-tile">
+                            <span class="stat-label">İzole</span>
+                            <span class="stat-value warning">${devices.filter(d => this.getDeviceState(d.device_id).isolated).length}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="toolbar">
+                        <div class="toolbar-search">
+                            <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input type="text" id="device-search" placeholder="Cihaz ara...">
+                        </div>
+                        <button class="btn btn-secondary btn-sm">Dışa Aktar</button>
+                    </div>
+                    
+                    <div class="data-grid-container">
+                        <table class="data-grid">
+                            <thead>
+                                <tr>
+                                    <th>Cihaz Adı</th>
+                                    <th>Risk</th>
+                                    <th>İşletim Sistemi</th>
+                                    <th>Sahip</th>
+                                    <th>Son Görülme</th>
+                                    <th>Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${devices.map(d => {
+                                    const state = this.getDeviceState(d.device_id);
+                                    return `
+                                        <tr data-device-id="${this.esc(d.device_id)}" class="device-row">
+                                            <td><strong>${this.esc(d.hostname)}</strong></td>
+                                            <td>
+                                                <div class="risk-indicator">
+                                                    ${this.renderRiskBar(d.risk_score || 0)}
+                                                    <span>${d.risk_score || 0}</span>
+                                                </div>
+                                            </td>
+                                            <td>${this.esc(d.os || '—')}</td>
+                                            <td>${this.esc(d.owner_user || '—')}</td>
+                                            <td>${this.formatTime(d.last_seen)}</td>
+                                            <td>${state.isolated ? '<span class="badge badge-critical">İZOLE</span>' : '<span class="badge badge-low">Aktif</span>'}</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    getDeviceState(deviceId) {
+        return this.state.edr[deviceId] || { isolated: false, actions: [] };
+    },
+
+    // ==========================================
+    // AUTOMATIONS (SOAR - XSOAR Style)
+    // ==========================================
+    renderAutomations() {
+        const playbooks = this.state.data.playbooks || [];
+        const runs = this.state.soar.runs || [];
+        
+        return `
+            <div class="page-header">
+                <div class="page-header-top">
+                    <div>
+                        <h1 class="page-title">Playbook'lar</h1>
+                        <p class="page-subtitle">${playbooks.length} playbook, ${runs.length} çalışma</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tabs" id="automation-tabs">
+                <div class="tab active" data-tab="library">Kütüphane</div>
+                <div class="tab" data-tab="runs">Çalışmalar</div>
+            </div>
+            
+            <div id="automation-content">
+                ${this.renderPlaybookLibrary(playbooks)}
+            </div>
+        `;
+    },
+
+    renderPlaybookLibrary(playbooks) {
+        const categories = [...new Set(playbooks.map(p => p.category).filter(Boolean))];
+        
+        return `
+            <div style="display: flex; flex: 1; overflow: hidden;">
+                <div class="filter-pane">
+                    <div class="filter-header">
+                        <span class="filter-title">Kategoriler</span>
+                    </div>
+                    <div class="filter-body">
+                        <div class="filter-section">
+                            ${categories.map(cat => `
+                                <label class="filter-option">
+                                    <input type="checkbox" value="${this.esc(cat)}">
+                                    <span>${this.esc(cat)}</span>
+                                    <span class="filter-option-count">${playbooks.filter(p => p.category === cat).length}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                        <div class="filter-section">
+                            <div class="filter-section-title">Onay Gerekli</div>
+                            <label class="filter-option">
+                                <input type="checkbox" value="yes">
+                                <span>Evet</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" value="no">
+                                <span>Hayır</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="main-view">
+                    <div class="toolbar">
+                        <div class="toolbar-search">
+                            <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input type="text" placeholder="Playbook ara...">
+                        </div>
+                    </div>
+                    
+                    <div class="data-grid-container">
+                        <table class="data-grid">
+                            <thead>
+                                <tr>
+                                    <th>Playbook</th>
+                                    <th>Kategori</th>
+                                    <th>Adımlar</th>
+                                    <th>Onay</th>
+                                    <th>Süre</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${playbooks.map(p => `
+                                    <tr data-playbook-id="${this.esc(p.id)}" class="playbook-row">
+                                        <td>
+                                            <strong>${this.esc(p.name)}</strong>
+                                            <div style="font-size: var(--text-xs); color: var(--text-muted); margin-top: 2px;">${this.esc(p.description?.substring(0, 60) || '')}</div>
+                                        </td>
+                                        <td><span class="badge badge-info">${this.esc(p.category || 'Genel')}</span></td>
+                                        <td>${p.steps?.length || 0}</td>
+                                        <td>${p.requires_approval ? '<span class="badge badge-warning">Gerekli</span>' : '<span class="badge badge-neutral">Hayır</span>'}</td>
+                                        <td>${this.esc(p.estimated_time || '—')}</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm" onclick="App.showPlaybookRunner('${this.esc(p.id)}')">Çalıştır</button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    // ==========================================
+    // TIMELINE
+    // ==========================================
+    renderTimeline() {
+        const cases = this.state.data.cases || [];
+        const alerts = this.state.data.alerts || [];
+        
+        // Group events by case
+        const timeline = alerts.slice(0, 20).map(a => ({
+            time: a.timestamp || a.ts,
+            title: a.alert_name || a.name || a.title,
+            type: 'alert',
+            severity: a.severity,
+            case: a.case_id
+        })).sort((a, b) => new Date(b.time) - new Date(a.time));
+        
+        return `
+            <div class="page-header">
+                <div class="page-header-top">
+                    <div>
+                        <h1 class="page-title">Zaman Çizelgesi</h1>
+                        <p class="page-subtitle">Olay akışı</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="toolbar">
+                <select class="form-select" style="width: auto;">
+                    <option value="">Tüm Vakalar</option>
+                    ${cases.map(c => `<option value="${this.esc(c.case_id)}">${this.esc(c.title)}</option>`).join('')}
+                </select>
+            </div>
+            
+            <div class="data-grid-container" style="padding: var(--space-5);">
+                <div class="stepper">
+                    ${timeline.map((item, i) => `
+                        <div class="step">
+                            <div class="step-indicator" style="background: var(--severity-${item.severity || 'info'});">${i + 1}</div>
+                            <div class="step-content">
+                                <div class="step-title">${this.esc(item.title)}</div>
+                                <div class="step-desc">${this.formatTime(item.time)} ${item.case ? `• ${this.esc(item.case)}` : ''}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    },
+
+    // ==========================================
+    // MITRE ATT&CK
+    // ==========================================
+    renderMitre() {
+        const coverage = this.state.data.mitreCoverage || {};
+        const techniques = coverage.techniques || [];
+        
+        const tactics = ['Initial Access', 'Execution', 'Persistence', 'Privilege Escalation', 
+                        'Defense Evasion', 'Credential Access', 'Discovery', 'Lateral Movement',
+                        'Collection', 'Exfiltration', 'Impact'];
+        
+        return `
+            <div class="page-header">
+                <div class="page-header-top">
+                    <div>
+                        <h1 class="page-title">MITRE ATT&CK</h1>
+                        <p class="page-subtitle">Teknik kapsama analizi</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="data-grid-container" style="padding: var(--space-5);">
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-3);">
+                    ${tactics.map(tactic => {
+                        const count = techniques.filter(t => t.tactic === tactic).length;
+                        return `
+                            <div style="padding: var(--space-4); background: var(--bg-surface-2); border-radius: var(--radius-md); border: 1px solid var(--border-default);">
+                                <div style="font-size: var(--text-sm); font-weight: 500; margin-bottom: var(--space-2);">${this.esc(tactic)}</div>
+                                <div style="font-size: var(--text-2xl); font-weight: 600; color: ${count > 0 ? 'var(--severity-medium)' : 'var(--text-muted)'};">${count}</div>
+                                <div style="font-size: var(--text-xs); color: var(--text-muted);">teknik</div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    },
+
+    // ==========================================
+    // INTEL (IOCs)
+    // ==========================================
     renderIntel() {
         const iocs = this.state.data.iocs || [];
-
-        return `
-            <div class="view-header">
-                <h1 class="view-title" style="margin-bottom:0">Tehdit İstihbaratı (IOC)</h1>
-                <button class="btn btn-secondary btn-sm" onclick="App.exportIOCs()">CSV Dışa Aktar</button>
-            </div>
-            
-            <div class="table-container">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Tür</th>
-                            <th>Gösterge</th>
-                            <th>Etiketler</th>
-                            <th>Güven</th>
-                            <th>Vakalar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${iocs.map(i => `
-                            <tr>
-                                <td><span class="badge">${this.esc(i.type)}</span></td>
-                                <td class="mono">${this.esc(i.indicator)}</td>
-                                <td>${i.tags?.map(t => `<span class="chip">${this.esc(t)}</span>`).join(' ') || '—'}</td>
-                                <td>${this.esc(i.confidence || 'medium')}</td>
-                                <td>${i.cases?.length || 0}</td>
-                            </tr>
-                        `).join('') || '<tr><td colspan="5" class="muted">IOC bulunamadı</td></tr>'}
-                    </tbody>
-                </table>
-            </div>
-        `;
-    },
-
-    renderAutomations() {
-        const library = this.state.data.playbookLibrary || [];
-        const activeRuns = this.state.soar.activeRuns || [];
-        const completedRuns = this.state.soar.completedRuns || [];
-
-        return `
-            <h1 class="view-title">Otomasyonlar (SOAR)</h1>
-            
-            <div class="simulation-label mb-4">
-                <span class="badge medium">SİMÜLASYON</span>
-                <span class="muted">Tüm aksiyonlar simüle edilir, gerçek sistemlere etki yoktur</span>
-            </div>
-
-            <h2 class="section-title">Playbook Kütüphanesi</h2>
-            <div class="card-grid mb-6">
-                ${library.map(p => `
-                    <div class="card">
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
-                                <div style="font-weight:600">${this.esc(p.name)}</div>
-                                <span class="badge info">${this.esc(p.category)}</span>
-                            </div>
-                            ${p.requires_approval ? '<span class="badge medium">Onay Gerekli</span>' : ''}
-                        </div>
-                        <p class="muted" style="font-size:var(--text-sm);margin-bottom:var(--space-3)">${this.esc(p.description)}</p>
-                        <div class="muted" style="font-size:var(--text-xs);margin-bottom:var(--space-3)">${p.steps?.length || 0} adım • ${this.esc(p.estimated_time)}</div>
-                        <button class="btn btn-secondary btn-sm" onclick="App.showPlaybookPicker(null, '${this.esc(p.id)}')">Vaka Seç ve Çalıştır</button>
-                    </div>
-                `).join('') || '<div class="empty-state">Playbook bulunamadı</div>'}
-            </div>
-
-            ${activeRuns.length ? `
-                <h2 class="section-title">Aktif Çalışmalar</h2>
-                <div class="table-container mb-6">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Playbook</th>
-                                <th>Vaka</th>
-                                <th>İlerleme</th>
-                                <th>Durum</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${activeRuns.map(r => `
-                                <tr onclick="App.openDrawer('playbook-run', '${this.esc(r.id)}')">
-                                    <td>${this.esc(r.playbookName)}</td>
-                                    <td class="mono">${this.esc(r.caseId)}</td>
-                                    <td>
-                                        <div class="progress-bar" style="width:100px">
-                                            <div class="progress-fill" style="width:${((r.currentStep + 1) / r.steps.length) * 100}%"></div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge info">${r.status}</span></td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            ` : ''}
-
-            <h2 class="section-title">Tamamlanan Çalışmalar</h2>
-            <div class="table-container">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Playbook</th>
-                            <th>Vaka</th>
-                            <th>Başlangıç</th>
-                            <th>Süre</th>
-                            <th>Durum</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${[...completedRuns, ...(this.state.data.playbooks || [])].slice(0, 20).map(r => `
-                            <tr onclick="App.openDrawer('playbook-run', '${this.esc(r.id || r.run_id)}')">
-                                <td>${this.esc(r.playbookName || r.playbook_name)}</td>
-                                <td class="mono">${this.esc(r.caseId || r.case_id)}</td>
-                                <td class="mono muted">${this.formatTime(r.startedAt || r.started_at)}</td>
-                                <td>${this.esc(r.duration || '—')}</td>
-                                <td><span class="badge ${r.status === 'completed' ? 'low' : 'medium'}">${this.esc(r.status)}</span></td>
-                            </tr>
-                        `).join('') || '<tr><td colspan="5" class="muted">Tamamlanan çalışma yok</td></tr>'}
-                    </tbody>
-                </table>
-            </div>
-        `;
-    },
-
-    renderReports() {
-        return `
-            <h1 class="view-title">Raporlar</h1>
-            
-            <div class="card-grid">
-                <div class="card card-clickable" onclick="App.openReport('executive')">
-                    <div class="card-label">Yönetici Özeti</div>
-                    <div style="margin-top:var(--space-3);color:var(--text-secondary)">
-                        Üst yönetim için üst düzey genel bakış
-                    </div>
-                </div>
-                <div class="card card-clickable" onclick="App.openReport('technical')">
-                    <div class="card-label">Teknik Analiz</div>
-                    <div style="margin-top:var(--space-3);color:var(--text-secondary)">
-                        Detaylı teknik bulgular
-                    </div>
-                </div>
-            </div>
-        `;
-    },
-
-    renderSettings() {
-        if (!Auth.hasRole('admin')) {
-            return '<div class="empty-state">Yönetici yetkisi gerekli</div>';
-        }
-
-        const users = Auth.getUsers() || {};
         
         return `
-            <h1 class="view-title">Ayarlar</h1>
-            
-            <div class="card mb-6">
-                <h2 class="section-title">Kullanıcı Yönetimi</h2>
-                <div class="table-container" style="border:none">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Kullanıcı Adı</th>
-                                <th>Görünen Ad</th>
-                                <th>Rol</th>
-                                <th>İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${Object.entries(users).map(([username, user]) => `
-                                <tr>
-                                    <td class="mono">${this.esc(username)}</td>
-                                    <td>${this.esc(user.displayName)}</td>
-                                    <td><span class="badge">${this.esc(user.role)}</span></td>
-                                    <td>
-                                        ${username !== 'admin' ? `<button class="btn btn-secondary btn-sm" onclick="App.deleteUser('${this.esc(username)}')">Sil</button>` : '—'}
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
+            <div class="page-header">
+                <div class="page-header-top">
+                    <div>
+                        <h1 class="page-title">Tehdit İstihbaratı</h1>
+                        <p class="page-subtitle">${iocs.length} gösterge (IOC)</p>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="App.exportIOCs()">CSV İndir</button>
+                    </div>
                 </div>
-                <button class="btn btn-primary" style="margin-top:var(--space-4)" onclick="App.showCreateUserForm()">Yeni Kullanıcı</button>
             </div>
             
-            <div class="card">
-                <h2 class="section-title">Sistem</h2>
-                <div class="flex gap-4 items-center mb-4">
-                    <span>Density:</span>
-                    <select class="select" onchange="App.setDensity(this.value)">
-                        <option value="comfortable" ${this.state.density === 'comfortable' ? 'selected' : ''}>Rahat</option>
-                        <option value="compact" ${this.state.density === 'compact' ? 'selected' : ''}>Kompakt</option>
-                    </select>
-                </div>
-                <button class="btn btn-secondary" onclick="App.resetAllData()">Tüm Verileri Sıfırla</button>
+            <div class="data-grid-container">
+                <table class="data-grid">
+                    <thead>
+                        <tr>
+                            <th>Gösterge</th>
+                            <th>Tip</th>
+                            <th>Güven</th>
+                            <th>Etiketler</th>
+                            <th>İlk Görülme</th>
+                            <th>Son Görülme</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${iocs.map(ioc => `
+                            <tr data-ioc="${this.esc(ioc.indicator)}" class="ioc-row">
+                                <td><code>${this.esc(ioc.indicator)}</code></td>
+                                <td><span class="badge badge-neutral">${this.esc(ioc.type)}</span></td>
+                                <td>${this.renderConfidenceBadge(ioc.confidence)}</td>
+                                <td>${(ioc.tags || []).map(t => `<span class="chip">${this.esc(t)}</span>`).join(' ')}</td>
+                                <td>${this.formatTime(ioc.first_seen)}</td>
+                                <td>${this.formatTime(ioc.last_seen)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
             </div>
         `;
     },
 
-    // ============================================
+    // ==========================================
+    // REPORTS
+    // ==========================================
+    renderReports() {
+        return `
+            <div class="page-header">
+                <div class="page-header-top">
+                    <div>
+                        <h1 class="page-title">Raporlar</h1>
+                        <p class="page-subtitle">Olay raporları</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tabs" id="report-tabs">
+                <div class="tab active" data-report="executive">Yönetici Özeti</div>
+                <div class="tab" data-report="technical">Teknik Rapor</div>
+            </div>
+            
+            <div class="data-grid-container" style="padding: var(--space-5);" id="report-content">
+                <div class="empty-state">
+                    <p class="empty-state-title">Rapor yükleniyor...</p>
+                </div>
+            </div>
+        `;
+    },
+
+    // ==========================================
+    // FILTER BAR
+    // ==========================================
+    renderFilterBar(type) {
+        return `
+            <div class="toolbar">
+                <div class="toolbar-search">
+                    <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="${type}-filter-search" placeholder="Ara...">
+                </div>
+                <div class="toolbar-group">
+                    <select class="form-select" style="width: auto;" id="filter-${type}-severity">
+                        <option value="">Tüm Seviyeler</option>
+                        <option value="critical">Kritik</option>
+                        <option value="high">Yüksek</option>
+                        <option value="medium">Orta</option>
+                        <option value="low">Düşük</option>
+                    </select>
+                </div>
+            </div>
+        `;
+    },
+
+    // ==========================================
     // DRAWER
-    // ============================================
+    // ==========================================
     openDrawer(type, id) {
-        this.state.drawer = { open: true, type, id, tab: 'summary' };
-        document.getElementById('drawer-overlay')?.classList.add('active');
-        document.getElementById('drawer')?.classList.add('active');
+        this.state.drawer = { open: true, type, id, tab: 0 };
+        document.getElementById('drawer-overlay')?.classList.add('open');
+        document.getElementById('drawer')?.classList.add('open');
         this.renderDrawerContent();
     },
 
     closeDrawer() {
         this.state.drawer.open = false;
-        document.getElementById('drawer-overlay')?.classList.remove('active');
-        document.getElementById('drawer')?.classList.remove('active');
+        document.getElementById('drawer-overlay')?.classList.remove('open');
+        document.getElementById('drawer')?.classList.remove('open');
     },
 
     renderDrawerContent() {
         const { type, id, tab } = this.state.drawer;
-        const titleEl = document.getElementById('drawer-title');
-        const tabsEl = document.getElementById('drawer-tabs');
-        const contentEl = document.getElementById('drawer-content');
-        const footerEl = document.getElementById('drawer-footer');
-
-        if (!contentEl) return;
-
-        if (type === 'case') {
-            const c = this.state.data.cases?.find(x => x.case_id === id);
-            if (!c) { contentEl.innerHTML = '<div class="empty-state">Vaka bulunamadı</div>'; return; }
-
-            titleEl.innerHTML = `<div>${this.esc(c.case_id)}</div><div class="flex gap-2 mt-2"><span class="badge ${this.esc(c.severity)}">${this.esc(c.severity)}</span><span class="badge">${this.esc(c.status)}</span></div>`;
-            tabsEl.innerHTML = ['Özet', 'Uyarılar', 'War Room'].map((t, i) => {
-                const tabKey = ['summary', 'alerts', 'warroom'][i];
-                return `<button class="drawer-tab ${tab === tabKey ? 'active' : ''}" onclick="App.switchDrawerTab('${tabKey}')">${t}</button>`;
-            }).join('');
-
-            if (tab === 'summary') {
-                contentEl.innerHTML = `
-                    <div class="drawer-section"><h4>Başlık</h4><p>${this.esc(c.title)}</p></div>
-                    <div class="drawer-section"><h4>Anlatı</h4><p style="line-height:1.6">${this.esc(c.narrative)}</p></div>
-                    <div class="drawer-section"><h4>Etkilenen Kullanıcılar</h4>${c.affected_users?.map(u => `<span class="chip">${this.esc(u)}</span>`).join(' ') || '—'}</div>
-                    <div class="drawer-section"><h4>Etkilenen Cihazlar</h4>${c.affected_devices?.map(d => `<span class="chip">${this.esc(d)}</span>`).join(' ') || '—'}</div>
-                    <div class="drawer-section"><h4>MITRE Teknikleri</h4>${c.mitre_techniques?.map(t => `<span class="badge info">${this.esc(t)}</span>`).join(' ') || '—'}</div>
-                `;
-                footerEl.innerHTML = `<button class="btn btn-primary" onclick="App.showPlaybookPicker('${this.esc(c.case_id)}')">Playbook Çalıştır</button>`;
-            } else if (tab === 'alerts') {
-                const alerts = this.state.data.alerts?.filter(a => c.alert_ids?.includes(a.alert_id)) || [];
-                contentEl.innerHTML = `<div class="drawer-section"><h4>Vaka Uyarıları (${alerts.length})</h4>${alerts.map(a => `
-                    <div style="padding:var(--space-3);background:var(--bg-elevated);border-radius:var(--radius-md);margin-bottom:var(--space-2);cursor:pointer" onclick="App.openDrawer('alert','${this.esc(a.alert_id)}')">
-                        <div class="flex justify-between"><strong>${this.esc(a.name)}</strong><span class="badge ${this.esc(a.severity)}">${this.esc(a.severity)}</span></div>
-                        <div class="muted mt-2">${this.esc(a.hypothesis)}</div>
+        const title = document.getElementById('drawer-title');
+        const subtitle = document.getElementById('drawer-subtitle');
+        const tabs = document.getElementById('drawer-tabs');
+        const body = document.getElementById('drawer-body');
+        const footer = document.getElementById('drawer-footer');
+        
+        if (type === 'alert') {
+            const alert = this.state.data.alerts?.find(a => (a.alert_id || a.id) === id);
+            if (!alert) return;
+            
+            title.textContent = alert.alert_name || alert.name || alert.title;
+            subtitle.textContent = `${this.formatTime(alert.timestamp || alert.ts)}`;
+            tabs.innerHTML = `
+                <button class="drawer-tab ${tab === 0 ? 'active' : ''}" onclick="App.switchDrawerTab(0)">Özet</button>
+                <button class="drawer-tab ${tab === 1 ? 'active' : ''}" onclick="App.switchDrawerTab(1)">Kanıt</button>
+                <button class="drawer-tab ${tab === 2 ? 'active' : ''}" onclick="App.switchDrawerTab(2)">MITRE</button>
+                <button class="drawer-tab ${tab === 3 ? 'active' : ''}" onclick="App.switchDrawerTab(3)">Yanıt</button>
+            `;
+            
+            if (tab === 0) {
+                body.innerHTML = `
+                    <div class="drawer-section">
+                        <div class="info-grid">
+                            <span class="info-label">Seviye</span>
+                            <span class="info-value">${this.renderSeverityBadge(alert.severity)}</span>
+                            <span class="info-label">Güven</span>
+                            <span class="info-value">${this.esc(alert.confidence || 'N/A')}</span>
+                            <span class="info-label">Kullanıcı</span>
+                            <span class="info-value">${this.esc(alert.user || alert.affected_user || '—')}</span>
+                            <span class="info-label">Kaynak IP</span>
+                            <span class="info-value"><code>${this.esc(alert.src_ip || alert.source_ip || '—')}</code></span>
+                            <span class="info-label">Cihaz</span>
+                            <span class="info-value">${this.esc(alert.device || '—')}</span>
+                        </div>
                     </div>
-                `).join('') || '<div class="muted">Uyarı yok</div>'}</div>`;
-                footerEl.innerHTML = '';
-            } else if (tab === 'warroom') {
-                const notes = this.getWarRoomNotes(id);
-                contentEl.innerHTML = `
-                    <div class="war-room">
-                        <div class="war-room-feed">${notes.length ? notes.map(n => `
-                            <div class="war-room-item">
-                                <div class="war-room-time">${this.formatTime(n.timestamp)} - ${this.esc(n.user || 'sistem')}</div>
-                                <div>${this.esc(n.message)}</div>
-                            </div>
-                        `).join('') : '<div class="muted">Henüz aktivite yok</div>'}</div>
-                        ${Auth.hasRole('analyst') ? `
-                            <div class="war-room-input">
-                                <textarea id="war-room-note" placeholder="Not ekle..."></textarea>
-                                <button class="btn btn-primary" onclick="App.addWarRoomNote('${this.esc(id)}')">Ekle</button>
-                            </div>
-                        ` : ''}
+                    <div class="drawer-section">
+                        <div class="drawer-section-title">Hipotez</div>
+                        <p>${this.esc(alert.hypothesis || alert.description || '—')}</p>
                     </div>
                 `;
-                footerEl.innerHTML = '';
+            } else if (tab === 1) {
+                const evidence = alert.evidence_event_ids || alert.evidence || [];
+                body.innerHTML = `
+                    <div class="drawer-section">
+                        <div class="drawer-section-title">Kanıt Olayları</div>
+                        ${evidence.map(e => `<div class="chip" style="margin: 2px;">${this.esc(e)}</div>`).join('')}
+                    </div>
+                `;
+            } else if (tab === 2) {
+                const techniques = alert.mitre_techniques || alert.techniques || [];
+                body.innerHTML = `
+                    <div class="drawer-section">
+                        <div class="drawer-section-title">MITRE ATT&CK Teknikleri</div>
+                        ${techniques.map(t => `<span class="badge badge-info" style="margin: 2px;">${this.esc(t)}</span>`).join('')}
+                    </div>
+                `;
+            } else if (tab === 3) {
+                const actions = alert.recommended_actions || [];
+                body.innerHTML = `
+                    <div class="drawer-section">
+                        <div class="drawer-section-title">Önerilen Aksiyonlar</div>
+                        ${actions.map((a, i) => `
+                            <div style="padding: var(--space-2) 0; border-bottom: 1px solid var(--border-default);">
+                                <span style="color: var(--text-muted); margin-right: var(--space-2);">${i + 1}.</span>
+                                ${this.esc(a)}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
             }
-        } else if (type === 'alert') {
-            const a = this.state.data.alerts?.find(x => x.alert_id === id);
-            if (!a) { contentEl.innerHTML = '<div class="empty-state">Uyarı bulunamadı</div>'; return; }
-
-            titleEl.textContent = a.alert_id;
-            tabsEl.innerHTML = '';
-            contentEl.innerHTML = `
-                <div class="drawer-section"><h4>Uyarı</h4><div style="font-size:var(--text-lg);font-weight:600">${this.esc(a.name)}</div><div class="flex gap-2 mt-2"><span class="badge ${this.esc(a.severity)}">${this.esc(a.severity)}</span><span class="badge">${this.esc(a.confidence)}</span></div></div>
-                <div class="drawer-section"><h4>Hipotez</h4><p>${this.esc(a.hypothesis)}</p></div>
-                <div class="drawer-section"><h4>Varlık</h4><span class="chip">${this.esc(a.entity?.user || '—')}</span></div>
-                <div class="drawer-section"><h4>MITRE</h4>${a.mitre?.map(m => `<div style="padding:var(--space-2);background:var(--bg-elevated);border-radius:var(--radius-md);margin-bottom:var(--space-2)"><span class="badge info">${this.esc(m.id)}</span> <span style="margin-left:var(--space-2)">${this.esc(m.name)}</span></div>`).join('') || '—'}</div>
-                <div class="drawer-section"><h4>Önerilen Aksiyonlar</h4><ul style="list-style:none">${a.recommended_actions?.map(ac => `<li style="padding:var(--space-2) 0;border-bottom:1px solid var(--border-subtle)">• ${this.esc(ac)}</li>`).join('') || '—'}</ul></div>
+            
+            footer.innerHTML = `
+                <button class="btn btn-secondary btn-sm" onclick="App.closeDrawer()">Kapat</button>
+                <button class="btn btn-primary btn-sm" onclick="App.copyAlertDetails('${this.esc(id)}')">Kopyala</button>
             `;
-            footerEl.innerHTML = a.case_id ? `<button class="btn btn-primary" onclick="App.openDrawer('case','${this.esc(a.case_id)}')">Vakayı Aç</button>` : '';
-        } else if (type === 'device') {
-            const d = this.state.data.devices?.find(x => x.id === id);
-            if (!d) { contentEl.innerHTML = '<div class="empty-state">Cihaz bulunamadı</div>'; return; }
+        }
+        
+        if (type === 'device') {
+            const device = this.state.data.devices?.find(d => d.device_id === id);
+            if (!device) return;
+            
             const state = this.getDeviceState(id);
-
-            titleEl.innerHTML = `<div>${this.esc(d.hostname)}</div>${state.isolated ? '<span class="badge critical mt-2">İZOLE</span>' : ''}`;
-            tabsEl.innerHTML = '';
-            contentEl.innerHTML = `
-                <div class="simulation-label mb-4"><span class="badge medium">SİMÜLASYON</span></div>
+            
+            title.textContent = device.hostname;
+            subtitle.innerHTML = `${this.esc(device.os || '—')} • Risk: ${device.risk_score || 0}`;
+            tabs.innerHTML = `
+                <button class="drawer-tab ${tab === 0 ? 'active' : ''}" onclick="App.switchDrawerTab(0)">Genel</button>
+                <button class="drawer-tab ${tab === 1 ? 'active' : ''}" onclick="App.switchDrawerTab(1)">Uyarılar</button>
+                <button class="drawer-tab ${tab === 2 ? 'active' : ''}" onclick="App.switchDrawerTab(2)">İşlemler</button>
+                <button class="drawer-tab ${tab === 3 ? 'active' : ''}" onclick="App.switchDrawerTab(3)">Ağ</button>
+            `;
+            
+            if (tab === 0) {
+                body.innerHTML = `
+                    <div class="drawer-section">
+                        <div class="info-grid">
+                            <span class="info-label">Cihaz ID</span>
+                            <span class="info-value"><code>${this.esc(device.device_id)}</code></span>
+                            <span class="info-label">Sahip</span>
+                            <span class="info-value">${this.esc(device.owner_user || '—')}</span>
+                            <span class="info-label">İlk Görülme</span>
+                            <span class="info-value">${this.formatTime(device.first_seen)}</span>
+                            <span class="info-label">Son Görülme</span>
+                            <span class="info-value">${this.formatTime(device.last_seen)}</span>
+                            <span class="info-label">Durum</span>
+                            <span class="info-value">${state.isolated ? '<span class="badge badge-critical">İZOLE</span>' : '<span class="badge badge-low">Aktif</span>'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="drawer-section">
+                        <div class="drawer-section-title">EDR Aksiyonları <span class="badge badge-warning" style="margin-left: 8px;">SİMÜLASYON</span></div>
+                        <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3);">
+                            ${state.isolated ? 
+                                `<button class="btn btn-secondary btn-sm" onclick="App.performEdrAction('${this.esc(id)}', 'release')">İzolasyonu Kaldır</button>` :
+                                `<button class="btn btn-danger btn-sm" onclick="App.performEdrAction('${this.esc(id)}', 'isolate')">İzole Et</button>`
+                            }
+                            <button class="btn btn-secondary btn-sm" onclick="App.performEdrAction('${this.esc(id)}', 'scan')">AV Taraması</button>
+                            <button class="btn btn-secondary btn-sm" onclick="App.performEdrAction('${this.esc(id)}', 'collect')">Paket Topla</button>
+                        </div>
+                    </div>
+                    
+                    ${state.actions?.length ? `
+                        <div class="drawer-section">
+                            <div class="drawer-section-title">Aksiyon Geçmişi</div>
+                            ${state.actions.slice(-5).reverse().map(a => `
+                                <div style="padding: var(--space-2) 0; border-bottom: 1px solid var(--border-default); font-size: var(--text-sm);">
+                                    <strong>${this.esc(a.action)}</strong> - ${this.formatTime(a.time)}
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                `;
+            } else if (tab === 1) {
+                const deviceAlerts = this.state.data.alerts?.filter(a => a.device === device.hostname) || [];
+                body.innerHTML = `
+                    <div class="drawer-section">
+                        <div class="drawer-section-title">Cihaz Uyarıları (${deviceAlerts.length})</div>
+                        ${deviceAlerts.map(a => `
+                            <div style="padding: var(--space-3); margin-bottom: var(--space-2); background: var(--bg-surface-2); border-radius: var(--radius-md);">
+                                <div style="font-weight: 500;">${this.esc(a.alert_name || a.name)}</div>
+                                <div style="font-size: var(--text-xs); color: var(--text-muted);">${this.formatTime(a.timestamp || a.ts)}</div>
+                            </div>
+                        `).join('') || '<p style="color: var(--text-muted);">Uyarı yok</p>'}
+                    </div>
+                `;
+            } else if (tab === 2) {
+                const processes = device.recent_processes || [];
+                body.innerHTML = `
+                    <div class="drawer-section">
+                        <div class="drawer-section-title">Son İşlemler</div>
+                        ${processes.map(p => `
+                            <div style="padding: var(--space-2) 0; border-bottom: 1px solid var(--border-default);">
+                                <code style="font-size: var(--text-xs);">${this.esc(p)}</code>
+                            </div>
+                        `).join('') || '<p style="color: var(--text-muted);">İşlem verisi yok</p>'}
+                    </div>
+                `;
+            } else if (tab === 3) {
+                const connections = device.recent_connections || [];
+                body.innerHTML = `
+                    <div class="drawer-section">
+                        <div class="drawer-section-title">Son Bağlantılar</div>
+                        ${connections.map(c => `
+                            <div style="padding: var(--space-2) 0; border-bottom: 1px solid var(--border-default);">
+                                <code style="font-size: var(--text-xs);">${this.esc(c)}</code>
+                            </div>
+                        `).join('') || '<p style="color: var(--text-muted);">Bağlantı verisi yok</p>'}
+                    </div>
+                `;
+            }
+            
+            footer.innerHTML = `<button class="btn btn-secondary btn-sm" onclick="App.closeDrawer()">Kapat</button>`;
+        }
+        
+        if (type === 'case') {
+            const caseData = this.state.data.cases?.find(c => c.case_id === id);
+            if (!caseData) return;
+            
+            title.textContent = caseData.title;
+            subtitle.textContent = caseData.case_id;
+            tabs.innerHTML = `
+                <button class="drawer-tab ${tab === 0 ? 'active' : ''}" onclick="App.switchDrawerTab(0)">Özet</button>
+                <button class="drawer-tab ${tab === 1 ? 'active' : ''}" onclick="App.switchDrawerTab(1)">Uyarılar</button>
+                <button class="drawer-tab ${tab === 2 ? 'active' : ''}" onclick="App.switchDrawerTab(2)">War Room</button>
+            `;
+            
+            if (tab === 0) {
+                body.innerHTML = `
+                    <div class="drawer-section">
+                        <div class="info-grid">
+                            <span class="info-label">Seviye</span>
+                            <span class="info-value">${this.renderSeverityBadge(caseData.severity)}</span>
+                            <span class="info-label">Durum</span>
+                            <span class="info-value">${this.renderStatusBadge(caseData.status)}</span>
+                            <span class="info-label">Başlangıç</span>
+                            <span class="info-value">${this.formatTime(caseData.start_ts)}</span>
+                            <span class="info-label">Etkilenen</span>
+                            <span class="info-value">${(caseData.affected_users || []).join(', ') || '—'}</span>
+                        </div>
+                    </div>
+                    <div class="drawer-section">
+                        <div class="drawer-section-title">Açıklama</div>
+                        <p>${this.esc(caseData.narrative || '—')}</p>
+                    </div>
+                `;
+            } else if (tab === 1) {
+                const caseAlerts = this.state.data.alerts?.filter(a => a.case_id === id) || [];
+                body.innerHTML = `
+                    <div class="drawer-section">
+                        ${caseAlerts.map(a => `
+                            <div style="padding: var(--space-3); margin-bottom: var(--space-2); background: var(--bg-surface-2); border-radius: var(--radius-md);">
+                                <div style="font-weight: 500;">${this.esc(a.alert_name || a.name)}</div>
+                                <div style="font-size: var(--text-xs); color: var(--text-muted);">${this.formatTime(a.timestamp || a.ts)}</div>
+                            </div>
+                        `).join('') || '<p>Uyarı yok</p>'}
+                    </div>
+                `;
+            } else if (tab === 2) {
+                const notes = this.getWarRoomNotes(id);
+                body.innerHTML = `
+                    <div class="drawer-section">
+                        <div class="drawer-section-title">Aktivite</div>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${notes.map(n => `
+                                <div style="padding: var(--space-3); margin-bottom: var(--space-2); background: var(--bg-surface-2); border-radius: var(--radius-md);">
+                                    <div style="font-size: var(--text-xs); color: var(--text-muted);">${this.formatTime(n.time)}</div>
+                                    <div>${this.esc(n.message)}</div>
+                                </div>
+                            `).join('') || '<p style="color: var(--text-muted);">Henüz aktivite yok</p>'}
+                        </div>
+                    </div>
+                    <div class="drawer-section">
+                        <textarea class="form-input" id="war-room-note" rows="2" placeholder="Not ekle..."></textarea>
+                        <button class="btn btn-primary btn-sm" style="margin-top: var(--space-2);" onclick="App.addWarRoomNote('${this.esc(id)}')">Ekle</button>
+                    </div>
+                `;
+            }
+            
+            footer.innerHTML = `
+                <button class="btn btn-secondary btn-sm" onclick="App.closeDrawer()">Kapat</button>
+                <button class="btn btn-primary btn-sm" onclick="App.showPlaybookRunner(null, '${this.esc(id)}')">Playbook Çalıştır</button>
+            `;
+        }
+        
+        if (type === 'event') {
+            const event = this.state.data.events?.find(e => (e.event_id || e.id) === id);
+            if (!event) return;
+            
+            title.textContent = event.event_type || 'Olay Detayı';
+            subtitle.textContent = this.formatTime(event.ts || event.timestamp);
+            tabs.innerHTML = `
+                <button class="drawer-tab active">Ham Veri</button>
+            `;
+            
+            body.innerHTML = `
                 <div class="drawer-section">
-                    <h4>Cihaz Bilgileri</h4>
-                    <div style="display:grid;grid-template-columns:100px 1fr;gap:var(--space-2)">
-                        <div class="muted">ID</div><div class="mono">${this.esc(d.id)}</div>
-                        <div class="muted">OS</div><div>${this.esc(d.os)}</div>
-                        <div class="muted">Sahip</div><div>${this.esc(d.owner)}</div>
-                        <div class="muted">Konum</div><div>${this.esc(d.location)}</div>
-                        <div class="muted">Risk</div><div><span class="badge ${d.risk_score >= 50 ? 'high' : 'low'}">${d.risk_score || 0}</span></div>
-                        <div class="muted">Son AV</div><div class="mono">${state.lastAvScan ? this.formatTime(state.lastAvScan) : '—'}</div>
+                    <div class="info-grid">
+                        <span class="info-label">Kaynak</span>
+                        <span class="info-value">${this.esc(event.source || '—')}</span>
+                        <span class="info-label">Tip</span>
+                        <span class="info-value">${this.esc(event.event_type || '—')}</span>
+                        <span class="info-label">Kullanıcı</span>
+                        <span class="info-value">${this.esc(event.user || '—')}</span>
+                        <span class="info-label">Cihaz</span>
+                        <span class="info-value">${this.esc(event.device || '—')}</span>
+                        <span class="info-label">IP</span>
+                        <span class="info-value"><code>${this.esc(event.src_ip || '—')}</code></span>
                     </div>
                 </div>
                 <div class="drawer-section">
-                    <h4>EDR Aksiyonları</h4>
-                    <div class="flex gap-2 flex-wrap">
-                        ${state.isolated 
-                            ? `<button class="btn btn-secondary" onclick="App.performEdrAction('${this.esc(d.id)}', 'release')">İzolasyonu Kaldır</button>`
-                            : `<button class="btn btn-secondary" onclick="App.performEdrAction('${this.esc(d.id)}', 'isolate')">Cihazı İzole Et</button>`
-                        }
-                        <button class="btn btn-secondary" onclick="App.performEdrAction('${this.esc(d.id)}', 'av_scan', {type:'full'})">Tam AV Tarama</button>
-                        <button class="btn btn-secondary" onclick="App.performEdrAction('${this.esc(d.id)}', 'collect_triage')">Triyaj Paketi</button>
-                    </div>
-                </div>
-                ${state.quarantinedFiles?.length ? `<div class="drawer-section"><h4>Karantina Dosyaları</h4>${state.quarantinedFiles.map(f => `<div class="mono" style="font-size:var(--text-xs)">${this.esc(f.path)}</div>`).join('')}</div>` : ''}
-                <div class="drawer-section">
-                    <h4>Son Prosesler</h4>
-                    ${d.recent_processes?.slice(0, 10).map(p => `<div class="mono" style="font-size:var(--text-xs);padding:var(--space-1) 0">${this.esc(p.process)} ${p.parent ? `← ${this.esc(p.parent)}` : ''}</div>`).join('') || '<div class="muted">Veri yok</div>'}
+                    <div class="drawer-section-title">Ham JSON</div>
+                    <pre style="background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-md); overflow: auto; font-size: var(--text-xs);">${this.esc(JSON.stringify(event, null, 2))}</pre>
                 </div>
             `;
-            footerEl.innerHTML = '';
-        } else if (type === 'event') {
-            const allEvents = [...this.state.live.buffer, ...(this.state.data.events || [])];
-            const e = allEvents.find(x => x.event_id === id);
-            if (!e) { contentEl.innerHTML = '<div class="empty-state">Olay bulunamadı</div>'; return; }
-
-            titleEl.textContent = e.event_id;
-            tabsEl.innerHTML = '';
-            contentEl.innerHTML = `
-                ${e._live ? '<div class="simulation-label mb-4"><span class="badge info">LIVE EVENT</span></div>' : ''}
-                <div class="drawer-section">
-                    <h4>Olay Detayları</h4>
-                    <div style="display:grid;grid-template-columns:100px 1fr;gap:var(--space-2)">
-                        <div class="muted">Zaman</div><div class="mono">${this.esc(e.timestamp)}</div>
-                        <div class="muted">Kaynak</div><div><span class="badge info">${this.esc(e.source)}</span></div>
-                        <div class="muted">Tür</div><div>${this.esc(e.event_type)}</div>
-                        <div class="muted">Kullanıcı</div><div><span class="chip">${this.esc(e.user || '—')}</span></div>
-                        <div class="muted">IP</div><div class="mono">${this.esc(e.src_ip || '—')}</div>
-                        <div class="muted">Cihaz</div><div class="mono">${this.esc(e.device_id || '—')}</div>
-                        <div class="muted">Domain</div><div class="mono">${this.esc(e.domain || '—')}</div>
-                    </div>
-                </div>
-                <div class="drawer-section"><h4>Özet</h4><p>${this.esc(e.summary)}</p></div>
-                <div class="drawer-section"><h4>Etiketler</h4>${e.tags?.map(t => `<span class="chip">${this.esc(t)}</span>`).join(' ') || '—'}</div>
+            
+            footer.innerHTML = `
+                <button class="btn btn-secondary btn-sm" onclick="App.closeDrawer()">Kapat</button>
+                <button class="btn btn-secondary btn-sm" onclick="App.copyEventJson('${this.esc(id)}')">JSON Kopyala</button>
             `;
-            footerEl.innerHTML = e.device_id ? `<button class="btn btn-secondary" onclick="App.openDrawer('device','${this.esc(e.device_id)}')">Cihazı Aç</button>` : '';
         }
     },
 
@@ -1543,284 +1392,619 @@ const App = {
         this.renderDrawerContent();
     },
 
-    // ============================================
-    // PLAYBOOK PICKER
-    // ============================================
-    showPlaybookPicker(caseId, playbookId) {
-        const modal = document.getElementById('user-modal');
-        const body = document.getElementById('user-modal-body');
-        const header = document.querySelector('#user-modal .modal-header h2');
-        
-        if (header) header.textContent = playbookId ? 'Vaka Seç' : 'Playbook Seç';
-        
-        if (playbookId) {
-            // Select case for playbook
-            const cases = this.state.data.cases || [];
-            body.innerHTML = `
-                <div class="simulation-label mb-4"><span class="badge medium">SİMÜLASYON</span></div>
-                <div style="max-height:400px;overflow-y:auto">
-                    ${cases.map(c => `
-                        <div style="padding:var(--space-3);background:var(--bg-elevated);border-radius:var(--radius-md);margin-bottom:var(--space-2);cursor:pointer" onclick="App.runPlaybook('${this.esc(playbookId)}','${this.esc(c.case_id)}'); document.getElementById('user-modal').style.display='none';">
-                            <div class="flex justify-between"><strong>${this.esc(c.case_id)}</strong><span class="badge ${this.esc(c.severity)}">${this.esc(c.severity)}</span></div>
-                            <div class="muted">${this.esc(c.title)}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        } else {
-            // Select playbook for case
-            const library = this.state.data.playbookLibrary || [];
-            body.innerHTML = `
-                <div class="simulation-label mb-4"><span class="badge medium">SİMÜLASYON</span></div>
-                <div style="max-height:400px;overflow-y:auto">
-                    ${library.map(p => `
-                        <div style="padding:var(--space-3);background:var(--bg-elevated);border-radius:var(--radius-md);margin-bottom:var(--space-2);cursor:pointer" onclick="App.runPlaybook('${this.esc(p.id)}','${this.esc(caseId)}'); document.getElementById('user-modal').style.display='none';">
-                            <div class="flex justify-between"><strong>${this.esc(p.name)}</strong><span class="badge info">${this.esc(p.category)}</span></div>
-                            <div class="muted" style="font-size:var(--text-sm)">${this.esc(p.description)}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
+    // ==========================================
+    // VIEW EVENT BINDING
+    // ==========================================
+    bindViewEvents() {
+        // Alert rows
+        document.querySelectorAll('.alert-row').forEach(row => {
+            row.addEventListener('click', () => {
+                this.openDrawer('alert', row.dataset.alertId);
+            });
+        });
+
+        // Case rows
+        document.querySelectorAll('.case-row').forEach(row => {
+            row.addEventListener('click', () => {
+                this.openDrawer('case', row.dataset.caseId);
+            });
+        });
+
+        // Device rows
+        document.querySelectorAll('.device-row').forEach(row => {
+            row.addEventListener('click', () => {
+                this.openDrawer('device', row.dataset.deviceId);
+            });
+        });
+
+        // Event rows
+        document.querySelectorAll('.event-row').forEach(row => {
+            row.addEventListener('click', () => {
+                this.openDrawer('event', row.dataset.eventId);
+            });
+        });
+
+        // Entity rows
+        document.querySelectorAll('.entity-row').forEach(row => {
+            row.addEventListener('click', () => {
+                // Could open entity drawer
+            });
+        });
+
+        // Report tabs
+        document.querySelectorAll('#report-tabs .tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('#report-tabs .tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                this.loadReport(tab.dataset.report);
+            });
+        });
+
+        // Automation tabs
+        document.querySelectorAll('#automation-tabs .tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('#automation-tabs .tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const content = document.getElementById('automation-content');
+                if (tab.dataset.tab === 'library') {
+                    content.innerHTML = this.renderPlaybookLibrary(this.state.data.playbooks || []);
+                } else {
+                    content.innerHTML = this.renderPlaybookRuns();
+                }
+            });
+        });
+
+        // Load executive report by default
+        if (this.state.view === 'reports') {
+            this.loadReport('executive');
+        }
+    },
+
+    // ==========================================
+    // EDR ACTIONS
+    // ==========================================
+    performEdrAction(deviceId, action) {
+        if (!this.state.edr[deviceId]) {
+            this.state.edr[deviceId] = { isolated: false, actions: [] };
         }
         
-        modal.style.display = 'flex';
+        const state = this.state.edr[deviceId];
+        const timestamp = new Date().toISOString();
+        
+        switch (action) {
+            case 'isolate':
+                state.isolated = true;
+                this.toast('Cihaz izole edildi (simülasyon)', 'warning');
+                break;
+            case 'release':
+                state.isolated = false;
+                this.toast('İzolasyon kaldırıldı (simülasyon)', 'success');
+                break;
+            case 'scan':
+                this.toast('AV taraması başlatıldı (simülasyon)', 'info');
+                break;
+            case 'collect':
+                this.toast('Veri paketi toplanıyor (simülasyon)', 'info');
+                break;
+        }
+        
+        state.actions = state.actions || [];
+        state.actions.push({ action, time: timestamp });
+        
+        this.saveEdrState();
+        this.renderDrawerContent();
     },
 
-    // ============================================
-    // COMMAND PALETTE
-    // ============================================
-    openCmdPalette() {
-        this.state.cmdPalette = true;
-        document.getElementById('cmd-palette')?.classList.add('active');
-        document.getElementById('cmd-input')?.focus();
-        this.renderCmdResults('');
+    // ==========================================
+    // PLAYBOOK RUNNER
+    // ==========================================
+    showPlaybookRunner(playbookId, caseId) {
+        // Simple prompt for now
+        const playbooks = this.state.data.playbooks || [];
+        if (!playbookId && playbooks.length > 0) {
+            playbookId = playbooks[0].id;
+        }
+        
+        const cases = this.state.data.cases || [];
+        if (!caseId && cases.length > 0) {
+            caseId = cases[0].case_id;
+        }
+        
+        this.runPlaybook(playbookId, caseId);
     },
 
-    closeCmdPalette() {
-        this.state.cmdPalette = false;
-        document.getElementById('cmd-palette')?.classList.remove('active');
-        const input = document.getElementById('cmd-input');
-        if (input) input.value = '';
+    runPlaybook(playbookId, caseId) {
+        const playbook = this.state.data.playbooks?.find(p => p.id === playbookId);
+        if (!playbook) {
+            this.toast('Playbook bulunamadı', 'error');
+            return;
+        }
+        
+        const run = {
+            id: 'run_' + Date.now(),
+            playbook_id: playbookId,
+            playbook_name: playbook.name,
+            case_id: caseId,
+            started_at: new Date().toISOString(),
+            status: 'running',
+            steps: playbook.steps?.map(s => ({ ...s, status: 'pending' })) || []
+        };
+        
+        this.state.soar.runs.push(run);
+        this.state.soar.active = run.id;
+        this.saveSoarState();
+        
+        this.toast(`"${playbook.name}" çalıştırılıyor...`, 'info');
+        
+        // Simulate step execution
+        this.executePlaybookSteps(run);
     },
 
-    handleCmdSearch(query) {
-        this.renderCmdResults(query.toLowerCase());
+    async executePlaybookSteps(run) {
+        for (let i = 0; i < run.steps.length; i++) {
+            run.steps[i].status = 'running';
+            this.saveSoarState();
+            
+            // Simulate delay
+            await new Promise(r => setTimeout(r, 1000 + Math.random() * 2000));
+            
+            run.steps[i].status = 'completed';
+            this.saveSoarState();
+        }
+        
+        run.status = 'completed';
+        run.finished_at = new Date().toISOString();
+        this.state.soar.active = null;
+        this.saveSoarState();
+        
+        this.toast(`Playbook tamamlandı`, 'success');
+        
+        // Add war room note
+        if (run.case_id) {
+            this.addWarRoomNoteInternal(run.case_id, `Playbook "${run.playbook_name}" tamamlandı`);
+        }
     },
 
-    renderCmdResults(query) {
-        const results = document.getElementById('cmd-results');
-        if (!results) return;
-
-        const commands = [
-            { icon: '📊', label: 'Genel Bakış', hint: 'Ana sayfaya git', action: () => this.switchView('overview') },
-            { icon: '📋', label: 'Vakalar', hint: 'Tüm vakaları görüntüle', action: () => this.switchView('cases') },
-            { icon: '⚠️', label: 'Uyarılar', hint: 'Tüm uyarıları görüntüle', action: () => this.switchView('alerts') },
-            { icon: '🔍', label: 'Olay Arama', hint: 'SIEM arama', action: () => this.switchView('search') },
-            { icon: '💻', label: 'EDR', hint: 'Uç nokta yönetimi', action: () => this.switchView('edr') },
-            { icon: '🤖', label: 'Otomasyonlar', hint: 'SOAR playbook\'lar', action: () => this.switchView('automations') },
-            { icon: '▶️', label: 'Live Toggle', hint: 'Live feed aç/kapat', action: () => this.toggleLive() },
-            { icon: '🔄', label: 'Yenile', hint: 'Veriyi yeniden yükle', action: () => this.refreshData() },
-            { icon: '🔒', label: 'Kilitle', hint: 'Oturumu kilitle', action: () => this.lockScreen() },
-        ];
-
-        const filtered = query 
-            ? commands.filter(c => c.label.toLowerCase().includes(query) || c.hint.toLowerCase().includes(query))
-            : commands;
-
-        results.innerHTML = filtered.slice(0, 10).map((c, i) => `
-            <div class="cmd-item ${i === 0 ? 'selected' : ''}" onclick="App._cmdCommands[${commands.indexOf(c)}].action(); App.closeCmdPalette();">
-                <span class="cmd-item-icon">${c.icon}</span>
-                <div class="cmd-item-text">
-                    <div class="cmd-item-label">${this.esc(c.label)}</div>
-                    <div class="cmd-item-hint">${this.esc(c.hint)}</div>
+    renderPlaybookRuns() {
+        const runs = this.state.soar.runs || [];
+        
+        return `
+            <div class="main-view">
+                <div class="toolbar">
+                    <span style="color: var(--text-muted);">${runs.length} çalışma</span>
+                </div>
+                <div class="data-grid-container">
+                    <table class="data-grid">
+                        <thead>
+                            <tr>
+                                <th>Playbook</th>
+                                <th>Vaka</th>
+                                <th>Durum</th>
+                                <th>Başlangıç</th>
+                                <th>Bitiş</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${runs.map(r => `
+                                <tr>
+                                    <td>${this.esc(r.playbook_name)}</td>
+                                    <td><code>${this.esc(r.case_id || '—')}</code></td>
+                                    <td>${r.status === 'completed' ? '<span class="badge badge-low">Tamamlandı</span>' : '<span class="badge badge-info">Çalışıyor</span>'}</td>
+                                    <td>${this.formatTime(r.started_at)}</td>
+                                    <td>${r.finished_at ? this.formatTime(r.finished_at) : '—'}</td>
+                                </tr>
+                            `).join('') || '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Çalışma yok</td></tr>'}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        `).join('');
-        
-        this._cmdCommands = commands;
+        `;
     },
 
-    // ============================================
-    // UTILITIES
-    // ============================================
+    // ==========================================
+    // WAR ROOM
+    // ==========================================
+    getWarRoomNotes(caseId) {
+        try {
+            const key = `soc_warroom_${caseId}`;
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : [];
+        } catch {
+            return [];
+        }
+    },
+
+    addWarRoomNote(caseId) {
+        const input = document.getElementById('war-room-note');
+        const message = input?.value?.trim();
+        if (!message) return;
+        
+        this.addWarRoomNoteInternal(caseId, message);
+        input.value = '';
+        this.renderDrawerContent();
+    },
+
+    addWarRoomNoteInternal(caseId, message) {
+        const key = `soc_warroom_${caseId}`;
+        const notes = this.getWarRoomNotes(caseId);
+        notes.push({ time: new Date().toISOString(), message });
+        localStorage.setItem(key, JSON.stringify(notes));
+    },
+
+    // ==========================================
+    // LIVE FEED
+    // ==========================================
+    toggleLive() {
+        if (this.state.live.enabled) {
+            this.stopLive();
+        } else {
+            this.startLive();
+        }
+    },
+
+    startLive() {
+        this.state.live.enabled = true;
+        this.state.live.eventCount = 0;
+        
+        const btn = document.getElementById('btn-live');
+        if (btn) {
+            btn.classList.add('btn-primary');
+            btn.innerHTML = '<span class="live-dot"></span> CANLI';
+        }
+        
+        this.state.live.interval = setInterval(() => {
+            this.generateLiveEvent();
+        }, this.state.live.speed);
+        
+        this.toast('Canlı akış başladı', 'info');
+    },
+
+    stopLive() {
+        this.state.live.enabled = false;
+        
+        if (this.state.live.interval) {
+            clearInterval(this.state.live.interval);
+            this.state.live.interval = null;
+        }
+        
+        const btn = document.getElementById('btn-live');
+        if (btn) {
+            btn.classList.remove('btn-primary');
+            btn.innerHTML = 'LIVE';
+        }
+        
+        this.toast('Canlı akış durduruldu', 'info');
+    },
+
+    generateLiveEvent() {
+        const sources = ['Email', 'IdP', 'Endpoint', 'Proxy', 'DNS'];
+        const types = ['login_success', 'login_fail', 'email_delivered', 'file_download', 'process_start', 'dns_query'];
+        const users = ['ayse.demir', 'mehmet.kaya', 'elif.yilmaz', 'mustafa.arslan'];
+        
+        const event = {
+            event_id: 'live_' + Date.now(),
+            ts: new Date().toISOString(),
+            source: sources[Math.floor(Math.random() * sources.length)],
+            event_type: types[Math.floor(Math.random() * types.length)],
+            user: users[Math.floor(Math.random() * users.length)] + '@anadolufinans.example.tr',
+            device: 'IST-WS-' + String(Math.floor(Math.random() * 100)).padStart(3, '0'),
+            src_ip: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+            summary: 'Canlı olay simülasyonu'
+        };
+        
+        // Add to data
+        this.state.data.events.unshift(event);
+        this.state.live.eventCount++;
+        
+        // Update table
+        const tbody = document.getElementById('events-tbody');
+        if (tbody) {
+            const row = document.createElement('tr');
+            row.innerHTML = this.renderEventRow(event, true).replace(/<tr[^>]*>|<\/tr>/g, '');
+            row.dataset.eventId = event.event_id;
+            row.className = 'event-row live-new';
+            row.addEventListener('click', () => this.openDrawer('event', event.event_id));
+            tbody.insertBefore(row, tbody.firstChild);
+            
+            // Remove old rows
+            while (tbody.children.length > 100) {
+                tbody.removeChild(tbody.lastChild);
+            }
+        }
+        
+        // Update counter in header
+        if (this.state.view === 'events') {
+            const subtitle = document.querySelector('.page-subtitle');
+            if (subtitle) {
+                subtitle.textContent = `${this.state.data.events.length} olay`;
+            }
+        }
+    },
+
+    // ==========================================
+    // REPORTS
+    // ==========================================
+    async loadReport(type) {
+        const container = document.getElementById('report-content');
+        if (!container) return;
+        
+        container.innerHTML = '<div class="empty-state"><p class="empty-state-title">Yükleniyor...</p></div>';
+        
+        try {
+            const file = type === 'executive' ? 'report_executive.md' : 'report_technical.md';
+            const res = await fetch(`./dashboard_data/${file}`);
+            if (!res.ok) throw new Error('Not found');
+            const md = await res.text();
+            container.innerHTML = `<div style="max-width: 800px;">${Security.renderMarkdown(md)}</div>`;
+        } catch {
+            container.innerHTML = '<div class="empty-state"><p class="empty-state-title">Rapor bulunamadı</p></div>';
+        }
+    },
+
+    // ==========================================
+    // FILTERS
+    // ==========================================
+    clearFilters() {
+        this.state.filters = { severity: [], status: [], category: [], search: '' };
+        document.querySelectorAll('.filter-pane input[type="checkbox"]').forEach(cb => cb.checked = false);
+        document.querySelectorAll('.filter-pane select').forEach(sel => sel.value = '');
+        this.renderView();
+    },
+
+    clearDeviceFilters() {
+        document.querySelectorAll('.filter-device-risk, .filter-device-os, .filter-device-isolation').forEach(cb => cb.checked = false);
+    },
+
+    applyEventFilter() {
+        // Get filter values and re-render
+        // Simplified for now
+    },
+
+    searchEvents() {
+        const input = document.getElementById('event-search');
+        if (input) {
+            this.state.filters.search = input.value;
+            this.renderView();
+        }
+    },
+
+    saveSearch() {
+        this.toast('Arama kaydedildi', 'success');
+    },
+
+    // ==========================================
+    // EXPORT
+    // ==========================================
+    exportCurrentView() {
+        const view = this.state.view;
+        let data, filename;
+        
+        switch (view) {
+            case 'alerts':
+                data = this.state.data.alerts;
+                filename = 'alerts.json';
+                break;
+            case 'events':
+                data = this.state.data.events;
+                filename = 'events.json';
+                break;
+            case 'devices':
+                data = this.state.data.devices;
+                filename = 'devices.json';
+                break;
+            case 'cases':
+                data = this.state.data.cases;
+                filename = 'cases.json';
+                break;
+            default:
+                data = this.state.data.summary;
+                filename = 'summary.json';
+        }
+        
+        Security.createDownload(JSON.stringify(data, null, 2), filename);
+        this.toast('Dışa aktarıldı', 'success');
+    },
+
+    exportEvents() {
+        const events = this.state.data.events || [];
+        const csv = [
+            ['Zaman', 'Kaynak', 'Tip', 'Kullanıcı', 'Cihaz', 'IP', 'Özet'].join(','),
+            ...events.map(e => [
+                e.ts, e.source, e.event_type, e.user, e.device, e.src_ip, `"${(e.summary || '').replace(/"/g, '""')}"`
+            ].join(','))
+        ].join('\n');
+        
+        Security.createDownload(csv, 'events.csv', 'text/csv');
+        this.toast('CSV indirildi', 'success');
+    },
+
+    exportIOCs() {
+        const iocs = this.state.data.iocs || [];
+        const csv = [
+            ['Gösterge', 'Tip', 'Güven', 'Etiketler', 'İlk Görülme', 'Son Görülme'].join(','),
+            ...iocs.map(i => [
+                i.indicator, i.type, i.confidence, (i.tags || []).join(';'), i.first_seen, i.last_seen
+            ].join(','))
+        ].join('\n');
+        
+        Security.createDownload(csv, 'iocs.csv', 'text/csv');
+        this.toast('IOC CSV indirildi', 'success');
+    },
+
+    copyAlertDetails(alertId) {
+        const alert = this.state.data.alerts?.find(a => (a.alert_id || a.id) === alertId);
+        if (alert) {
+            Security.copyToClipboard(JSON.stringify(alert, null, 2));
+            this.toast('Kopyalandı', 'success');
+        }
+    },
+
+    copyEventJson(eventId) {
+        const event = this.state.data.events?.find(e => (e.event_id || e.id) === eventId);
+        if (event) {
+            Security.copyToClipboard(JSON.stringify(event, null, 2));
+            this.toast('JSON kopyalandı', 'success');
+        }
+    },
+
+    // ==========================================
+    // UI HELPERS
+    // ==========================================
     showSkeleton() {
-        const skeleton = document.getElementById('skeleton');
-        const container = document.getElementById('view-container');
-        if (skeleton) skeleton.classList.add('active');
-        if (container) container.style.display = 'none';
+        document.getElementById('skeleton-loader').style.display = 'flex';
+        document.getElementById('view-container').style.display = 'none';
     },
 
     hideSkeleton() {
-        const skeleton = document.getElementById('skeleton');
-        const container = document.getElementById('view-container');
-        if (skeleton) skeleton.classList.remove('active');
-        if (container) container.style.display = 'block';
-    },
-
-    updateStatus(status, text) {
-        const pill = document.getElementById('status-pill');
-        if (pill) {
-            pill.className = `status-pill ${status}`;
-            const textEl = pill.querySelector('.status-text');
-            if (textEl) textEl.textContent = text;
-        }
-    },
-
-    updateLastLoaded() {
-        const el = document.getElementById('last-loaded');
-        if (el) el.textContent = `Son: ${new Date().toLocaleTimeString('tr-TR')}`;
-    },
-
-    updateBadges() {
-        const casesBadge = document.getElementById('cases-badge');
-        const alertsBadge = document.getElementById('alerts-badge');
-        if (casesBadge) casesBadge.textContent = this.state.data.cases?.filter(c => c.status !== 'closed').length || 0;
-        if (alertsBadge) alertsBadge.textContent = this.state.data.alerts?.filter(a => a.severity === 'critical').length || 0;
+        document.getElementById('skeleton-loader').style.display = 'none';
+        document.getElementById('view-container').style.display = 'flex';
     },
 
     showEmptyState(message) {
         const container = document.getElementById('view-container');
         if (container) {
-            container.innerHTML = `<div class="empty-state"><h2>Veri Bulunamadı</h2><p style="margin-top:var(--space-4)">${this.esc(message)}</p></div>`;
+            container.style.display = 'flex';
+            container.innerHTML = `
+                <div class="empty-state" style="flex: 1;">
+                    <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <p class="empty-state-title">${message}</p>
+                </div>
+            `;
         }
+    },
+
+    updateStatus(status, text) {
+        const pill = document.getElementById('data-status');
+        if (pill) {
+            const dot = pill.querySelector('.status-dot');
+            const span = pill.querySelector('span:not(.status-dot)');
+            if (dot) {
+                dot.classList.remove('error', 'warning');
+                if (status === 'error') dot.classList.add('error');
+                if (status === 'loading') dot.classList.add('warning');
+            }
+            if (span) span.textContent = text;
+        }
+    },
+
+    updateLastLoaded() {
+        const el = document.getElementById('last-loaded');
+        if (el) {
+            const now = new Date();
+            el.textContent = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+        }
+    },
+
+    updateBadges() {
+        const alerts = this.state.data.alerts?.length || 0;
+        const cases = this.state.data.cases?.filter(c => c.status !== 'closed').length || 0;
+        
+        const alertBadge = document.getElementById('badge-alerts');
+        const caseBadge = document.getElementById('badge-cases');
+        
+        if (alertBadge) alertBadge.textContent = alerts;
+        if (caseBadge) caseBadge.textContent = cases;
     },
 
     toast(message, type = 'info') {
         const container = document.getElementById('toast-container');
         if (!container) return;
+        
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
         toast.textContent = message;
         container.appendChild(toast);
-        setTimeout(() => toast.remove(), 4000);
-    },
-
-    setDensity(density) {
-        this.state.density = density;
-        document.body.className = `density-${density}`;
-        localStorage.setItem('soc_density', density);
-    },
-
-    exportData() {
-        if (!Auth.hasRole('analyst')) {
-            this.toast('Dışa aktarma için analist yetkisi gerekli', 'error');
-            return;
-        }
-        const data = { cases: this.state.data.cases, alerts: this.state.data.alerts, exported_at: new Date().toISOString() };
-        this.downloadFile(JSON.stringify(data, null, 2), `soc-export-${Date.now()}.json`, 'application/json');
-        this.toast('Veri dışa aktarıldı', 'success');
-    },
-
-    exportIOCs() {
-        const iocs = this.state.data.iocs || [];
-        const csv = 'type,indicator,tags,confidence\n' + iocs.map(i => `${i.type},${i.indicator},"${i.tags?.join(';')}",${i.confidence}`).join('\n');
-        this.downloadFile(csv, 'iocs.csv', 'text/csv');
-        this.toast('IOC\'ler dışa aktarıldı', 'success');
-    },
-
-    downloadFile(content, filename, type) {
-        const blob = new Blob([content], { type });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(url);
-    },
-
-    async openReport(type) {
-        try {
-            const res = await fetch(`./dashboard_data/report_${type}.md`);
-            const md = await res.text();
-            this.openDrawer('report', type);
-            document.getElementById('drawer-title').textContent = type === 'executive' ? 'Yönetici Özeti' : 'Teknik Analiz';
-            document.getElementById('drawer-tabs').innerHTML = '';
-            document.getElementById('drawer-content').innerHTML = `<div style="line-height:1.8">${this.renderMarkdown(md)}</div>`;
-        } catch { this.toast('Rapor yüklenemedi', 'error'); }
-    },
-
-    formatTime(isoString) {
-        if (!isoString) return '—';
-        try {
-            return new Date(isoString).toLocaleString('tr-TR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-        } catch { return '—'; }
-    },
-
-    esc(str) {
-        if (str === null || str === undefined) return '';
-        return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    },
-
-    renderMarkdown(md) {
-        if (!md) return '';
-        let html = this.esc(md);
-        html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-        html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-        html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-        html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-        html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
-        html = html.replace(/\n\n/g, '</p><p>');
-        return '<p>' + html + '</p>';
-    },
-
-    getWarRoomNotes(caseId) {
-        try { return JSON.parse(localStorage.getItem(`warroom_${caseId}`) || '[]'); } catch { return []; }
-    },
-
-    addWarRoomNote(caseId, message) {
-        if (!message && document.getElementById('war-room-note')) {
-            message = document.getElementById('war-room-note').value.trim();
-        }
-        if (!message) return;
         
-        const notes = this.getWarRoomNotes(caseId);
-        notes.push({ timestamp: new Date().toISOString(), message, user: this.state.session?.username });
-        localStorage.setItem(`warroom_${caseId}`, JSON.stringify(notes));
-        
-        if (document.getElementById('war-room-note')) {
-            document.getElementById('war-room-note').value = '';
-        }
-        this.renderDrawerContent();
-        this.toast('Not eklendi', 'success');
+        setTimeout(() => toast.remove(), 3000);
     },
 
-    showCreateUserForm() {
-        const modal = document.getElementById('user-modal');
-        const body = document.getElementById('user-modal-body');
-        body.innerHTML = `
-            <form id="create-user-form" style="display:flex;flex-direction:column;gap:var(--space-4)">
-                <div class="form-group"><label>Kullanıcı Adı</label><input type="text" id="new-username" class="input" required></div>
-                <div class="form-group"><label>Görünen Ad</label><input type="text" id="new-displayname" class="input" required></div>
-                <div class="form-group"><label>Parola</label><input type="password" id="new-password" class="input" required></div>
-                <div class="form-group"><label>Rol</label><select id="new-role" class="select"><option value="viewer">İzleyici</option><option value="analyst">Analist</option><option value="admin">Yönetici</option></select></div>
-                <button type="submit" class="btn btn-primary">Oluştur</button>
-            </form>
+    formatTime(ts) {
+        if (!ts) return '—';
+        try {
+            const d = new Date(ts);
+            return d.toLocaleString('tr-TR', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch {
+            return ts;
+        }
+    },
+
+    renderSeverityBadge(severity) {
+        const classes = {
+            critical: 'badge-critical',
+            high: 'badge-high',
+            medium: 'badge-medium',
+            low: 'badge-low',
+            info: 'badge-neutral'
+        };
+        const labels = {
+            critical: 'Kritik',
+            high: 'Yüksek',
+            medium: 'Orta',
+            low: 'Düşük',
+            info: 'Bilgi'
+        };
+        const cls = classes[severity] || 'badge-neutral';
+        const lbl = labels[severity] || severity || 'N/A';
+        return `<span class="badge ${cls}">${this.esc(lbl)}</span>`;
+    },
+
+    renderStatusBadge(status) {
+        const classes = {
+            new: 'badge-info',
+            in_progress: 'badge-warning',
+            investigating: 'badge-warning',
+            contained: 'badge-medium',
+            closed: 'badge-neutral'
+        };
+        const labels = {
+            new: 'Yeni',
+            in_progress: 'İnceleniyor',
+            investigating: 'İnceleniyor',
+            contained: 'Kontrol Altında',
+            closed: 'Kapatıldı'
+        };
+        const cls = classes[status] || 'badge-neutral';
+        const lbl = labels[status] || status || 'N/A';
+        return `<span class="badge ${cls}">${this.esc(lbl)}</span>`;
+    },
+
+    renderRiskBadge(score) {
+        if (score >= 80) return '<span class="badge badge-critical">Kritik</span>';
+        if (score >= 60) return '<span class="badge badge-high">Yüksek</span>';
+        if (score >= 30) return '<span class="badge badge-medium">Orta</span>';
+        return '<span class="badge badge-low">Düşük</span>';
+    },
+
+    renderRiskBar(score) {
+        const level = score >= 80 ? 'critical' : score >= 60 ? 'high' : score >= 30 ? 'medium' : 'low';
+        const filled = Math.ceil(score / 20);
+        return `
+            <div class="risk-bar">
+                ${[1,2,3,4,5].map(i => `<div class="risk-bar-segment ${i <= filled ? level : ''}"></div>`).join('')}
+            </div>
         `;
-        document.getElementById('create-user-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            try {
-                await Auth.createUser(document.getElementById('new-username').value, document.getElementById('new-password').value, document.getElementById('new-role').value, document.getElementById('new-displayname').value);
-                modal.style.display = 'none';
-                this.toast('Kullanıcı oluşturuldu', 'success');
-                this.renderView();
-            } catch (err) { this.toast(err.message, 'error'); }
-        });
-        modal.style.display = 'flex';
     },
 
-    deleteUser(username) {
-        if (!confirm(`${username} kullanıcısını silmek istediğinizden emin misiniz?`)) return;
-        try { Auth.deleteUser(username); this.toast('Kullanıcı silindi', 'success'); this.renderView(); }
-        catch (err) { this.toast(err.message, 'error'); }
+    renderConfidenceBadge(confidence) {
+        if (!confidence) return '<span class="badge badge-neutral">N/A</span>';
+        const c = typeof confidence === 'string' ? confidence.toLowerCase() : confidence;
+        if (c === 'high' || c > 0.7) return '<span class="badge badge-high">Yüksek</span>';
+        if (c === 'medium' || c > 0.4) return '<span class="badge badge-medium">Orta</span>';
+        return '<span class="badge badge-low">Düşük</span>';
     },
 
-    resetAllData() {
-        if (!confirm('Tüm verileri sıfırlamak istediğinizden emin misiniz?')) return;
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = './login.html';
+    getSeverityLabel(sev) {
+        const labels = { critical: 'Kritik', high: 'Yüksek', medium: 'Orta', low: 'Düşük', info: 'Bilgi' };
+        return labels[sev] || sev;
     }
 };
 
-// Initialize
+// Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => App.init());

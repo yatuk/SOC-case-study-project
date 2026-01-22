@@ -4,154 +4,174 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self';">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <title>Giriş - SOC Konsolu</title>
+    <title>Giriş - SOC Konsol</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="login-page">
-    <!-- Simulation Notice -->
-    <div class="simulation-badge">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        Simülasyon Modu — Eğitim Amaçlı
-    </div>
-
-    <div class="login-container">
-        <div class="login-card">
-            <!-- Logo -->
-            <div class="login-header">
-                <svg class="login-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
-                <h1>SOC Konsolu</h1>
-                <p class="login-subtitle" id="subtitle">Güvenlik Operasyon Merkezi</p>
-            </div>
-
-            <!-- Setup Form (First Run) -->
-            <form id="setup-form" class="login-form" style="display: none;">
-                <div class="form-header">
-                    <h2>İlk Kurulum</h2>
-                    <p>Yönetici parolası belirleyin. Bu parola tarayıcınıza özgüdür.</p>
-                </div>
-
-                <div class="form-group">
-                    <label for="setup-password">Yönetici Parolası</label>
-                    <div class="password-input-wrapper">
-                        <input type="password" id="setup-password" autocomplete="new-password" 
-                               placeholder="Güçlü bir parola girin" required>
-                        <button type="button" class="toggle-password" data-target="setup-password" aria-label="Parolayı göster">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="password-strength" id="setup-strength">
-                        <div class="strength-bar"><div class="strength-fill" id="setup-strength-fill"></div></div>
-                        <span class="strength-label" id="setup-strength-label">—</span>
-                    </div>
-                    <div class="caps-lock-warning" id="setup-caps" style="display: none;">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                        </svg>
-                        Caps Lock açık
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="setup-confirm">Parolayı Onayla</label>
-                    <div class="password-input-wrapper">
-                        <input type="password" id="setup-confirm" autocomplete="new-password" 
-                               placeholder="Parolayı tekrar girin" required>
-                        <button type="button" class="toggle-password" data-target="setup-confirm" aria-label="Parolayı göster">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-info">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                    </svg>
-                    <span>Cihaza Bağlı — Parola sadece bu tarayıcıda geçerlidir</span>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-lg">
-                    <span>Kurulumu Tamamla</span>
-                </button>
-            </form>
-
-            <!-- Login Form -->
-            <form id="login-form" class="login-form" style="display: none;">
-                <div class="form-info" id="first-login-hint" style="margin-bottom: 16px;">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
-                    </svg>
-                    <span>Varsayılan kullanıcı: <strong>admin</strong></span>
-                </div>
-                <div class="form-group">
-                    <label for="username">Kullanıcı Adı</label>
-                    <input type="text" id="username" autocomplete="username" 
-                           placeholder="admin" value="admin" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Parola</label>
-                    <div class="password-input-wrapper">
-                        <input type="password" id="password" autocomplete="current-password" 
-                               placeholder="Parolanızı girin" required>
-                        <button type="button" class="toggle-password" data-target="password" aria-label="Parolayı göster">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="caps-lock-warning" id="login-caps" style="display: none;">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                        </svg>
-                        Caps Lock açık
-                    </div>
-                </div>
-
-                <div class="form-error" id="login-error" style="display: none;"></div>
-                <div class="form-lockout" id="login-lockout" style="display: none;">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                    </svg>
-                    <span id="lockout-timer">—</span>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-lg" id="login-btn">
-                    <span>Giriş Yap</span>
-                </button>
-            </form>
-
-            <!-- Error Display -->
-            <div class="login-error" id="global-error" style="display: none;">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
-                </svg>
-                <span id="error-message"></span>
-            </div>
+    <!-- Simulation Badge -->
+    <div class="sim-badge">SİMÜLASYON</div>
+    
+    <div class="login-card">
+        <div class="login-header">
+            <svg class="login-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <h1 class="login-title">SOC Konsol</h1>
+            <p class="login-subtitle">Anadolu Finans Holding</p>
         </div>
-
-        <!-- Footer -->
+        
+        <!-- Setup Form (First Run) -->
+        <form id="setup-form" class="login-form" style="display: none;">
+            <div style="padding: var(--space-3); background: var(--color-info-bg); border-radius: var(--radius-md); margin-bottom: var(--space-4); font-size: var(--text-sm);">
+                <strong>İlk Kurulum</strong><br>
+                Lütfen yönetici parolası oluşturun.
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="setup-password">Yönetici Parolası</label>
+                <div style="position: relative;">
+                    <input type="password" class="form-input" id="setup-password" required minlength="8" autocomplete="new-password">
+                    <button type="button" class="btn btn-ghost btn-sm" style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%);" onclick="togglePassword('setup-password')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
+                <div id="password-strength" style="margin-top: var(--space-2); font-size: var(--text-xs);"></div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="setup-confirm">Parola Tekrar</label>
+                <input type="password" class="form-input" id="setup-confirm" required minlength="8" autocomplete="new-password">
+            </div>
+            
+            <div id="setup-error" style="display: none; padding: var(--space-3); background: var(--color-danger-bg); border-radius: var(--radius-md); margin-bottom: var(--space-4); font-size: var(--text-sm); color: var(--color-danger);"></div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Kurulumu Tamamla</button>
+        </form>
+        
+        <!-- Login Form -->
+        <form id="login-form" class="login-form" style="display: none;">
+            <div class="form-group">
+                <label class="form-label" for="username">Kullanıcı Adı</label>
+                <input type="text" class="form-input" id="username" value="admin" autocomplete="username" required>
+                <div style="font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-1);">Varsayılan: admin</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="password">Parola</label>
+                <div style="position: relative;">
+                    <input type="password" class="form-input" id="password" required autocomplete="current-password">
+                    <button type="button" class="btn btn-ghost btn-sm" style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%);" onclick="togglePassword('password')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
+                <div id="caps-warning" style="display: none; margin-top: var(--space-1); font-size: var(--text-xs); color: var(--color-warning);">Caps Lock açık</div>
+            </div>
+            
+            <div id="login-error" style="display: none; padding: var(--space-3); background: var(--color-danger-bg); border-radius: var(--radius-md); margin-bottom: var(--space-4); font-size: var(--text-sm); color: var(--color-danger);"></div>
+            
+            <div id="lockout-warning" style="display: none; padding: var(--space-3); background: var(--color-warning-bg); border-radius: var(--radius-md); margin-bottom: var(--space-4); font-size: var(--text-sm); color: var(--color-warning);"></div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;" id="login-btn">Giriş Yap</button>
+        </form>
+        
         <div class="login-footer">
-            <p>Anadolu Finans Holding — Güvenlik Operasyon Merkezi</p>
-            <p class="muted">Bu bir simülasyon/eğitim projesidir. Gerçek şirketlerle ilişkisi yoktur.</p>
+            Eğitim amaçlı simülasyon ortamı<br>
+            Gerçek veriler kullanmayın
         </div>
     </div>
-
-    <script src="auth.js"></script>
+    
     <script src="security.js"></script>
-    <script src="login-controller.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+        
+        // Check caps lock
+        document.addEventListener('keydown', function(e) {
+            const warning = document.getElementById('caps-warning');
+            if (warning && e.getModifierState('CapsLock')) {
+                warning.style.display = 'block';
+            } else if (warning) {
+                warning.style.display = 'none';
+            }
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if already logged in
+            if (Auth.getSession()) {
+                window.location.href = './index.html';
+                return;
+            }
+            
+            // Show appropriate form
+            if (Auth.isFirstRun()) {
+                document.getElementById('setup-form').style.display = 'flex';
+            } else {
+                document.getElementById('login-form').style.display = 'flex';
+            }
+            
+            // Setup form handler
+            document.getElementById('setup-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const password = document.getElementById('setup-password').value;
+                const confirm = document.getElementById('setup-confirm').value;
+                const errorDiv = document.getElementById('setup-error');
+                
+                if (password !== confirm) {
+                    errorDiv.textContent = 'Parolalar eşleşmiyor';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+                
+                try {
+                    await Auth.bootstrap(password);
+                    const session = await Auth.authenticate('admin', password);
+                    if (session) {
+                        window.location.href = './index.html';
+                    }
+                } catch (err) {
+                    errorDiv.textContent = err.message;
+                    errorDiv.style.display = 'block';
+                }
+            });
+            
+            // Login form handler
+            document.getElementById('login-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const errorDiv = document.getElementById('login-error');
+                const btn = document.getElementById('login-btn');
+                
+                btn.disabled = true;
+                btn.textContent = 'Giriş yapılıyor...';
+                errorDiv.style.display = 'none';
+                
+                try {
+                    const session = await Auth.authenticate(username, password);
+                    if (session) {
+                        window.location.href = './index.html';
+                    }
+                } catch (err) {
+                    errorDiv.textContent = err.message;
+                    errorDiv.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Giriş Yap';
+                }
+            });
+            
+            // Password strength checker
+            document.getElementById('setup-password').addEventListener('input', function() {
+                const strength = Auth.checkPasswordStrength(this.value);
+                const div = document.getElementById('password-strength');
+                const colors = ['var(--severity-critical)', 'var(--severity-critical)', 'var(--severity-high)', 'var(--severity-medium)', 'var(--severity-low)', 'var(--color-success)'];
+                div.innerHTML = '<span style="color: ' + colors[strength.score] + '">' + strength.label + '</span>';
+            });
+        });
+    </script>
 </body>
 </html>
