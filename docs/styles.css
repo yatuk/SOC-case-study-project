@@ -111,6 +111,8 @@
 
 /* ============================================
    RESET & BASE
+   Note: Login page uses login.css (isolated)
+   These styles are for the main app only
    ============================================ */
 *, *::before, *::after {
     margin: 0;
@@ -118,12 +120,12 @@
     box-sizing: border-box;
 }
 
-html, body {
+html {
     height: 100%;
-    overflow: hidden;
 }
 
 body {
+    min-height: 100%;
     font-family: var(--font-sans);
     font-size: var(--text-base);
     line-height: var(--line-normal);
@@ -141,7 +143,8 @@ code, pre, .mono {
 }
 
 /* ============================================
-   APP SHELL
+   APP SHELL (Main Application Layout)
+   overflow: hidden is scoped here, not global
    ============================================ */
 .app-shell {
     display: flex;
@@ -1348,57 +1351,7 @@ code, pre, .mono {
 
 /* ============================================
    LOGIN PAGE
+   Note: Login page now uses separate login.css
+   These styles are kept as fallback only
    ============================================ */
-.login-page {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--space-5);
-    overflow: auto;
-}
-
-.login-card {
-    width: 100%;
-    max-width: 380px;
-    background: var(--bg-surface-1);
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-lg);
-    padding: var(--space-6);
-}
-
-.login-header {
-    text-align: center;
-    margin-bottom: var(--space-5);
-}
-
-.login-logo {
-    width: 40px;
-    height: 40px;
-    margin: 0 auto var(--space-3);
-    color: var(--color-primary);
-}
-
-.login-title {
-    font-size: var(--text-xl);
-    font-weight: 600;
-}
-
-.login-subtitle {
-    font-size: var(--text-sm);
-    color: var(--text-muted);
-    margin-top: var(--space-1);
-}
-
-.login-form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-}
-
-.login-footer {
-    margin-top: var(--space-5);
-    text-align: center;
-    font-size: var(--text-xs);
-    color: var(--text-muted);
-}
+/* Login styles moved to login.css for isolation */

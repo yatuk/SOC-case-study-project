@@ -1,0 +1,423 @@
+/**
+ * SOC Console - Login Page Styles
+ * Isolated from main app CSS to prevent conflicts
+ * Self-contained, no framework dependencies
+ */
+
+/* ============================================
+   CSS RESET (Minimal)
+   ============================================ */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ============================================
+   DESIGN TOKENS
+   ============================================ */
+:root {
+    /* Colors */
+    --login-bg: #0a0c10;
+    --login-surface: #0d1117;
+    --login-border: #30363d;
+    --login-text: #e6edf3;
+    --login-text-muted: #8b949e;
+    --login-primary: #58a6ff;
+    --login-primary-hover: #79c0ff;
+    --login-danger: #f85149;
+    --login-danger-bg: rgba(248, 81, 73, 0.15);
+    --login-warning: #d29922;
+    --login-warning-bg: rgba(210, 153, 34, 0.15);
+    --login-info-bg: rgba(88, 166, 255, 0.15);
+    --login-success: #3fb950;
+    
+    /* Typography */
+    --login-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    
+    /* Spacing */
+    --login-space-xs: 4px;
+    --login-space-sm: 8px;
+    --login-space-md: 12px;
+    --login-space-lg: 16px;
+    --login-space-xl: 24px;
+    --login-space-2xl: 32px;
+    
+    /* Radius */
+    --login-radius: 8px;
+    --login-radius-sm: 4px;
+    
+    /* Shadows */
+    --login-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+html {
+    height: 100%;
+}
+
+body.login-page {
+    min-height: 100%;
+    margin: 0;
+    padding: var(--login-space-lg);
+    font-family: var(--login-font);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--login-text);
+    background: var(--login-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Allow scroll if needed on small screens */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Background pattern (subtle) */
+body.login-page::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+        radial-gradient(ellipse at 50% 0%, rgba(88, 166, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 0% 100%, rgba(63, 185, 80, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ============================================
+   SIMULATION BADGE
+   ============================================ */
+.login-sim-badge {
+    position: fixed;
+    top: var(--login-space-md);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: var(--login-space-xs) var(--login-space-md);
+    background: var(--login-warning-bg);
+    border: 1px solid rgba(210, 153, 34, 0.3);
+    border-radius: var(--login-radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--login-warning);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    z-index: 100;
+}
+
+/* ============================================
+   LOGIN CARD
+   ============================================ */
+.login-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 400px;
+    background: var(--login-surface);
+    border: 1px solid var(--login-border);
+    border-radius: var(--login-radius);
+    padding: var(--login-space-2xl);
+    box-shadow: var(--login-shadow);
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.login-header {
+    text-align: center;
+    margin-bottom: var(--login-space-xl);
+}
+
+.login-logo {
+    width: 48px;
+    height: 48px;
+    margin-bottom: var(--login-space-md);
+    color: var(--login-primary);
+}
+
+.login-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 var(--login-space-xs);
+    color: var(--login-text);
+}
+
+.login-subtitle {
+    font-size: 13px;
+    color: var(--login-text-muted);
+    margin: 0;
+}
+
+/* ============================================
+   FORMS
+   ============================================ */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--login-space-lg);
+}
+
+.login-form.hidden {
+    display: none !important;
+}
+
+/* Form Group */
+.login-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--login-space-sm);
+}
+
+/* Labels */
+.login-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--login-text);
+}
+
+/* Input wrapper for icon/button positioning */
+.login-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Inputs */
+.login-input {
+    width: 100%;
+    height: 44px;
+    padding: 0 var(--login-space-md);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--login-text);
+    background: var(--login-bg);
+    border: 1px solid var(--login-border);
+    border-radius: var(--login-radius-sm);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.login-input:focus {
+    border-color: var(--login-primary);
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+}
+
+.login-input::placeholder {
+    color: var(--login-text-muted);
+}
+
+/* Password input with toggle button */
+.login-input-wrapper .login-input {
+    padding-right: 44px;
+}
+
+/* Toggle password button */
+.login-toggle-password {
+    position: absolute;
+    right: var(--login-space-sm);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: var(--login-radius-sm);
+    color: var(--login-text-muted);
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.login-toggle-password:hover {
+    color: var(--login-text);
+}
+
+.login-toggle-password svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Helper text */
+.login-helper {
+    font-size: 12px;
+    color: var(--login-text-muted);
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.login-btn {
+    width: 100%;
+    height: 44px;
+    padding: 0 var(--login-space-lg);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    background: var(--login-primary);
+    border: none;
+    border-radius: var(--login-radius-sm);
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.login-btn:hover:not(:disabled) {
+    background: var(--login-primary-hover);
+}
+
+.login-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.login-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Loading state */
+.login-btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.login-btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin: -10px 0 0 -10px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: login-spinner 0.6s linear infinite;
+}
+
+@keyframes login-spinner {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   ALERTS / MESSAGES
+   ============================================ */
+.login-alert {
+    padding: var(--login-space-md);
+    border-radius: var(--login-radius-sm);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.login-alert.hidden {
+    display: none;
+}
+
+.login-alert-error {
+    background: var(--login-danger-bg);
+    color: var(--login-danger);
+    border: 1px solid rgba(248, 81, 73, 0.3);
+}
+
+.login-alert-warning {
+    background: var(--login-warning-bg);
+    color: var(--login-warning);
+    border: 1px solid rgba(210, 153, 34, 0.3);
+}
+
+.login-alert-info {
+    background: var(--login-info-bg);
+    color: var(--login-primary);
+    border: 1px solid rgba(88, 166, 255, 0.3);
+}
+
+/* Caps Lock Warning */
+.login-caps-warning {
+    display: none;
+    font-size: 12px;
+    color: var(--login-warning);
+}
+
+.login-caps-warning.visible {
+    display: block;
+}
+
+/* Password Strength */
+.login-strength {
+    height: 4px;
+    background: var(--login-border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: var(--login-space-sm);
+}
+
+.login-strength-bar {
+    height: 100%;
+    width: 0;
+    transition: width 0.2s ease, background-color 0.2s ease;
+}
+
+.login-strength-text {
+    font-size: 11px;
+    margin-top: var(--login-space-xs);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.login-footer {
+    margin-top: var(--login-space-xl);
+    padding-top: var(--login-space-lg);
+    border-top: 1px solid var(--login-border);
+    text-align: center;
+    font-size: 12px;
+    color: var(--login-text-muted);
+    line-height: 1.6;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 480px) {
+    body.login-page {
+        padding: var(--login-space-md);
+        align-items: flex-start;
+        padding-top: 60px;
+    }
+    
+    .login-card {
+        padding: var(--login-space-xl);
+    }
+    
+    .login-sim-badge {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
+}
+
+@media (max-height: 700px) {
+    body.login-page {
+        align-items: flex-start;
+        padding-top: 48px;
+    }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ============================================
+   PRINT
+   ============================================ */
+@media print {
+    .login-sim-badge {
+        display: none;
+    }
+}
