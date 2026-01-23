@@ -48,7 +48,13 @@ export interface Event {
   severity?: Severity | number
   user?: string | { id?: string; display?: string; email?: string }
   device?: string | { id?: string; hostname?: string; os?: string }
-  network?: { src_ip?: string; dst_ip?: string; src_geo?: string; dst_geo?: string; domain?: string }
+  network?: {
+    src_ip?: string
+    dst_ip?: string
+    src_geo?: string
+    dst_geo?: string
+    domain?: string
+  }
   src_ip?: string
   process?: { name?: string; pid?: number; parent_name?: string; cmdline?: string }
   artifact?: { file_path?: string; hash?: string }
@@ -90,9 +96,17 @@ export interface ConnectionInfo {
 
 export interface IOC {
   type: 'ip' | 'domain' | 'hash' | 'url' | 'email' | string
+
+  // canonical field
   value: string
+
+  // aliases / enrichment (Intel.tsx uyumu + farklı datasetler)
+  indicator?: string
+  domain?: string
+  label?: string
+
   severity?: 'critical' | 'high' | 'medium' | 'low' | string
-  confidence?: number
+  confidence?: number | string
   tags?: string[]
   source?: string
   first_seen?: string
