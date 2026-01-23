@@ -4,48 +4,79 @@
 
 @layer base {
   :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 6%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 6%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-    --radius: 0.5rem;
-  }
-
-  .light {
+    /* Light Mode Defaults */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
+    
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
+    
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    
+    --primary: 161 94% 30%; /* Emerald Green */
+    --primary-foreground: 144 100% 98%;
+    
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
+    
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
+    
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
+    
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
+    
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 161 94% 30%;
+    
+    --radius: 0.5rem;
+
+    /* Custom Neon Colors (Darker for Light Mode visibility) */
+    --neon-cyan: 190 100% 40%;
+    --neon-pink: 330 100% 50%;
+    --neon-yellow: 60 100% 40%;
+    --neon-blue: 200 100% 50%;
+  }
+
+  .dark {
+    /* Cyberpunk / SOC Theme (Dark Mode) */
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+    
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+    
+    --popover: 224 71% 4%;
+    --popover-foreground: 213 31% 91%;
+    
+    --primary: 161 94% 30%;
+    --primary-foreground: 144 100% 98%;
+    
+    --secondary: 222 47% 11%;
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+    
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+    
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+    --ring: 161 94% 30%;
+
+    /* Custom Neon Colors (Bright for Dark Mode) */
+    --neon-cyan: 190 100% 50%;
+    --neon-pink: 330 100% 60%;
+    --neon-yellow: 60 100% 60%;
+    --neon-blue: 200 100% 60%;
   }
 }
 
@@ -53,84 +84,53 @@
   * {
     @apply border-border;
   }
-  
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
-  }
-
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-background;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-secondary rounded;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/50;
+    /* Dot Matrix Texture Background */
+    background-image: 
+      radial-gradient(hsla(var(--primary) / 0.1) 1px, transparent 1px),
+      radial-gradient(hsla(var(--primary) / 0.05) 1px, transparent 1px);
+    background-size: 50px 50px, 20px 20px;
+    background-position: 0 0, 25px 25px;
+    background-attachment: fixed;
   }
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-card/80 backdrop-blur-sm border border-border/50;
+  /* Text Glows */
+  .text-glow-cyan {
+    text-shadow: 0 0 10px hsla(var(--neon-cyan) / 0.7), 0 0 20px hsla(var(--neon-cyan) / 0.5);
   }
-
-  .gradient-mask {
-    mask-image: linear-gradient(to bottom, black 60%, transparent);
+  .text-glow-green {
+    text-shadow: 0 0 10px hsla(var(--primary) / 0.7), 0 0 20px hsla(var(--primary) / 0.5);
   }
-
-  .animate-in {
-    animation: animate-in 0.2s ease-out;
+  .text-glow-pink {
+    text-shadow: 0 0 10px hsla(var(--neon-pink) / 0.7), 0 0 20px hsla(var(--neon-pink) / 0.5);
   }
-
-  @keyframes animate-in {
-    from {
-      opacity: 0;
-      transform: translateY(4px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  
+  /* Box Glows */
+  .box-glow-cyan {
+    box-shadow: 0 0 15px hsla(var(--neon-cyan) / 0.2), inset 0 0 15px hsla(var(--neon-cyan) / 0.1);
   }
-
-  .severity-critical {
-    @apply text-[#f85149];
+  .box-glow-green {
+    box-shadow: 0 0 15px hsla(var(--primary) / 0.2), inset 0 0 15px hsla(var(--primary) / 0.1);
   }
-  .severity-high {
-    @apply text-[#f0883e];
+  
+  /* Glassmorphism Panel */
+  .glass-panel {
+    @apply bg-black/40 backdrop-blur-md border border-white/10;
   }
-  .severity-medium {
-    @apply text-[#d29922];
+  
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
-  .severity-low {
-    @apply text-[#3fb950];
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
   }
-  .severity-info {
-    @apply text-[#8b949e];
-  }
-
-  .bg-severity-critical {
-    @apply bg-[#f85149]/20 text-[#f85149];
-  }
-  .bg-severity-high {
-    @apply bg-[#f0883e]/20 text-[#f0883e];
-  }
-  .bg-severity-medium {
-    @apply bg-[#d29922]/20 text-[#d29922];
-  }
-  .bg-severity-low {
-    @apply bg-[#3fb950]/20 text-[#3fb950];
-  }
-  .bg-severity-info {
-    @apply bg-[#8b949e]/20 text-[#8b949e];
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/30 rounded-full hover:bg-primary/50 transition-colors;
   }
 }

@@ -1,0 +1,107 @@
+[
+  {
+    "email": "ayse.demir@anadolufinans.example.tr",
+    "name": "Ayşe Demir",
+    "dept": "Finans",
+    "title": "Finans Analisti",
+    "role": "analyst"
+  },
+  {
+    "email": "mehmet.kaya@anadolufinans.example.tr",
+    "name": "Mehmet Kaya",
+    "dept": "BT",
+    "title": "Sistem Yöneticisi",
+    "role": "admin"
+  },
+  {
+    "email": "elif.yilmaz@anadolufinans.example.tr",
+    "name": "Elif Yılmaz",
+    "dept": "Yazılım",
+    "title": "Kıdemli Geliştirici",
+    "role": "analyst"
+  },
+  {
+    "email": "mustafa.arslan@anadolufinans.example.tr",
+    "name": "Mustafa Arslan",
+    "dept": "Satış",
+    "title": "Satış Müdürü",
+    "role": "viewer"
+  },
+  {
+    "email": "zeynep.celik@anadolufinans.example.tr",
+    "name": "Zeynep Çelik",
+    "dept": "İK",
+    "title": "İK Uzmanı",
+    "role": "viewer"
+  },
+  {
+    "email": "ali.ozturk@anadolufinans.example.tr",
+    "name": "Ali Öztürk",
+    "dept": "Pazarlama",
+    "title": "Pazarlama Direktörü",
+    "role": "viewer"
+  },
+  {
+    "email": "fatma.sahin@anadolufinans.example.tr",
+    "name": "Fatma Şahin",
+    "dept": "Finans",
+    "title": "Muhasebe Müdürü",
+    "role": "analyst"
+  },
+  {
+    "email": "ahmet.yildiz@anadolufinans.example.tr",
+    "name": "Ahmet Yıldız",
+    "dept": "Yönetim",
+    "title": "CFO",
+    "role": "admin"
+  },
+  {
+    "email": "selin.aksoy@anadolufinans.example.tr",
+    "name": "Selin Aksoy",
+    "dept": "Hukuk",
+    "title": "Hukuk Danışmanı",
+    "role": "viewer"
+  },
+  {
+    "email": "emre.korkmaz@anadolufinans.example.tr",
+    "name": "Emre Korkmaz",
+    "dept": "BT",
+    "title": "Siber Güvenlik Analisti",
+    "role": "analyst"
+  },
+  {
+    "email": "deniz.aydin@anadolufinans.example.tr",
+    "name": "Deniz Aydın",
+    "dept": "Yazılım",
+    "title": "DevOps Mühendisi",
+    "role": "analyst"
+  },
+  {
+    "email": "burak.polat@anadolufinans.example.tr",
+    "name": "Burak Polat",
+    "dept": "Satış",
+    "title": "Bölge Müdürü",
+    "role": "viewer"
+  },
+  {
+    "email": "ceren.erdogan@anadolufinans.example.tr",
+    "name": "Ceren Erdoğan",
+    "dept": "Risk",
+    "title": "Risk Analisti",
+    "role": "analyst"
+  },
+  {
+    "email": "oguz.tekin@anadolufinans.example.tr",
+    "name": "Oğuz Tekin",
+    "dept": "Operasyon",
+    "title": "Operasyon Müdürü",
+    "role": "viewer"
+  },
+  {
+    "email": "gulsen.dogan@anadolufinans.example.tr",
+    "name": "Gülşen Doğan",
+    "dept": "Müşteri Hizmetleri",
+    "title": "Müşteri İlişkileri Yöneticisi",
+    "role": "viewer"
+  }
+]

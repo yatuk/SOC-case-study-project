@@ -1,0 +1,62 @@
+{
+  "T1566.001": {
+    "name": "Oltalama: Hedefli Ek Dosya",
+    "tactic": "İlk Erişim"
+  },
+  "T1566.002": {
+    "name": "Oltalama: Hedefli Bağlantı",
+    "tactic": "İlk Erişim"
+  },
+  "T1078": {
+    "name": "Geçerli Hesaplar",
+    "tactic": "Savunma Atlatma"
+  },
+  "T1078.004": {
+    "name": "Geçerli Hesaplar: Bulut Hesapları",
+    "tactic": "Savunma Atlatma"
+  },
+  "T1114.002": {
+    "name": "E-posta Toplama: Uzak E-posta Erişimi",
+    "tactic": "Toplama"
+  },
+  "T1098": {
+    "name": "Hesap Manipülasyonu",
+    "tactic": "Kalıcılık"
+  },
+  "T1098.001": {
+    "name": "Hesap Manipülasyonu: Ek Bulut Kimlik Bilgileri",
+    "tactic": "Kalıcılık"
+  },
+  "T1528": {
+    "name": "Uygulama Erişim Jetonu Çalma",
+    "tactic": "Kimlik Bilgisi Erişimi"
+  },
+  "T1556": {
+    "name": "Kimlik Doğrulama Sürecini Değiştirme",
+    "tactic": "Kimlik Bilgisi Erişimi"
+  },
+  "T1059.001": {
+    "name": "Komut ve Betik: PowerShell",
+    "tactic": "Yürütme"
+  },
+  "T1059.005": {
+    "name": "Komut ve Betik: Visual Basic",
+    "tactic": "Yürütme"
+  },
+  "T1547.001": {
+    "name": "Önyükleme/Oturum Başlatma: Kayıt Defteri Anahtarları",
+    "tactic": "Kalıcılık"
+  },
+  "T1071.001": {
+    "name": "Uygulama Katmanı Protokolü: Web",
+    "tactic": "Komuta ve Kontrol"
+  },
+  "T1567.002": {
+    "name": "Web Servisi Üzerinden Veri Sızdırma: Bulut Depolama",
+    "tactic": "Veri Sızdırma"
+  },
+  "T1110.003": {
+    "name": "Kaba Kuvvet: Parola Püskürtme",
+    "tactic": "Kimlik Bilgisi Erişimi"
+  }
+}

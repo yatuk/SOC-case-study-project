@@ -54,6 +54,9 @@ interface DataState {
   setData: (key: keyof Omit<DataState, 'isLoading' | 'error' | 'lastLoaded' | 'setData' | 'setLoading' | 'setError' | 'refresh'>, data: unknown) => void
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void
+  simulationEnabled: boolean
+  toggleSimulation: (enabled?: boolean) => void
+  addSimulatedEvent: (event: Event) => void
   refresh: () => void
 }
 
@@ -77,6 +80,17 @@ export const useDataStore = create<DataState>((set) => ({
   setData: (key, data) => set({ [key]: data }),
   setLoading: (loading) => set({ isLoading: loading }),
   setError: (error) => set({ error }),
+  simulationEnabled: false,
+  toggleSimulation: (enabled) => set((state) => ({ 
+    simulationEnabled: enabled ?? !state.simulationEnabled 
+  })),
+  addSimulatedEvent: (event) => set((state) => ({ 
+    events: [event, ...state.events].slice(0, 1000),
+    summary: state.summary ? {
+      ...state.summary,
+      total_events: (state.summary.total_events || 0) + 1
+    } : null
+  })),
   refresh: () => set({ lastLoaded: new Date() }),
 }))
 
@@ -151,6 +165,9 @@ export const useSettingsStore = create<SettingsState>()(
 interface EDRStateStore {
   edrState: EDRState
   performAction: (deviceId: string, action: string) => void
+  isolateDevice: (deviceId: string) => void
+  restoreDevice: (deviceId: string) => void
+  killProcess: (deviceId: string, pid: number) => void
   clearState: () => void
 }
 
@@ -173,6 +190,56 @@ export const useEDRStore = create<EDRStateStore>()(
           
           return {
             edrState: { ...state.edrState, [deviceId]: newState },
+          }
+        }),
+      isolateDevice: (deviceId) =>
+        set((state) => {
+          const device = state.edrState[deviceId] || { isolated: false, actions: [] }
+          return {
+            edrState: {
+              ...state.edrState,
+              [deviceId]: {
+                ...device,
+                isolated: true,
+                actions: [
+                  ...device.actions,
+                  { action: 'Device isolated', time: new Date().toLocaleString() },
+                ],
+              },
+            },
+          }
+        }),
+      restoreDevice: (deviceId) =>
+        set((state) => {
+          const device = state.edrState[deviceId] || { isolated: false, actions: [] }
+          return {
+            edrState: {
+              ...state.edrState,
+              [deviceId]: {
+                ...device,
+                isolated: false,
+                actions: [
+                  ...device.actions,
+                  { action: 'Connection restored', time: new Date().toLocaleString() },
+                ],
+              },
+            },
+          }
+        }),
+      killProcess: (deviceId, pid) =>
+        set((state) => {
+          const device = state.edrState[deviceId] || { isolated: false, actions: [] }
+          return {
+            edrState: {
+              ...state.edrState,
+              [deviceId]: {
+                ...device,
+                actions: [
+                  ...device.actions,
+                  { action: `Killed process PID ${pid}`, time: new Date().toLocaleString() },
+                ],
+              },
+            },
           }
         }),
       clearState: () => set({ edrState: {} }),

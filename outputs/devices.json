@@ -1,0 +1,177 @@
+[
+  {
+    "id": "DEV-001",
+    "hostname": "IST-WS-001",
+    "os": "Windows 11 Pro",
+    "owner": "ayse.demir@anadolufinans.example.tr",
+    "location": "İstanbul"
+  },
+  {
+    "id": "DEV-002",
+    "hostname": "IST-WS-002",
+    "os": "Windows 11 Pro",
+    "owner": "mehmet.kaya@anadolufinans.example.tr",
+    "location": "İstanbul"
+  },
+  {
+    "id": "DEV-003",
+    "hostname": "ANK-LT-001",
+    "os": "macOS 14 Sonoma",
+    "owner": "elif.yilmaz@anadolufinans.example.tr",
+    "location": "Ankara"
+  },
+  {
+    "id": "DEV-004",
+    "hostname": "IST-WS-003",
+    "os": "Windows 11 Pro",
+    "owner": "mustafa.arslan@anadolufinans.example.tr",
+    "location": "İstanbul"
+  },
+  {
+    "id": "DEV-005",
+    "hostname": "IST-WS-004",
+    "os": "Windows 11 Pro",
+    "owner": "zeynep.celik@anadolufinans.example.tr",
+    "location": "İstanbul"
+  },
+  {
+    "id": "DEV-006",
+    "hostname": "IZM-LT-001",
+    "os": "macOS 14 Sonoma",
+    "owner": "ali.ozturk@anadolufinans.example.tr",
+    "location": "İzmir"
+  },
+  {
+    "id": "DEV-007",
+    "hostname": "IST-WS-005",
+    "os": "Windows 11 Pro",
+    "owner": "fatma.sahin@anadolufinans.example.tr",
+    "location": "İstanbul"
+  },
+  {
+    "id": "DEV-008",
+    "hostname": "IST-EXC-001",
+    "os": "Windows 11 Pro",
+    "owner": "ahmet.yildiz@anadolufinans.example.tr",
+    "location": "İstanbul"
+  },
+  {
+    "id": "DEV-009",
+    "hostname": "ANK-LT-002",
+    "os": "macOS 14 Sonoma",
+    "owner": "selin.aksoy@anadolufinans.example.tr",
+    "location": "Ankara"
+  },
+  {
+    "id": "DEV-010",
+    "hostname": "IST-SEC-001",
+    "os": "Windows 11 Pro",
+    "owner": "emre.korkmaz@anadolufinans.example.tr",
+    "location": "İstanbul"
+  },
+  {
+    "id": "DEV-011",
+    "hostname": "IST-DEV-001",
+    "os": "Ubuntu 22.04 LTS",
+    "owner": "deniz.aydin@anadolufinans.example.tr",
+    "location": "İstanbul"
+  },
+  {
+    "id": "DEV-012",
+    "hostname": "BRS-WS-001",
+    "os": "Windows 11 Pro",
+    "owner": "burak.polat@anadolufinans.example.tr",
+    "location": "Bursa"
+  },
+  {
+    "id": "DEV-013",
+    "hostname": "IST-WS-006",
+    "os": "Windows 11 Pro",
+    "owner": "ceren.erdogan@anadolufinans.example.tr",
+    "location": "İstanbul"
+  },
+  {
+    "id": "DEV-014",
+    "hostname": "IST-WS-007",
+    "os": "Windows 11 Pro",
+    "owner": "oguz.tekin@anadolufinans.example.tr",
+    "location": "İstanbul"
+  },
+  {
+    "id": "DEV-015",
+    "hostname": "IST-WS-008",
+    "os": "Windows 11 Pro",
+    "owner": "gulsen.dogan@anadolufinans.example.tr",
+    "location": "İstanbul"
+  },
+  {
+    "id": "DEV-016",
+    "hostname": "IST-DC-001",
+    "os": "Windows Server 2022",
+    "owner": "bt-operasyon@anadolufinans.example.tr",
+    "location": "İstanbul DC"
+  },
+  {
+    "id": "DEV-017",
+    "hostname": "IST-MAIL-001",
+    "os": "Windows Server 2022",
+    "owner": "bt-operasyon@anadolufinans.example.tr",
+    "location": "İstanbul DC"
+  },
+  {
+    "id": "DEV-018",
+    "hostname": "IST-WEB-001",
+    "os": "Ubuntu 22.04 LTS",
+    "owner": "bt-operasyon@anadolufinans.example.tr",
+    "location": "İstanbul DC"
+  },
+  {
+    "id": "DEV-019",
+    "hostname": "ANK-VDI-001",
+    "os": "Windows 11 Enterprise",
+    "owner": "vdi-pool@anadolufinans.example.tr",
+    "location": "Ankara DC"
+  },
+  {
+    "id": "DEV-020",
+    "hostname": "IST-MOB-001",
+    "os": "iOS 17",
+    "owner": "ahmet.yildiz@anadolufinans.example.tr",
+    "location": "İstanbul"
+  },
+  {
+    "id": "DEV-021",
+    "hostname": "IST-MOB-002",
+    "os": "Android 14",
+    "owner": "mustafa.arslan@anadolufinans.example.tr",
+    "location": "İstanbul"
+  },
+  {
+    "id": "DEV-022",
+    "hostname": "IZM-WS-001",
+    "os": "Windows 10 Pro",
+    "owner": "external-consultant@external.example.tr",
+    "location": "İzmir"
+  },
+  {
+    "id": "DEV-023",
+    "hostname": "ANT-LT-001",
+    "os": "Windows 11 Pro",
+    "owner": "remote-worker@anadolufinans.example.tr",
+    "location": "Antalya"
+  },
+  {
+    "id": "DEV-024",
+    "hostname": "IST-KIOSK-001",
+    "os": "Windows 10 LTSC",
+    "owner": "kiosk@anadolufinans.example.tr",
+    "location": "İstanbul Şube"
+  },
+  {
+    "id": "DEV-025",
+    "hostname": "IST-PRINT-001",
+    "os": "Embedded Linux",
+    "owner": "bt-operasyon@anadolufinans.example.tr",
+    "location": "İstanbul"
+  }
+]

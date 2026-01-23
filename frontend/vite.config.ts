@@ -18,6 +18,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
+          tremor: ['@tremor/react'],
           charts: ['recharts'],
           ui: ['framer-motion', 'sonner'],
         },

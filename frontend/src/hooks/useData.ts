@@ -2,7 +2,7 @@ import { useEffect, useCallback } from 'react'
 import { useDataStore } from '@/store'
 import { parseJSONL } from '@/lib/utils'
 
-const DATA_BASE_PATH = './dashboard_data'
+const DATA_BASE_PATH = '/dashboard_data'
 
 interface FileConfig {
   file: string
@@ -88,7 +88,8 @@ export function useData() {
 
   useEffect(() => {
     loadAllData()
-  }, [loadAllData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Only run once on mount
 
   return {
     ...store,
@@ -107,7 +108,7 @@ export function useComputedData() {
   ).length
   const openCases = cases.filter((c) => c.status !== 'closed').length
   const totalDevices = devices.length
-  const isolatedDevices = 0 // Would come from EDR state
+  const isolatedDevices = 2 // Mock: EDR isolated devices
 
   const severityCounts = alerts.reduce(
     (acc, alert) => {

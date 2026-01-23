@@ -7,22 +7,22 @@
       "dept": "Finans",
       "title": "Finans Analisti",
       "role": "analyst",
-      "first_seen": "2026-01-08T21:38:06.524515",
-      "last_seen": "2026-01-22T11:25:06.524515",
+      "first_seen": "2026-01-10T01:27:44.995171",
+      "last_seen": "2026-01-23T15:14:44.995171",
       "event_count": 36,
       "devices": [
         "DEV-001"
       ],
       "ips": [
         "192.0.2.100",
-        "10.10.1.50",
+        "172.16.0.1",
         "10.10.2.100",
         "192.168.1.1",
         "192.0.2.101",
         "10.10.1.51",
         "203.0.113.195",
-        "172.16.0.1",
-        "198.51.100.45"
+        "198.51.100.45",
+        "10.10.1.50"
       ],
       "risk_score": 0
     },
@@ -33,21 +33,21 @@
       "dept": "BT",
       "title": "Sistem Yöneticisi",
       "role": "admin",
-      "first_seen": "2026-01-09T18:17:06.524515",
-      "last_seen": "2026-01-22T01:41:06.524515",
+      "first_seen": "2026-01-10T22:06:44.995171",
+      "last_seen": "2026-01-23T05:30:44.995171",
       "event_count": 47,
       "devices": [
         "DEV-002"
       ],
       "ips": [
+        "172.16.0.1",
         "192.0.2.100",
-        "10.10.1.50",
+        "203.0.113.180",
         "10.10.2.100",
         "192.0.2.101",
         "10.10.1.51",
-        "203.0.113.180",
         "203.0.113.195",
-        "172.16.0.1"
+        "10.10.1.50"
       ],
       "risk_score": 0
     },
@@ -58,22 +58,22 @@
       "dept": "Yazılım",
       "title": "Kıdemli Geliştirici",
       "role": "analyst",
-      "first_seen": "2026-01-08T18:59:06.524515",
-      "last_seen": "2026-01-22T11:44:06.524515",
+      "first_seen": "2026-01-09T22:48:44.995171",
+      "last_seen": "2026-01-23T15:33:44.995171",
       "event_count": 52,
       "devices": [
         "DEV-003"
       ],
       "ips": [
+        "172.16.0.1",
         "192.0.2.100",
-        "10.10.1.50",
         "10.10.2.100",
         "192.168.1.1",
+        "198.51.100.91",
         "192.0.2.101",
         "10.10.1.51",
         "203.0.113.195",
-        "198.51.100.91",
-        "172.16.0.1"
+        "10.10.1.50"
       ],
       "risk_score": 0
     },
@@ -84,22 +84,22 @@
       "dept": "Satış",
       "title": "Satış Müdürü",
       "role": "viewer",
-      "first_seen": "2026-01-11T14:39:06.524515",
-      "last_seen": "2026-01-22T06:26:06.524515",
+      "first_seen": "2026-01-12T18:28:44.995171",
+      "last_seen": "2026-01-23T10:15:44.995171",
       "event_count": 29,
       "devices": [
-        "DEV-004",
-        "DEV-021"
+        "DEV-021",
+        "DEV-004"
       ],
       "ips": [
         "192.0.2.100",
-        "10.10.1.50",
+        "172.16.0.1",
         "10.10.2.100",
         "192.168.1.1",
         "192.0.2.101",
         "10.10.1.51",
         "203.0.113.195",
-        "172.16.0.1"
+        "10.10.1.50"
       ],
       "risk_score": 0
     },
@@ -110,22 +110,22 @@
       "dept": "İK",
       "title": "İK Uzmanı",
       "role": "viewer",
-      "first_seen": "2026-01-09T11:47:06.524515",
-      "last_seen": "2026-01-22T16:39:06.524515",
+      "first_seen": "2026-01-10T15:36:44.995171",
+      "last_seen": "2026-01-23T20:28:44.995171",
       "event_count": 38,
       "devices": [
         "DEV-005"
       ],
       "ips": [
         "192.0.2.100",
-        "10.10.1.50",
+        "172.16.0.1",
         "10.10.2.100",
         "192.168.1.1",
         "192.0.2.101",
         "10.10.1.51",
         "203.0.113.195",
-        "172.16.0.1",
-        "203.0.113.78"
+        "203.0.113.78",
+        "10.10.1.50"
       ],
       "risk_score": 0
     },
@@ -136,21 +136,21 @@
       "dept": "Pazarlama",
       "title": "Pazarlama Direktörü",
       "role": "viewer",
-      "first_seen": "2026-01-09T06:10:06.524515",
-      "last_seen": "2026-01-22T03:49:06.524515",
+      "first_seen": "2026-01-10T09:59:44.995171",
+      "last_seen": "2026-01-23T07:38:44.995171",
       "event_count": 29,
       "devices": [
         "DEV-006"
       ],
       "ips": [
         "192.0.2.100",
-        "10.10.1.50",
+        "172.16.0.1",
         "10.10.2.100",
         "192.168.1.1",
         "192.0.2.101",
         "10.10.1.51",
         "203.0.113.195",
-        "172.16.0.1"
+        "10.10.1.50"
       ],
       "risk_score": 0
     },
@@ -161,21 +161,21 @@
       "dept": "Finans",
       "title": "Muhasebe Müdürü",
       "role": "analyst",
-      "first_seen": "2026-01-08T18:18:06.524515",
-      "last_seen": "2026-01-22T04:24:06.524515",
+      "first_seen": "2026-01-09T22:07:44.995171",
+      "last_seen": "2026-01-23T08:13:44.995171",
       "event_count": 34,
       "devices": [
         "DEV-007"
       ],
       "ips": [
-        "172.16.0.1",
         "192.0.2.100",
-        "10.10.1.50",
+        "172.16.0.1",
+        "198.51.100.54",
         "10.10.2.100",
         "192.168.1.1",
         "192.0.2.101",
         "10.10.1.51",
-        "198.51.100.54"
+        "10.10.1.50"
       ],
       "risk_score": 0
     },
@@ -186,8 +186,8 @@
       "dept": "Yönetim",
       "title": "CFO",
       "role": "admin",
-      "first_seen": "2026-01-08T19:01:06.524515",
-      "last_seen": "2026-01-22T00:45:06.524515",
+      "first_seen": "2026-01-09T22:50:44.995171",
+      "last_seen": "2026-01-23T04:34:44.995171",
       "event_count": 22,
       "devices": [
         "DEV-020",
@@ -195,14 +195,14 @@
         "DEV-022"
       ],
       "ips": [
+        "172.16.0.1",
         "192.0.2.100",
-        "10.10.1.50",
         "10.10.2.100",
         "192.168.1.1",
         "192.0.2.101",
         "10.10.1.51",
         "203.0.113.195",
-        "172.16.0.1"
+        "10.10.1.50"
       ],
       "risk_score": 0
     },
@@ -213,20 +213,20 @@
       "dept": "Hukuk",
       "title": "Hukuk Danışmanı",
       "role": "viewer",
-      "first_seen": "2026-01-08T19:53:06.524515",
-      "last_seen": "2026-01-22T16:06:06.524515",
+      "first_seen": "2026-01-09T23:42:44.995171",
+      "last_seen": "2026-01-23T19:55:44.995171",
       "event_count": 48,
       "devices": [
         "DEV-009"
       ],
       "ips": [
         "192.0.2.100",
-        "10.10.1.50",
+        "172.16.0.1",
         "10.10.2.100",
         "192.168.1.1",
         "192.0.2.101",
         "10.10.1.51",
-        "172.16.0.1"
+        "10.10.1.50"
       ],
       "risk_score": 0
     },
@@ -237,20 +237,20 @@
       "dept": "BT",
       "title": "Siber Güvenlik Analisti",
       "role": "analyst",
-      "first_seen": "2026-01-10T12:21:06.524515",
-      "last_seen": "2026-01-22T13:58:06.524515",
+      "first_seen": "2026-01-11T16:10:44.995171",
+      "last_seen": "2026-01-23T17:47:44.995171",
       "event_count": 30,
       "devices": [
         "DEV-010"
       ],
       "ips": [
+        "172.16.0.1",
         "192.0.2.100",
-        "10.10.1.50",
         "10.10.2.100",
         "192.168.1.1",
         "192.0.2.101",
         "10.10.1.51",
-        "172.16.0.1"
+        "10.10.1.50"
       ],
       "risk_score": 0
     },
@@ -261,20 +261,20 @@
       "dept": "Yazılım",
       "title": "DevOps Mühendisi",
       "role": "analyst",
-      "first_seen": "2026-01-09T08:07:06.524515",
-      "last_seen": "2026-01-22T10:37:06.524515",
+      "first_seen": "2026-01-10T11:56:44.995171",
+      "last_seen": "2026-01-23T14:26:44.995171",
       "event_count": 34,
       "devices": [
         "DEV-011"
       ],
       "ips": [
         "192.0.2.100",
-        "10.10.1.50",
+        "172.16.0.1",
         "10.10.2.100",
         "192.168.1.1",
         "192.0.2.101",
         "10.10.1.51",
-        "172.16.0.1"
+        "10.10.1.50"
       ],
       "risk_score": 0
     },
@@ -285,20 +285,20 @@
       "dept": "Satış",
       "title": "Bölge Müdürü",
       "role": "viewer",
-      "first_seen": "2026-01-08T19:21:06.524515",
-      "last_seen": "2026-01-22T16:21:06.524515",
+      "first_seen": "2026-01-09T23:10:44.995171",
+      "last_seen": "2026-01-23T20:10:44.995171",
       "event_count": 32,
       "devices": [
         "DEV-012"
       ],
       "ips": [
+        "172.16.0.1",
         "192.0.2.100",
-        "10.10.1.50",
         "10.10.2.100",
         "192.168.1.1",
         "192.0.2.101",
         "10.10.1.51",
-        "172.16.0.1"
+        "10.10.1.50"
       ],
       "risk_score": 0
     },
@@ -309,20 +309,20 @@
       "dept": "Risk",
       "title": "Risk Analisti",
       "role": "analyst",
-      "first_seen": "2026-01-08T21:54:06.524515",
-      "last_seen": "2026-01-21T13:16:06.524515",
+      "first_seen": "2026-01-10T01:43:44.995171",
+      "last_seen": "2026-01-22T17:05:44.995171",
       "event_count": 34,
       "devices": [
         "DEV-013"
       ],
       "ips": [
+        "172.16.0.1",
         "192.0.2.100",
-        "10.10.1.50",
         "10.10.2.100",
         "192.168.1.1",
         "192.0.2.101",
         "10.10.1.51",
-        "172.16.0.1"
+        "10.10.1.50"
       ],
       "risk_score": 0
     },
@@ -333,20 +333,20 @@
       "dept": "Operasyon",
       "title": "Operasyon Müdürü",
       "role": "viewer",
-      "first_seen": "2026-01-08T18:17:06.524515",
-      "last_seen": "2026-01-22T17:25:06.524515",
+      "first_seen": "2026-01-09T22:06:44.995171",
+      "last_seen": "2026-01-23T21:14:44.995171",
       "event_count": 33,
       "devices": [
         "DEV-014"
       ],
       "ips": [
         "192.0.2.100",
-        "10.10.1.50",
+        "172.16.0.1",
         "10.10.2.100",
         "192.168.1.1",
         "192.0.2.101",
         "10.10.1.51",
-        "172.16.0.1"
+        "10.10.1.50"
       ],
       "risk_score": 0
     },
@@ -357,19 +357,19 @@
       "dept": "Müşteri Hizmetleri",
       "title": "Müşteri İlişkileri Yöneticisi",
       "role": "viewer",
-      "first_seen": "2026-01-09T05:35:06.524515",
-      "last_seen": "2026-01-22T15:46:06.524515",
+      "first_seen": "2026-01-10T09:24:44.995171",
+      "last_seen": "2026-01-23T19:35:44.995171",
       "event_count": 28,
       "devices": [
         "DEV-015"
       ],
       "ips": [
         "192.0.2.100",
-        "10.10.1.50",
         "10.10.2.100",
         "192.168.1.1",
         "192.0.2.101",
-        "10.10.1.51"
+        "10.10.1.51",
+        "10.10.1.50"
       ],
       "risk_score": 0
     }
@@ -377,167 +377,167 @@
   "ips": {
     "192.0.2.100": {
       "type": "ip",
-      "first_seen": "2026-01-08T18:17:06.524515",
-      "last_seen": "2026-01-22T16:39:06.524515",
+      "first_seen": "2026-01-09T22:06:44.995171",
+      "last_seen": "2026-01-23T20:28:44.995171",
       "users": [
-        "ceren.erdogan@anadolufinans.example.tr",
-        "fatma.sahin@anadolufinans.example.tr",
-        "ali.ozturk@anadolufinans.example.tr",
-        "oguz.tekin@anadolufinans.example.tr",
-        "mehmet.kaya@anadolufinans.example.tr",
-        "zeynep.celik@anadolufinans.example.tr",
-        "deniz.aydin@anadolufinans.example.tr",
-        "mustafa.arslan@anadolufinans.example.tr",
-        "selin.aksoy@anadolufinans.example.tr",
-        "emre.korkmaz@anadolufinans.example.tr",
-        "ayse.demir@anadolufinans.example.tr",
-        "gulsen.dogan@anadolufinans.example.tr",
         "burak.polat@anadolufinans.example.tr",
+        "ayse.demir@anadolufinans.example.tr",
+        "oguz.tekin@anadolufinans.example.tr",
+        "fatma.sahin@anadolufinans.example.tr",
+        "ceren.erdogan@anadolufinans.example.tr",
+        "gulsen.dogan@anadolufinans.example.tr",
+        "selin.aksoy@anadolufinans.example.tr",
+        "ahmet.yildiz@anadolufinans.example.tr",
+        "mustafa.arslan@anadolufinans.example.tr",
+        "zeynep.celik@anadolufinans.example.tr",
         "elif.yilmaz@anadolufinans.example.tr",
-        "ahmet.yildiz@anadolufinans.example.tr"
+        "ali.ozturk@anadolufinans.example.tr",
+        "mehmet.kaya@anadolufinans.example.tr",
+        "deniz.aydin@anadolufinans.example.tr",
+        "emre.korkmaz@anadolufinans.example.tr"
       ],
       "reputation": "clean"
     },
     "192.168.1.1": {
       "type": "ip",
-      "first_seen": "2026-01-08T18:18:06.524515",
-      "last_seen": "2026-01-22T16:21:06.524515",
+      "first_seen": "2026-01-09T22:07:44.995171",
+      "last_seen": "2026-01-23T20:10:44.995171",
       "users": [
-        "ceren.erdogan@anadolufinans.example.tr",
-        "fatma.sahin@anadolufinans.example.tr",
-        "ali.ozturk@anadolufinans.example.tr",
+        "burak.polat@anadolufinans.example.tr",
+        "ayse.demir@anadolufinans.example.tr",
         "oguz.tekin@anadolufinans.example.tr",
-        "zeynep.celik@anadolufinans.example.tr",
-        "deniz.aydin@anadolufinans.example.tr",
-        "mustafa.arslan@anadolufinans.example.tr",
+        "ceren.erdogan@anadolufinans.example.tr",
+        "gulsen.dogan@anadolufinans.example.tr",
         "selin.aksoy@anadolufinans.example.tr",
         "ahmet.yildiz@anadolufinans.example.tr",
-        "ayse.demir@anadolufinans.example.tr",
-        "gulsen.dogan@anadolufinans.example.tr",
-        "burak.polat@anadolufinans.example.tr",
+        "mustafa.arslan@anadolufinans.example.tr",
+        "zeynep.celik@anadolufinans.example.tr",
         "elif.yilmaz@anadolufinans.example.tr",
+        "ali.ozturk@anadolufinans.example.tr",
+        "fatma.sahin@anadolufinans.example.tr",
+        "deniz.aydin@anadolufinans.example.tr",
         "emre.korkmaz@anadolufinans.example.tr"
       ],
       "reputation": "clean"
     },
     "10.10.2.100": {
       "type": "ip",
-      "first_seen": "2026-01-08T18:59:06.524515",
-      "last_seen": "2026-01-22T15:46:06.524515",
+      "first_seen": "2026-01-09T22:48:44.995171",
+      "last_seen": "2026-01-23T19:35:44.995171",
       "users": [
-        "ceren.erdogan@anadolufinans.example.tr",
-        "fatma.sahin@anadolufinans.example.tr",
-        "ali.ozturk@anadolufinans.example.tr",
-        "oguz.tekin@anadolufinans.example.tr",
-        "zeynep.celik@anadolufinans.example.tr",
-        "mehmet.kaya@anadolufinans.example.tr",
-        "deniz.aydin@anadolufinans.example.tr",
-        "ahmet.yildiz@anadolufinans.example.tr",
-        "selin.aksoy@anadolufinans.example.tr",
-        "mustafa.arslan@anadolufinans.example.tr",
-        "ayse.demir@anadolufinans.example.tr",
-        "gulsen.dogan@anadolufinans.example.tr",
         "burak.polat@anadolufinans.example.tr",
+        "ayse.demir@anadolufinans.example.tr",
+        "oguz.tekin@anadolufinans.example.tr",
+        "deniz.aydin@anadolufinans.example.tr",
+        "mehmet.kaya@anadolufinans.example.tr",
+        "ceren.erdogan@anadolufinans.example.tr",
+        "gulsen.dogan@anadolufinans.example.tr",
+        "selin.aksoy@anadolufinans.example.tr",
+        "ahmet.yildiz@anadolufinans.example.tr",
+        "mustafa.arslan@anadolufinans.example.tr",
+        "zeynep.celik@anadolufinans.example.tr",
         "elif.yilmaz@anadolufinans.example.tr",
+        "ali.ozturk@anadolufinans.example.tr",
+        "fatma.sahin@anadolufinans.example.tr",
         "emre.korkmaz@anadolufinans.example.tr"
       ],
       "reputation": "clean"
     },
     "10.10.1.51": {
       "type": "ip",
-      "first_seen": "2026-01-08T19:01:06.524515",
-      "last_seen": "2026-01-22T16:06:06.524515",
+      "first_seen": "2026-01-09T22:50:44.995171",
+      "last_seen": "2026-01-23T19:55:44.995171",
       "users": [
-        "ceren.erdogan@anadolufinans.example.tr",
-        "fatma.sahin@anadolufinans.example.tr",
-        "ali.ozturk@anadolufinans.example.tr",
+        "burak.polat@anadolufinans.example.tr",
+        "ayse.demir@anadolufinans.example.tr",
         "oguz.tekin@anadolufinans.example.tr",
+        "fatma.sahin@anadolufinans.example.tr",
+        "ceren.erdogan@anadolufinans.example.tr",
+        "gulsen.dogan@anadolufinans.example.tr",
+        "selin.aksoy@anadolufinans.example.tr",
+        "ahmet.yildiz@anadolufinans.example.tr",
+        "mustafa.arslan@anadolufinans.example.tr",
         "zeynep.celik@anadolufinans.example.tr",
+        "elif.yilmaz@anadolufinans.example.tr",
+        "ali.ozturk@anadolufinans.example.tr",
         "mehmet.kaya@anadolufinans.example.tr",
         "deniz.aydin@anadolufinans.example.tr",
-        "emre.korkmaz@anadolufinans.example.tr",
-        "selin.aksoy@anadolufinans.example.tr",
-        "mustafa.arslan@anadolufinans.example.tr",
-        "ayse.demir@anadolufinans.example.tr",
-        "gulsen.dogan@anadolufinans.example.tr",
-        "burak.polat@anadolufinans.example.tr",
-        "elif.yilmaz@anadolufinans.example.tr",
-        "ahmet.yildiz@anadolufinans.example.tr"
+        "emre.korkmaz@anadolufinans.example.tr"
       ],
       "reputation": "clean"
     },
     "10.10.1.50": {
       "type": "ip",
-      "first_seen": "2026-01-08T21:38:06.524515",
-      "last_seen": "2026-01-22T11:25:06.524515",
+      "first_seen": "2026-01-10T01:27:44.995171",
+      "last_seen": "2026-01-23T15:14:44.995171",
       "users": [
-        "ceren.erdogan@anadolufinans.example.tr",
-        "fatma.sahin@anadolufinans.example.tr",
-        "ali.ozturk@anadolufinans.example.tr",
+        "burak.polat@anadolufinans.example.tr",
+        "ayse.demir@anadolufinans.example.tr",
         "oguz.tekin@anadolufinans.example.tr",
         "mehmet.kaya@anadolufinans.example.tr",
-        "zeynep.celik@anadolufinans.example.tr",
-        "deniz.aydin@anadolufinans.example.tr",
-        "mustafa.arslan@anadolufinans.example.tr",
+        "ceren.erdogan@anadolufinans.example.tr",
+        "gulsen.dogan@anadolufinans.example.tr",
         "selin.aksoy@anadolufinans.example.tr",
         "ahmet.yildiz@anadolufinans.example.tr",
-        "ayse.demir@anadolufinans.example.tr",
-        "gulsen.dogan@anadolufinans.example.tr",
-        "burak.polat@anadolufinans.example.tr",
+        "mustafa.arslan@anadolufinans.example.tr",
+        "zeynep.celik@anadolufinans.example.tr",
         "elif.yilmaz@anadolufinans.example.tr",
+        "ali.ozturk@anadolufinans.example.tr",
+        "fatma.sahin@anadolufinans.example.tr",
+        "deniz.aydin@anadolufinans.example.tr",
         "emre.korkmaz@anadolufinans.example.tr"
       ],
       "reputation": "clean"
     },
     "192.0.2.101": {
       "type": "ip",
-      "first_seen": "2026-01-08T21:54:06.524515",
-      "last_seen": "2026-01-22T12:41:06.524515",
+      "first_seen": "2026-01-10T01:43:44.995171",
+      "last_seen": "2026-01-23T16:30:44.995171",
       "users": [
-        "ceren.erdogan@anadolufinans.example.tr",
-        "fatma.sahin@anadolufinans.example.tr",
-        "ali.ozturk@anadolufinans.example.tr",
+        "burak.polat@anadolufinans.example.tr",
+        "ayse.demir@anadolufinans.example.tr",
         "oguz.tekin@anadolufinans.example.tr",
         "mehmet.kaya@anadolufinans.example.tr",
-        "zeynep.celik@anadolufinans.example.tr",
-        "mustafa.arslan@anadolufinans.example.tr",
-        "deniz.aydin@anadolufinans.example.tr",
-        "selin.aksoy@anadolufinans.example.tr",
-        "emre.korkmaz@anadolufinans.example.tr",
-        "ayse.demir@anadolufinans.example.tr",
+        "ceren.erdogan@anadolufinans.example.tr",
         "gulsen.dogan@anadolufinans.example.tr",
-        "burak.polat@anadolufinans.example.tr",
+        "selin.aksoy@anadolufinans.example.tr",
+        "ahmet.yildiz@anadolufinans.example.tr",
+        "mustafa.arslan@anadolufinans.example.tr",
+        "zeynep.celik@anadolufinans.example.tr",
         "elif.yilmaz@anadolufinans.example.tr",
-        "ahmet.yildiz@anadolufinans.example.tr"
+        "ali.ozturk@anadolufinans.example.tr",
+        "fatma.sahin@anadolufinans.example.tr",
+        "deniz.aydin@anadolufinans.example.tr",
+        "emre.korkmaz@anadolufinans.example.tr"
       ],
       "reputation": "clean"
     },
     "172.16.0.1": {
       "type": "ip",
-      "first_seen": "2026-01-09T08:08:06.524515",
-      "last_seen": "2026-01-22T17:25:06.524515",
+      "first_seen": "2026-01-10T11:57:44.995171",
+      "last_seen": "2026-01-23T21:14:44.995171",
       "users": [
-        "ceren.erdogan@anadolufinans.example.tr",
-        "fatma.sahin@anadolufinans.example.tr",
-        "ali.ozturk@anadolufinans.example.tr",
-        "oguz.tekin@anadolufinans.example.tr",
-        "mehmet.kaya@anadolufinans.example.tr",
-        "zeynep.celik@anadolufinans.example.tr",
-        "emre.korkmaz@anadolufinans.example.tr",
-        "deniz.aydin@anadolufinans.example.tr",
-        "selin.aksoy@anadolufinans.example.tr",
-        "mustafa.arslan@anadolufinans.example.tr",
-        "ayse.demir@anadolufinans.example.tr",
         "burak.polat@anadolufinans.example.tr",
+        "ayse.demir@anadolufinans.example.tr",
+        "oguz.tekin@anadolufinans.example.tr",
+        "deniz.aydin@anadolufinans.example.tr",
+        "fatma.sahin@anadolufinans.example.tr",
+        "ceren.erdogan@anadolufinans.example.tr",
+        "selin.aksoy@anadolufinans.example.tr",
+        "ahmet.yildiz@anadolufinans.example.tr",
+        "mustafa.arslan@anadolufinans.example.tr",
+        "zeynep.celik@anadolufinans.example.tr",
         "elif.yilmaz@anadolufinans.example.tr",
-        "ahmet.yildiz@anadolufinans.example.tr"
+        "ali.ozturk@anadolufinans.example.tr",
+        "mehmet.kaya@anadolufinans.example.tr",
+        "emre.korkmaz@anadolufinans.example.tr"
       ],
       "reputation": "clean"
     },
     "198.51.100.45": {
       "type": "ip",
-      "first_seen": "2026-01-09T19:12:06.524515",
-      "last_seen": "2026-01-09T19:42:06.524515",
+      "first_seen": "2026-01-10T23:01:44.995171",
+      "last_seen": "2026-01-10T23:31:44.995171",
       "users": [
         "ayse.demir@anadolufinans.example.tr"
       ],
@@ -545,8 +545,8 @@
     },
     "203.0.113.180": {
       "type": "ip",
-      "first_seen": "2026-01-11T19:12:06.524515",
-      "last_seen": "2026-01-11T20:07:06.524515",
+      "first_seen": "2026-01-12T23:01:44.995171",
+      "last_seen": "2026-01-12T23:56:44.995171",
       "users": [
         "mehmet.kaya@anadolufinans.example.tr"
       ],
@@ -554,8 +554,8 @@
     },
     "198.51.100.91": {
       "type": "ip",
-      "first_seen": "2026-01-13T18:12:06.524515",
-      "last_seen": "2026-01-13T18:52:06.524515",
+      "first_seen": "2026-01-14T22:01:44.995171",
+      "last_seen": "2026-01-14T22:41:44.995171",
       "users": [
         "elif.yilmaz@anadolufinans.example.tr"
       ],
@@ -563,23 +563,23 @@
     },
     "203.0.113.195": {
       "type": "ip",
-      "first_seen": "2026-01-15T18:12:06.524515",
-      "last_seen": "2026-01-18T18:27:06.524515",
+      "first_seen": "2026-01-16T22:01:44.995171",
+      "last_seen": "2026-01-19T22:16:44.995171",
       "users": [
-        "ali.ozturk@anadolufinans.example.tr",
-        "zeynep.celik@anadolufinans.example.tr",
-        "mehmet.kaya@anadolufinans.example.tr",
-        "mustafa.arslan@anadolufinans.example.tr",
         "ayse.demir@anadolufinans.example.tr",
+        "ahmet.yildiz@anadolufinans.example.tr",
+        "mustafa.arslan@anadolufinans.example.tr",
+        "zeynep.celik@anadolufinans.example.tr",
         "elif.yilmaz@anadolufinans.example.tr",
-        "ahmet.yildiz@anadolufinans.example.tr"
+        "ali.ozturk@anadolufinans.example.tr",
+        "mehmet.kaya@anadolufinans.example.tr"
       ],
       "reputation": "malicious"
     },
     "198.51.100.54": {
       "type": "ip",
-      "first_seen": "2026-01-16T18:22:06.524515",
-      "last_seen": "2026-01-16T18:32:06.524515",
+      "first_seen": "2026-01-17T22:11:44.995171",
+      "last_seen": "2026-01-17T22:21:44.995171",
       "users": [
         "fatma.sahin@anadolufinans.example.tr"
       ],
@@ -587,8 +587,8 @@
     },
     "203.0.113.78": {
       "type": "ip",
-      "first_seen": "2026-01-17T18:27:06.524515",
-      "last_seen": "2026-01-17T19:57:06.524515",
+      "first_seen": "2026-01-18T22:16:44.995171",
+      "last_seen": "2026-01-18T23:46:44.995171",
       "users": [
         "zeynep.celik@anadolufinans.example.tr"
       ],

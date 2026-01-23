@@ -1,0 +1,148 @@
+{
+  "entity_scores": {
+    "ayse.demir@anadolufinans.example.tr": {
+      "score": 50,
+      "severity": "medium",
+      "reasons": [
+        {
+          "rule": "phishing_target",
+          "points": 20,
+          "description": "Oltalama e-postası aldı"
+        },
+        {
+          "rule": "impossible_travel",
+          "points": 30,
+          "description": "İmkansız seyahat tespit edildi"
+        }
+      ]
+    },
+    "elif.yilmaz@anadolufinans.example.tr": {
+      "score": 100,
+      "severity": "critical",
+      "reasons": [
+        {
+          "rule": "mfa_fatigue",
+          "points": 25,
+          "description": "MFA bombardıman hedefi"
+        },
+        {
+          "rule": "mfa_fatigue",
+          "points": 25,
+          "description": "MFA bombardıman hedefi"
+        },
+        {
+          "rule": "mfa_fatigue",
+          "points": 25,
+          "description": "MFA bombardıman hedefi"
+        },
+        {
+          "rule": "mfa_fatigue",
+          "points": 25,
+          "description": "MFA bombardıman hedefi"
+        },
+        {
+          "rule": "mfa_fatigue",
+          "points": 25,
+          "description": "MFA bombardıman hedefi"
+        }
+      ]
+    },
+    "zeynep.celik@anadolufinans.example.tr": {
+      "score": 100,
+      "severity": "critical",
+      "reasons": [
+        {
+          "rule": "c2_activity",
+          "points": 40,
+          "description": "C2 iletişimi tespit edildi"
+        },
+        {
+          "rule": "c2_activity",
+          "points": 40,
+          "description": "C2 iletişimi tespit edildi"
+        },
+        {
+          "rule": "c2_activity",
+          "points": 40,
+          "description": "C2 iletişimi tespit edildi"
+        },
+        {
+          "rule": "c2_activity",
+          "points": 40,
+          "description": "C2 iletişimi tespit edildi"
+        },
+        {
+          "rule": "c2_activity",
+          "points": 40,
+          "description": "C2 iletişimi tespit edildi"
+        }
+      ]
+    },
+    "ahmet.yildiz@anadolufinans.example.tr": {
+      "score": 35,
+      "severity": "low",
+      "reasons": [
+        {
+          "rule": "priv_esc",
+          "points": 35,
+          "description": "Yetki yükseltme"
+        }
+      ]
+    },
+    "mehmet.kaya@anadolufinans.example.tr": {
+      "score": 8,
+      "severity": "low",
+      "reasons": []
+    },
+    "mustafa.arslan@anadolufinans.example.tr": {
+      "score": 13,
+      "severity": "low",
+      "reasons": []
+    },
+    "ali.ozturk@anadolufinans.example.tr": {
+      "score": 7,
+      "severity": "low",
+      "reasons": []
+    },
+    "fatma.sahin@anadolufinans.example.tr": {
+      "score": 19,
+      "severity": "low",
+      "reasons": []
+    },
+    "selin.aksoy@anadolufinans.example.tr": {
+      "score": 18,
+      "severity": "low",
+      "reasons": []
+    },
+    "emre.korkmaz@anadolufinans.example.tr": {
+      "score": 14,
+      "severity": "low",
+      "reasons": []
+    },
+    "deniz.aydin@anadolufinans.example.tr": {
+      "score": 25,
+      "severity": "low",
+      "reasons": []
+    },
+    "burak.polat@anadolufinans.example.tr": {
+      "score": 18,
+      "severity": "low",
+      "reasons": []
+    },
+    "ceren.erdogan@anadolufinans.example.tr": {
+      "score": 6,
+      "severity": "low",
+      "reasons": []
+    },
+    "oguz.tekin@anadolufinans.example.tr": {
+      "score": 23,
+      "severity": "low",
+      "reasons": []
+    },
+    "gulsen.dogan@anadolufinans.example.tr": {
+      "score": 21,
+      "severity": "low",
+      "reasons": []
+    }
+  }
+}

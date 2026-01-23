@@ -1,0 +1,145 @@
+{
+  "playbooks": [
+    {
+      "id": "pb_phishing_triage",
+      "name": "Oltalama Triyaj ve Kontrol",
+      "category": "Email",
+      "description": "Oltalama uyarılarını triyaj etmek ve e-posta tehditlerini kontrol altına almak için standart prosedür",
+      "triggers": ["alert_type:phishing", "case_tag:email"],
+      "requires_approval": true,
+      "estimated_time": "15-30 dk",
+      "steps": [
+        {"id": "s1", "type": "enrich", "name": "IOC Çıkar", "description": "E-posta gövdesinden URL, domain ve IP çıkar", "auto": true},
+        {"id": "s2", "type": "lookup", "name": "Reputation Kontrolü", "description": "IOC'leri tehdit istihbaratıyla kontrol et (simülasyon)", "auto": true},
+        {"id": "s3", "type": "hunt", "name": "Benzer Mesajları Ara", "description": "Aynı gönderici/URL ile eşleşen e-postaları ara", "auto": true},
+        {"id": "s4", "type": "approval", "name": "Remediation Onayı", "description": "Devam etmek için analist onayı gerekli"},
+        {"id": "s5", "type": "action", "name": "E-postayı Karantinaya Al", "description": "Zararlı e-postayı karantinaya taşı (simülasyon)", "auto": true},
+        {"id": "s6", "type": "action", "name": "Domain Engelle", "description": "Zararlı domaini proxy'de engelle (simülasyon)", "auto": true},
+        {"id": "s7", "type": "note", "name": "War Room'a Özet Gönder", "description": "Aksiyon özetini war room'a yaz", "auto": true}
+      ]
+    },
+    {
+      "id": "pb_account_compromise",
+      "name": "Hesap Ele Geçirme Yanıtı",
+      "category": "Identity",
+      "description": "Ele geçirilmiş kullanıcı hesabını kontrol altına al ve kur",
+      "triggers": ["alert_type:impossible_travel", "alert_type:credential_theft"],
+      "requires_approval": true,
+      "estimated_time": "20-45 dk",
+      "steps": [
+        {"id": "s1", "type": "action", "name": "Oturumları Sonlandır", "description": "Tüm aktif oturumları iptal et (simülasyon)", "auto": true},
+        {"id": "s2", "type": "action", "name": "Parola Sıfırla", "description": "Kullanıcı parolasını sıfırla (simülasyon)", "auto": true},
+        {"id": "s3", "type": "hunt", "name": "Posta Kutusu Kurallarını İncele", "description": "Şüpheli yönlendirme kurallarını ara", "auto": true},
+        {"id": "s4", "type": "approval", "name": "Kural Silme Onayı", "description": "Şüpheli kuralları silmek için onay"},
+        {"id": "s5", "type": "action", "name": "Kuralları Sil", "description": "Şüpheli posta kutusu kurallarını kaldır (simülasyon)", "auto": true},
+        {"id": "s6", "type": "enrich", "name": "Erişim Geçmişi", "description": "Son giriş konumlarını ve cihazları listele", "auto": true},
+        {"id": "s7", "type": "note", "name": "Kullanıcıyı Bilgilendir", "description": "Kullanıcıya güvenlik olayı hakkında bilgi ver", "auto": true}
+      ]
+    },
+    {
+      "id": "pb_oauth_abuse",
+      "name": "OAuth Onay Kötüye Kullanım Yanıtı",
+      "category": "Identity",
+      "description": "Zararlı OAuth uygulamasına verilen izinleri iptal et",
+      "triggers": ["alert_type:oauth_consent", "case_tag:oauth"],
+      "requires_approval": true,
+      "estimated_time": "15-25 dk",
+      "steps": [
+        {"id": "s1", "type": "enrich", "name": "Uygulama Detayları", "description": "OAuth uygulaması hakkında bilgi topla", "auto": true},
+        {"id": "s2", "type": "hunt", "name": "Etkilenen Kullanıcıları Bul", "description": "Aynı uygulamaya izin veren diğer kullanıcıları ara", "auto": true},
+        {"id": "s3", "type": "approval", "name": "İptal Onayı", "description": "Uygulama iznini iptal etmek için onay"},
+        {"id": "s4", "type": "action", "name": "Uygulama İznini İptal Et", "description": "OAuth izinlerini kaldır (simülasyon)", "auto": true},
+        {"id": "s5", "type": "action", "name": "Tokenları Geçersiz Kıl", "description": "Mevcut tokenları iptal et (simülasyon)", "auto": true},
+        {"id": "s6", "type": "note", "name": "War Room Güncellemesi", "description": "Aksiyon özetini kaydet", "auto": true}
+      ]
+    },
+    {
+      "id": "pb_impossible_travel",
+      "name": "İmkansız Seyahat Triyajı",
+      "category": "Identity",
+      "description": "Coğrafi anomalileri değerlendir ve yanlış pozitifleri ayıkla",
+      "triggers": ["alert_type:impossible_travel"],
+      "requires_approval": false,
+      "estimated_time": "10-20 dk",
+      "steps": [
+        {"id": "s1", "type": "enrich", "name": "Lokasyon Analizi", "description": "Her iki giriş noktasının detaylarını incele", "auto": true},
+        {"id": "s2", "type": "lookup", "name": "VPN Kontrolü", "description": "Bilinen VPN çıkış noktalarıyla karşılaştır", "auto": true},
+        {"id": "s3", "type": "hunt", "name": "Kullanıcı Geçmişi", "description": "Kullanıcının normal giriş kalıplarını analiz et", "auto": true},
+        {"id": "s4", "type": "decision", "name": "Yanlış Pozitif mi?", "description": "VPN veya bilinen seyahat ise kapat", "auto": false},
+        {"id": "s5", "type": "action", "name": "Hesabı Doğrula", "description": "Kullanıcıyla iletişime geç (simülasyon)", "auto": true},
+        {"id": "s6", "type": "note", "name": "Sonuç Kaydet", "description": "Triyaj sonucunu belgele", "auto": true}
+      ]
+    },
+    {
+      "id": "pb_ransomware",
+      "name": "Fidye Yazılımı Kontrol Altına Alma",
+      "category": "Endpoint",
+      "description": "Fidye yazılımı şüpheli cihazı hızla izole et ve kanıt topla",
+      "triggers": ["alert_type:ransomware", "case_tag:malware"],
+      "requires_approval": true,
+      "estimated_time": "30-60 dk",
+      "steps": [
+        {"id": "s1", "type": "action", "name": "Cihazı İzole Et", "description": "Ağdan hemen ayır (simülasyon)", "auto": true, "edr_action": "isolate"},
+        {"id": "s2", "type": "action", "name": "Paylaşımları Engelle", "description": "Dosya paylaşım erişimini kapat (simülasyon)", "auto": true},
+        {"id": "s3", "type": "hunt", "name": "Yanal Hareketi Ara", "description": "Diğer etkilenen sistemleri tespit et", "auto": true},
+        {"id": "s4", "type": "approval", "name": "Genişletilmiş İzolasyon Onayı", "description": "Ek cihazları izole etmek için onay"},
+        {"id": "s5", "type": "action", "name": "Triyaj Paketi Topla", "description": "Adli bilişim verisi topla (simülasyon)", "auto": true, "edr_action": "collect_triage"},
+        {"id": "s6", "type": "note", "name": "Olay Özeti", "description": "Tüm aksiyonları belgele", "auto": true}
+      ]
+    },
+    {
+      "id": "pb_endpoint_malware",
+      "name": "Endpoint Zararlı Yazılım Triyajı",
+      "category": "Endpoint",
+      "description": "Zararlı yazılım tespit edilen cihazı analiz et ve temizle",
+      "triggers": ["alert_type:malware", "alert_type:suspicious_process"],
+      "requires_approval": true,
+      "estimated_time": "25-45 dk",
+      "steps": [
+        {"id": "s1", "type": "enrich", "name": "Process Tree Analizi", "description": "Şüpheli prosesin parent-child ilişkisini incele", "auto": true},
+        {"id": "s2", "type": "lookup", "name": "Hash Kontrolü", "description": "Dosya hash'ini tehdit veritabanıyla karşılaştır (simülasyon)", "auto": true},
+        {"id": "s3", "type": "action", "name": "Prosesi Sonlandır", "description": "Zararlı prosesi durdur (simülasyon)", "auto": true, "edr_action": "kill_process"},
+        {"id": "s4", "type": "approval", "name": "Karantina Onayı", "description": "Dosyayı karantinaya almak için onay"},
+        {"id": "s5", "type": "action", "name": "Dosyayı Karantinaya Al", "description": "Zararlı dosyayı izole et (simülasyon)", "auto": true, "edr_action": "quarantine_file"},
+        {"id": "s6", "type": "action", "name": "AV Taraması Başlat", "description": "Tam sistem taraması çalıştır (simülasyon)", "auto": true, "edr_action": "av_scan"},
+        {"id": "s7", "type": "note", "name": "Temizlik Raporu", "description": "Yapılan işlemleri belgele", "auto": true}
+      ]
+    },
+    {
+      "id": "pb_bec_response",
+      "name": "BEC / Posta Kutusu Kuralı Yanıtı",
+      "category": "Email",
+      "description": "İş e-postası ele geçirme ve kalıcılık kurallarına müdahale",
+      "triggers": ["alert_type:inbox_rule", "case_tag:bec"],
+      "requires_approval": true,
+      "estimated_time": "20-40 dk",
+      "steps": [
+        {"id": "s1", "type": "hunt", "name": "Tüm Kuralları Listele", "description": "Kullanıcının posta kutusu kurallarını getir", "auto": true},
+        {"id": "s2", "type": "enrich", "name": "Kural Analizi", "description": "Şüpheli yönlendirme veya silme kurallarını işaretle", "auto": true},
+        {"id": "s3", "type": "approval", "name": "Kural Silme Onayı", "description": "Zararlı kuralları silmek için onay"},
+        {"id": "s4", "type": "action", "name": "Kuralları Sil", "description": "İşaretli kuralları kaldır (simülasyon)", "auto": true},
+        {"id": "s5", "type": "hunt", "name": "Gönderilen E-postaları Ara", "description": "Ele geçirme sırasında gönderilen e-postaları bul", "auto": true},
+        {"id": "s6", "type": "action", "name": "Finans Ekibini Uyar", "description": "Potansiyel dolandırıcılık hakkında bilgilendir (simülasyon)", "auto": true},
+        {"id": "s7", "type": "note", "name": "Olay Raporu", "description": "Tam olay özetini hazırla", "auto": true}
+      ]
+    },
+    {
+      "id": "pb_password_spray",
+      "name": "Parola Püskürtme İncelemesi",
+      "category": "Identity",
+      "description": "Parola püskürtme saldırısını analiz et ve kaynak IP'leri engelle",
+      "triggers": ["alert_type:password_spray", "alert_type:brute_force"],
+      "requires_approval": true,
+      "estimated_time": "15-30 dk",
+      "steps": [
+        {"id": "s1", "type": "enrich", "name": "Kaynak IP Analizi", "description": "Saldırı kaynak IP'lerini ve geolocasyonlarını listele", "auto": true},
+        {"id": "s2", "type": "hunt", "name": "Başarılı Girişleri Bul", "description": "Püskürtme sonrası başarılı girişleri ara", "auto": true},
+        {"id": "s3", "type": "lookup", "name": "IP Reputation", "description": "IP'leri tehdit istihbaratıyla kontrol et (simülasyon)", "auto": true},
+        {"id": "s4", "type": "approval", "name": "Engelleme Onayı", "description": "Kaynak IP'leri engellemek için onay"},
+        {"id": "s5", "type": "action", "name": "IP'leri Engelle", "description": "Firewall'da engelle (simülasyon)", "auto": true},
+        {"id": "s6", "type": "action", "name": "Hesapları Kilitle", "description": "Etkilenen hesapları geçici kilitle (simülasyon)", "auto": true},
+        {"id": "s7", "type": "note", "name": "IOC Listesi Güncelle", "description": "Yeni IOC'leri kaydet", "auto": true}
+      ]
+    }
+  ]
+}

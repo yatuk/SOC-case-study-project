@@ -243,7 +243,7 @@ const App = {
         this.updateBadges();
         this.updateLastLoaded();
         this.hideSkeleton();
-        this.updateStatus('ok', 'Veri yüklendi');
+        this.updateStatus('ok', 'Data loaded');
         this.renderView();
     },
 
@@ -344,7 +344,7 @@ const App = {
                 <div class="page-header-top">
                     <div>
                         <h1 class="page-title">Güvenlik Genel Bakışı</h1>
-                        <p class="page-subtitle">Anadolu Finans Holding - SOC Durumu</p>
+                        <p class="page-subtitle">Anadolu Finans Holding - SOC Status</p>
                     </div>
                 </div>
             </div>
@@ -355,11 +355,11 @@ const App = {
                     <span class="stat-value">${totalEvents}</span>
                 </div>
                 <div class="stat-tile">
-                    <span class="stat-label">Uyarılar</span>
+                    <span class="stat-label">Alerts</span>
                     <span class="stat-value warning">${totalAlerts}</span>
                 </div>
                 <div class="stat-tile">
-                    <span class="stat-label">Kritik/Yüksek</span>
+                    <span class="stat-label">Critical/High</span>
                     <span class="stat-value danger">${criticalAlerts}</span>
                 </div>
                 <div class="stat-tile">
@@ -373,7 +373,7 @@ const App = {
             </div>
             
             <div class="data-grid-container" style="padding: var(--space-5);">
-                <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-4);">Son Uyarılar</h3>
+                <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-4);">Recent Alerts</h3>
                 ${this.renderAlertTable(d.alerts?.slice(0, 10) || [])}
             </div>
         `;
@@ -402,8 +402,8 @@ const App = {
                 </div>
                 <div class="toolbar-group">
                     <select class="form-select" style="width: auto;" id="filter-case-status">
-                        <option value="">Tüm Durumlar</option>
-                        <option value="new">Yeni</option>
+                        <option value="">All Statuses</option>
+                        <option value="new">New</option>
                         <option value="in_progress">İnceleniyor</option>
                         <option value="closed">Kapatıldı</option>
                     </select>
@@ -421,13 +421,13 @@ const App = {
                 <table class="data-grid">
                     <thead>
                         <tr>
-                            <th>Vaka ID</th>
-                            <th>Başlık</th>
-                            <th>Seviye</th>
-                            <th>Durum</th>
-                            <th>Uyarılar</th>
-                            <th>Etkilenen</th>
-                            <th>Başlangıç</th>
+                            <th>Case ID</th>
+                            <th>Title</th>
+                            <th>Severity</th>
+                            <th>Status</th>
+                            <th>Alerts</th>
+                            <th>Affected</th>
+                            <th>Created</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -438,8 +438,8 @@ const App = {
                                 <td>${this.renderSeverityBadge(c.severity)}</td>
                                 <td>${this.renderStatusBadge(c.status)}</td>
                                 <td>${c.alert_ids?.length || 0}</td>
-                                <td>${c.affected_users?.length || 0} kullanıcı</td>
-                                <td>${this.formatTime(c.start_ts)}</td>
+                                <td>${c.affected_users?.length || 0} user(s)</td>
+                                <td>${this.formatTime(c.created_at)}</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -458,8 +458,8 @@ const App = {
             <div class="page-header">
                 <div class="page-header-top">
                     <div>
-                        <h1 class="page-title">Uyarılar</h1>
-                        <p class="page-subtitle">${alerts.length} uyarı</p>
+                        <h1 class="page-title">Alerts</h1>
+                        <p class="page-subtitle">${alerts.length} alerts</p>
                     </div>
                 </div>
             </div>
@@ -481,12 +481,12 @@ const App = {
             <table class="data-grid">
                 <thead>
                     <tr>
-                        <th>Zaman</th>
-                        <th>Uyarı</th>
-                        <th>Seviye</th>
-                        <th>Güven</th>
-                        <th>Kullanıcı</th>
-                        <th>Kaynak IP</th>
+                        <th>Time</th>
+                        <th>Alert</th>
+                        <th>Severity</th>
+                        <th>Confidence</th>
+                        <th>User</th>
+                        <th>Source IP</th>
                         <th>MITRE</th>
                     </tr>
                 </thead>
@@ -523,8 +523,8 @@ const App = {
                 <!-- Filter Pane (QRadar style) -->
                 <div class="filter-pane">
                     <div class="filter-header">
-                        <span class="filter-title">Filtreler</span>
-                        <span class="filter-clear" onclick="App.clearFilters()">Temizle</span>
+                        <span class="filter-title">Filters</span>
+                        <span class="filter-clear" onclick="App.clearFilters()">Clear</span>
                     </div>
                     <div class="filter-body">
                         <div class="filter-section">
@@ -539,7 +539,7 @@ const App = {
                         </div>
                         
                         <div class="filter-section">
-                            <div class="filter-section-title">Seviye</div>
+                            <div class="filter-section-title">Severity</div>
                             ${['critical', 'high', 'medium', 'low', 'info'].map(sev => `
                                 <label class="filter-option">
                                     <input type="checkbox" value="${sev}" class="filter-severity" onchange="App.applyEventFilter()">
@@ -561,7 +561,7 @@ const App = {
                         
                         ${savedSearches.length > 0 ? `
                         <div class="filter-section saved-searches">
-                            <div class="filter-section-title">Kayıtlı Aramalar</div>
+                            <div class="filter-section-title">Saved Searches</div>
                             ${savedSearches.map(s => `
                                 <div class="saved-search-item" onclick="App.runSavedSearch('${this.esc(s.id)}')">
                                     <span class="saved-search-name">${this.esc(s.name)}</span>
@@ -600,13 +600,13 @@ const App = {
                         <div id="query-rows">
                             <div class="query-row">
                                 <select class="form-select query-field" id="qb-field-0">
-                                    <option value="">Alan Seç</option>
-                                    <option value="source">Kaynak</option>
-                                    <option value="event_type">Olay Tipi</option>
-                                    <option value="user">Kullanıcı</option>
-                                    <option value="device">Cihaz</option>
-                                    <option value="src_ip">Kaynak IP</option>
-                                    <option value="severity">Seviye</option>
+                                    <option value="">Select Field</option>
+                                    <option value="source">Source</option>
+                                    <option value="event_type">Event Type</option>
+                                    <option value="user">User</option>
+                                    <option value="device">Device</option>
+                                    <option value="src_ip">Source IP</option>
+                                    <option value="severity">Severity</option>
                                 </select>
                                 <select class="form-select query-operator" id="qb-op-0">
                                     <option value="=">=</option>
@@ -619,9 +619,9 @@ const App = {
                             </div>
                         </div>
                         <div class="query-actions">
-                            <button class="btn btn-primary btn-sm" onclick="App.executeQuery()">Sorguyu Çalıştır</button>
-                            <button class="btn btn-ghost btn-sm" onclick="App.clearQuery()">Temizle</button>
-                            <button class="btn btn-ghost btn-sm" onclick="App.saveCurrentSearch()">Aramayı Kaydet</button>
+                            <button class="btn btn-primary btn-sm" onclick="App.executeQuery()">Run Query</button>
+                            <button class="btn btn-ghost btn-sm" onclick="App.clearQuery()">Clear</button>
+                            <button class="btn btn-ghost btn-sm" onclick="App.saveCurrentSearch()">Save Search</button>
                         </div>
                     </div>
                     
@@ -646,7 +646,7 @@ const App = {
                         </div>
                         <button class="btn btn-primary btn-sm" onclick="App.searchEvents()">Ara</button>
                         <div class="toolbar-divider"></div>
-                        <button class="btn btn-ghost btn-sm" onclick="App.exportEvents()">CSV İndir</button>
+                        <button class="btn btn-ghost btn-sm" onclick="App.exportEvents()">Download CSV</button>
                     </div>
                     
                     <div class="data-grid-container" id="events-table">
@@ -674,13 +674,13 @@ const App = {
                 <option value="OR">OR</option>
             </select>
             <select class="form-select query-field" id="qb-field-${rowId}">
-                <option value="">Alan Seç</option>
-                <option value="source">Kaynak</option>
-                <option value="event_type">Olay Tipi</option>
-                <option value="user">Kullanıcı</option>
-                <option value="device">Cihaz</option>
-                <option value="src_ip">Kaynak IP</option>
-                <option value="severity">Seviye</option>
+                <option value="">Select Field</option>
+                <option value="source">Source</option>
+                <option value="event_type">Event Type</option>
+                <option value="user">User</option>
+                <option value="device">Device</option>
+                <option value="src_ip">Source IP</option>
+                <option value="severity">Severity</option>
             </select>
             <select class="form-select query-operator" id="qb-op-${rowId}">
                 <option value="=">=</option>
@@ -760,7 +760,7 @@ const App = {
     },
     
     saveCurrentSearch() {
-        const name = prompt('Arama adı:');
+        const name = prompt('Search name:');
         if (!name) return;
         
         // Build query string from current query builder state
@@ -802,7 +802,7 @@ const App = {
     deleteSavedSearch(searchId) {
         this.state.savedSearches = this.state.savedSearches.filter(s => s.id !== searchId);
         this.saveSavedSearches();
-        this.toast('Arama silindi', 'success');
+        this.toast('Search deleted', 'success');
         this.renderView();
     },
     
@@ -916,15 +916,15 @@ const App = {
             <div class="page-header">
                 <div class="page-header-top">
                     <div>
-                        <h1 class="page-title">Varlıklar</h1>
-                        <p class="page-subtitle">${users.length} kullanıcı</p>
+                        <h1 class="page-title">Entities</h1>
+                        <p class="page-subtitle">${users.length} users</p>
                     </div>
                 </div>
             </div>
             
             <div class="tabs">
-                <div class="tab active" data-tab="users">Kullanıcılar</div>
-                <div class="tab" data-tab="ips">IP Adresleri</div>
+                <div class="tab active" data-tab="users">Users</div>
+                <div class="tab" data-tab="ips">IP Addresses</div>
                 <div class="tab" data-tab="domains">Domain'ler</div>
             </div>
             
@@ -985,10 +985,10 @@ const App = {
                     </div>
                     <div class="filter-body">
                         <div class="filter-section">
-                            <div class="filter-section-title">Risk Seviyesi</div>
+                            <div class="filter-section-title">Risk Level</div>
                             <label class="filter-option">
                                 <input type="checkbox" value="critical" class="filter-device-risk">
-                                <span>Kritik</span>
+                                <span>Critical</span>
                                 <span class="filter-option-count">${riskLevels.critical}</span>
                             </label>
                             <label class="filter-option">
@@ -998,7 +998,7 @@ const App = {
                             </label>
                             <label class="filter-option">
                                 <input type="checkbox" value="medium" class="filter-device-risk">
-                                <span>Orta</span>
+                                <span>Medium</span>
                                 <span class="filter-option-count">${riskLevels.medium}</span>
                             </label>
                             <label class="filter-option">
@@ -1009,7 +1009,7 @@ const App = {
                         </div>
                         
                         <div class="filter-section">
-                            <div class="filter-section-title">İşletim Sistemi</div>
+                            <div class="filter-section-title">Operating System</div>
                             <label class="filter-option">
                                 <input type="checkbox" value="windows" class="filter-device-os">
                                 <span>Windows</span>
@@ -1025,10 +1025,10 @@ const App = {
                         </div>
                         
                         <div class="filter-section">
-                            <div class="filter-section-title">İzolasyon Durumu</div>
+                            <div class="filter-section-title">Isolation Status</div>
                             <label class="filter-option">
                                 <input type="checkbox" value="isolated" class="filter-device-isolation">
-                                <span>İzole</span>
+                                <span>Isolated</span>
                             </label>
                             <label class="filter-option">
                                 <input type="checkbox" value="not-isolated" class="filter-device-isolation">
@@ -1067,21 +1067,21 @@ const App = {
                     <div class="toolbar">
                         <div class="toolbar-search">
                             <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                            <input type="text" id="device-search" placeholder="Cihaz ara...">
+                            <input type="text" id="device-search" placeholder="Search devices...">
                         </div>
-                        <button class="btn btn-secondary btn-sm">Dışa Aktar</button>
+                        <button class="btn btn-secondary btn-sm">Export</button>
                     </div>
                     
                     <div class="data-grid-container">
                         <table class="data-grid">
                             <thead>
                                 <tr>
-                                    <th>Cihaz Adı</th>
+                                    <th>Device Name</th>
                                     <th>Risk</th>
-                                    <th>İşletim Sistemi</th>
-                                    <th>Sahip</th>
-                                    <th>Son Görülme</th>
-                                    <th>Durum</th>
+                                    <th>Operating System</th>
+                                    <th>Owner</th>
+                                    <th>Last Seen</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1099,7 +1099,7 @@ const App = {
                                             <td>${this.esc(d.os || '—')}</td>
                                             <td>${this.esc(d.owner_user || '—')}</td>
                                             <td>${this.formatTime(d.last_seen)}</td>
-                                            <td>${state.isolated ? '<span class="badge badge-critical">İZOLE</span>' : '<span class="badge badge-low">Aktif</span>'}</td>
+                                            <td>${state.isolated ? '<span class="badge badge-critical">ISOLATED</span>' : '<span class="badge badge-low">Active</span>'}</td>
                                         </tr>
                                     `;
                                 }).join('')}
@@ -1133,7 +1133,7 @@ const App = {
         
         return `
             <div class="drawer-section">
-                <div class="drawer-section-title">Proses Ağacı</div>
+                <div class="drawer-section-title">Process Tree</div>
                 <p style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-3);">
                     Son ${processes.length} işlem gösteriliyor. Şüpheli işlemler kırmızı ile vurgulanmıştır.
                 </p>
@@ -1338,8 +1338,8 @@ const App = {
                             <tr>
                                 <th>Domain</th>
                                 <th>IP</th>
-                                <th>Zaman</th>
-                                <th>Durum</th>
+                                <th>Time</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1378,12 +1378,12 @@ const App = {
                 <div class="edr-actions-panel">
                     <button class="edr-action-btn ${state.isolated ? '' : 'danger'}" onclick="App.performEdrAction('${this.esc(deviceId)}', '${state.isolated ? 'release' : 'isolate'}')">
                         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-                        <span>${state.isolated ? 'İzolasyonu Kaldır' : 'Cihazı İzole Et'}</span>
+                        <span>${state.isolated ? 'Release Isolation' : 'Isolate Device'}</span>
                     </button>
                     
                     <button class="edr-action-btn" onclick="App.performEdrAction('${this.esc(deviceId)}', 'scan')">
                         <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                        <span>Tam AV Taraması Başlat</span>
+                        <span>Start Full AV Scan</span>
                     </button>
                     
                     <button class="edr-action-btn" onclick="App.performEdrAction('${this.esc(deviceId)}', 'collect')">
@@ -1393,7 +1393,7 @@ const App = {
                     
                     <button class="edr-action-btn" onclick="App.performEdrAction('${this.esc(deviceId)}', 'kill_process')">
                         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                        <span>Şüpheli Prosesleri Sonlandır</span>
+                        <span>Kill Suspicious Processes</span>
                     </button>
                     
                     <button class="edr-action-btn" onclick="App.performEdrAction('${this.esc(deviceId)}', 'quarantine')">
@@ -1447,8 +1447,8 @@ const App = {
             <div class="page-header">
                 <div class="page-header-top">
                     <div>
-                        <h1 class="page-title">Playbook'lar</h1>
-                        <p class="page-subtitle">${playbooks.length} playbook, ${runs.length} çalışma</p>
+                        <h1 class="page-title">Playbooks</h1>
+                        <p class="page-subtitle">${playbooks.length} playbooks, ${runs.length} runs</p>
                     </div>
                 </div>
             </div>
@@ -1456,15 +1456,15 @@ const App = {
             <!-- SOAR Metrics Dashboard -->
             <div class="soar-metrics">
                 <div class="soar-metric-card">
-                    <div class="soar-metric-label">Toplam Çalışma</div>
+                    <div class="soar-metric-label">Total Runs</div>
                     <div class="soar-metric-value">${runs.length}</div>
                 </div>
                 <div class="soar-metric-card">
-                    <div class="soar-metric-label">Başarılı</div>
+                    <div class="soar-metric-label">Completed</div>
                     <div class="soar-metric-value" style="color: var(--color-success);">${metrics.completed}</div>
                 </div>
                 <div class="soar-metric-card">
-                    <div class="soar-metric-label">Aktif</div>
+                    <div class="soar-metric-label">Active</div>
                     <div class="soar-metric-value" style="color: var(--color-warning);">${metrics.running}</div>
                 </div>
                 <div class="soar-metric-card">
@@ -1526,14 +1526,14 @@ const App = {
                             `).join('')}
                         </div>
                         <div class="filter-section">
-                            <div class="filter-section-title">Onay Gerekli</div>
+                            <div class="filter-section-title">Approval Required</div>
                             <label class="filter-option">
                                 <input type="checkbox" value="yes">
-                                <span>Evet</span>
+                                <span>Yes</span>
                             </label>
                             <label class="filter-option">
                                 <input type="checkbox" value="no">
-                                <span>Hayır</span>
+                                <span>No</span>
                             </label>
                         </div>
                     </div>
@@ -1543,7 +1543,7 @@ const App = {
                     <div class="toolbar">
                         <div class="toolbar-search">
                             <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                            <input type="text" placeholder="Playbook ara...">
+                            <input type="text" placeholder="Search playbooks...">
                         </div>
                     </div>
                     
@@ -1552,10 +1552,10 @@ const App = {
                             <thead>
                                 <tr>
                                     <th>Playbook</th>
-                                    <th>Kategori</th>
-                                    <th>Adımlar</th>
-                                    <th>Onay</th>
-                                    <th>Süre</th>
+                                    <th>Category</th>
+                                    <th>Steps</th>
+                                    <th>Approval</th>
+                                    <th>Duration</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -1607,8 +1607,8 @@ const App = {
         if (title) title.textContent = playbook.name;
         if (subtitle) subtitle.textContent = `${playbook.steps?.length || 0} adım • ${playbook.category}`;
         if (tabs) tabs.innerHTML = `
-            <button class="drawer-tab active">Akış Diyagramı</button>
-            <button class="drawer-tab" onclick="App.switchPlaybookTab('details')">Detaylar</button>
+            <button class="drawer-tab active">Workflow</button>
+            <button class="drawer-tab" onclick="App.switchPlaybookTab('details')">Details</button>
         `;
         
         // Render workflow visualization
@@ -1741,8 +1741,8 @@ const App = {
             <div class="page-header">
                 <div class="page-header-top">
                     <div>
-                        <h1 class="page-title">Zaman Çizelgesi</h1>
-                        <p class="page-subtitle">Olay akışı</p>
+                        <h1 class="page-title">Timeline</h1>
+                        <p class="page-subtitle">Event flow</p>
                     </div>
                 </div>
             </div>
@@ -1777,6 +1777,21 @@ const App = {
         const coverage = this.state.data.mitreCoverage || {};
         const techniques = coverage.techniques || [];
         
+        // Map English tactic names to Turkish (from data) for matching
+        const tacticMapping = {
+            'Initial Access': 'İlk Erişim',
+            'Execution': 'Yürütme',
+            'Persistence': 'Kalıcılık',
+            'Privilege Escalation': 'Yetki Yükseltme',
+            'Defense Evasion': 'Savunma Atlatma',
+            'Credential Access': 'Kimlik Bilgisi Erişimi',
+            'Discovery': 'Keşif',
+            'Lateral Movement': 'Yanal Hareket',
+            'Collection': 'Toplama',
+            'Exfiltration': 'Veri Sızdırma',
+            'Command and Control': 'Komuta ve Kontrol',
+            'Impact': 'Etki'
+        };
         const tactics = ['Initial Access', 'Execution', 'Persistence', 'Privilege Escalation', 
                         'Defense Evasion', 'Credential Access', 'Discovery', 'Lateral Movement',
                         'Collection', 'Exfiltration', 'Impact'];
@@ -1794,7 +1809,8 @@ const App = {
             <div class="data-grid-container" style="padding: var(--space-5);">
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-3);">
                     ${tactics.map(tactic => {
-                        const count = techniques.filter(t => t.tactic === tactic).length;
+                        const turkishTactic = tacticMapping[tactic] || tactic;
+                        const count = techniques.filter(t => t.tactic === turkishTactic || t.tactic === tactic).length;
                         return `
                             <div style="padding: var(--space-4); background: var(--bg-surface-2); border-radius: var(--radius-md); border: 1px solid var(--border-default);">
                                 <div style="font-size: var(--text-sm); font-weight: 500; margin-bottom: var(--space-2);">${this.esc(tactic)}</div>
@@ -1882,11 +1898,11 @@ const App = {
                 <table class="data-grid">
                     <thead>
                         <tr>
-                            <th>Gösterge</th>
-                            <th>Tip</th>
-                            <th>Güven</th>
-                            <th>Etiket</th>
-                            <th>Kaynak</th>
+                            <th>Indicator</th>
+                            <th>Type</th>
+                            <th>Confidence</th>
+                            <th>Tags</th>
+                            <th>Source</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1921,8 +1937,8 @@ const App = {
             </div>
             
             <div class="tabs" id="report-tabs">
-                <div class="tab active" data-report="executive">Yönetici Özeti</div>
-                <div class="tab" data-report="technical">Teknik Rapor</div>
+                <div class="tab active" data-report="executive">Executive Summary</div>
+                <div class="tab" data-report="technical">Technical Report</div>
             </div>
             
             <div class="data-grid-container" style="padding: var(--space-5);" id="report-content">
@@ -1944,19 +1960,19 @@ const App = {
             <div class="page-header">
                 <div class="page-header-top">
                     <div>
-                        <h1 class="page-title">Ayarlar</h1>
-                        <p class="page-subtitle">Uygulama yapılandırması</p>
+                        <h1 class="page-title">Settings</h1>
+                        <p class="page-subtitle">Application configuration</p>
                     </div>
                 </div>
             </div>
             
             <div class="tabs" id="settings-tabs">
-                <div class="tab ${tab === 'general' ? 'active' : ''}" data-settings-tab="general">Genel</div>
-                <div class="tab ${tab === 'notifications' ? 'active' : ''}" data-settings-tab="notifications">Bildirimler</div>
-                <div class="tab ${tab === 'appearance' ? 'active' : ''}" data-settings-tab="appearance">Görünüm</div>
-                <div class="tab ${tab === 'data' ? 'active' : ''}" data-settings-tab="data">Veri & Depolama</div>
-                <div class="tab ${tab === 'integrations' ? 'active' : ''}" data-settings-tab="integrations">Entegrasyonlar</div>
-                <div class="tab ${tab === 'about' ? 'active' : ''}" data-settings-tab="about">Hakkında</div>
+                <div class="tab ${tab === 'general' ? 'active' : ''}" data-settings-tab="general">General</div>
+                <div class="tab ${tab === 'notifications' ? 'active' : ''}" data-settings-tab="notifications">Notifications</div>
+                <div class="tab ${tab === 'appearance' ? 'active' : ''}" data-settings-tab="appearance">Appearance</div>
+                <div class="tab ${tab === 'data' ? 'active' : ''}" data-settings-tab="data">Data & Storage</div>
+                <div class="tab ${tab === 'integrations' ? 'active' : ''}" data-settings-tab="integrations">Integrations</div>
+                <div class="tab ${tab === 'about' ? 'active' : ''}" data-settings-tab="about">About</div>
             </div>
             
             <div class="settings-content" id="settings-content">
@@ -1992,8 +2008,8 @@ const App = {
                     
                     <div class="settings-row">
                         <div class="settings-label">
-                            <span class="settings-label-text">Dil</span>
-                            <span class="settings-label-desc">Arayüz dili</span>
+                            <span class="settings-label-text">Language</span>
+                            <span class="settings-label-desc">Interface language</span>
                         </div>
                         <select class="form-select settings-input" id="setting-language" onchange="App.updateSetting('language', this.value)">
                             <option value="tr" ${s.language === 'tr' ? 'selected' : ''}>Türkçe</option>
@@ -2028,7 +2044,7 @@ const App = {
                 </div>
                 
                 <div class="settings-section">
-                    <h3 class="settings-section-title">Oturum</h3>
+                    <h3 class="settings-section-title">Session</h3>
                     
                     <div class="settings-row">
                         <div class="settings-label">
@@ -2046,8 +2062,8 @@ const App = {
                     
                     <div class="settings-row">
                         <div class="settings-label">
-                            <span class="settings-label-text">Oturumu Sonlandır</span>
-                            <span class="settings-label-desc">Güvenli çıkış yap</span>
+                            <span class="settings-label-text">End Session</span>
+                            <span class="settings-label-desc">Secure logout</span>
                         </div>
                         <button class="btn btn-secondary btn-sm" onclick="App.logout()">Çıkış Yap</button>
                     </div>
@@ -2061,7 +2077,7 @@ const App = {
         return `
             <div class="settings-panel">
                 <div class="settings-section">
-                    <h3 class="settings-section-title">Bildirim Tercihleri</h3>
+                    <h3 class="settings-section-title">Notification Preferences</h3>
                     
                     <div class="settings-row">
                         <div class="settings-label">
@@ -2076,8 +2092,8 @@ const App = {
                     
                     <div class="settings-row">
                         <div class="settings-label">
-                            <span class="settings-label-text">Ses Bildirimleri</span>
-                            <span class="settings-label-desc">Kritik uyarılarda ses çal</span>
+                            <span class="settings-label-text">Sound Notifications</span>
+                            <span class="settings-label-desc">Play sound on critical alerts</span>
                         </div>
                         <label class="toggle">
                             <input type="checkbox" ${n.sound ? 'checked' : ''} onchange="App.updateNestedSetting('notifications', 'sound', this.checked)">
@@ -2098,9 +2114,9 @@ const App = {
                 </div>
                 
                 <div class="settings-section">
-                    <h3 class="settings-section-title">Bildirim Testi</h3>
-                    <p style="color: var(--text-muted); margin-bottom: var(--space-3);">Bildirim ayarlarınızı test edin</p>
-                    <button class="btn btn-secondary btn-sm" onclick="App.testNotification()">Test Bildirimi Gönder</button>
+                    <h3 class="settings-section-title">Notification Test</h3>
+                    <p style="color: var(--text-muted); margin-bottom: var(--space-3);">Test your notification settings</p>
+                    <button class="btn btn-secondary btn-sm" onclick="App.testNotification()">Send Test Notification</button>
                 </div>
             </div>
         `;
@@ -2114,8 +2130,8 @@ const App = {
                     
                     <div class="settings-row">
                         <div class="settings-label">
-                            <span class="settings-label-text">Renk Teması</span>
-                            <span class="settings-label-desc">Arayüz renk şeması</span>
+                            <span class="settings-label-text">Color Theme</span>
+                            <span class="settings-label-desc">Interface color scheme</span>
                         </div>
                         <div class="theme-selector">
                             <button class="theme-option ${s.theme === 'dark' ? 'active' : ''}" onclick="App.updateSetting('theme', 'dark')">
@@ -2206,8 +2222,8 @@ const App = {
                     
                     <div class="settings-row">
                         <div class="settings-label">
-                            <span class="settings-label-text">Kayıtlı Aramaları Temizle</span>
-                            <span class="settings-label-desc">${savedSearchCount} kayıtlı arama silinecek</span>
+                            <span class="settings-label-text">Clear Saved Searches</span>
+                            <span class="settings-label-desc">${savedSearchCount} saved searches will be deleted</span>
                         </div>
                         <button class="btn btn-secondary btn-sm" onclick="App.clearSavedSearches()">Temizle</button>
                     </div>
@@ -2222,10 +2238,10 @@ const App = {
                     
                     <div class="settings-row">
                         <div class="settings-label">
-                            <span class="settings-label-text">EDR Durumlarını Sıfırla</span>
-                            <span class="settings-label-desc">Cihaz izolasyonları sıfırlanacak</span>
+                            <span class="settings-label-text">Reset EDR States</span>
+                            <span class="settings-label-desc">Device isolations will be reset</span>
                         </div>
-                        <button class="btn btn-secondary btn-sm" onclick="App.clearEdrState()">Sıfırla</button>
+                        <button class="btn btn-secondary btn-sm" onclick="App.clearEdrState()">Reset</button>
                     </div>
                     
                     <div class="settings-row">
@@ -2268,9 +2284,9 @@ const App = {
                                 <div class="integration-info">
                                     <div class="integration-name">${this.esc(i.name)}</div>
                                     <div class="integration-status">
-                                        ${i.status === 'connected' ? '<span class="status-indicator ok"></span> Bağlı' :
-                                          i.status === 'warning' ? '<span class="status-indicator warning"></span> Uyarı' :
-                                          '<span class="status-indicator error"></span> Bağlı Değil'}
+                                        ${i.status === 'connected' ? '<span class="status-indicator ok"></span> Connected' :
+                                          i.status === 'warning' ? '<span class="status-indicator warning"></span> Warning' :
+                                          '<span class="status-indicator error"></span> Not Connected'}
                                     </div>
                                 </div>
                                 <button class="btn btn-ghost btn-sm">Yapılandır</button>
@@ -2396,7 +2412,7 @@ const App = {
     },
     
     clearAllLocalData() {
-        if (confirm('Tüm yerel veriler silinecek. Devam etmek istiyor musunuz?')) {
+        if (confirm('All local data will be deleted. Do you want to continue?')) {
             const keysToRemove = Object.keys(localStorage).filter(k => k.startsWith('soc_'));
             keysToRemove.forEach(k => localStorage.removeItem(k));
             this.state.edr = {};
@@ -2427,7 +2443,7 @@ const App = {
             <div class="toolbar">
                 <div class="toolbar-search">
                     <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    <input type="text" id="${type}-filter-search" placeholder="Ara...">
+                    <input type="text" id="${type}-filter-search" placeholder="Search...">
                 </div>
                 <div class="toolbar-group">
                     <select class="form-select" style="width: auto;" id="filter-${type}-severity">
@@ -2474,9 +2490,9 @@ const App = {
             subtitle.textContent = `${this.formatTime(alert.timestamp || alert.ts)}`;
             tabs.innerHTML = `
                 <button class="drawer-tab ${tab === 0 ? 'active' : ''}" onclick="App.switchDrawerTab(0)">Özet</button>
-                <button class="drawer-tab ${tab === 1 ? 'active' : ''}" onclick="App.switchDrawerTab(1)">Kanıt</button>
+                <button class="drawer-tab ${tab === 1 ? 'active' : ''}" onclick="App.switchDrawerTab(1)">Evidence</button>
                 <button class="drawer-tab ${tab === 2 ? 'active' : ''}" onclick="App.switchDrawerTab(2)">MITRE</button>
-                <button class="drawer-tab ${tab === 3 ? 'active' : ''}" onclick="App.switchDrawerTab(3)">Yanıt</button>
+                <button class="drawer-tab ${tab === 3 ? 'active' : ''}" onclick="App.switchDrawerTab(3)">Response</button>
             `;
             
             if (tab === 0) {
@@ -2512,7 +2528,7 @@ const App = {
                 const techniques = alert.mitre_techniques || alert.techniques || [];
                 body.innerHTML = `
                     <div class="drawer-section">
-                        <div class="drawer-section-title">MITRE ATT&CK Teknikleri</div>
+                        <div class="drawer-section-title">MITRE ATT&CK Techniques</div>
                         ${techniques.map(t => `<span class="badge badge-info" style="margin: 2px;">${this.esc(t)}</span>`).join('')}
                     </div>
                 `;
@@ -2547,9 +2563,9 @@ const App = {
             title.textContent = device.hostname;
             subtitle.innerHTML = `${this.esc(device.os || '—')} • Risk: ${device.risk_score || 0}`;
             tabs.innerHTML = `
-                <button class="drawer-tab ${tab === 0 ? 'active' : ''}" onclick="App.switchDrawerTab(0)">Genel</button>
-                <button class="drawer-tab ${tab === 1 ? 'active' : ''}" onclick="App.switchDrawerTab(1)">Uyarılar</button>
-                <button class="drawer-tab ${tab === 2 ? 'active' : ''}" onclick="App.switchDrawerTab(2)">Proses Ağacı</button>
+                <button class="drawer-tab ${tab === 0 ? 'active' : ''}" onclick="App.switchDrawerTab(0)">General</button>
+                <button class="drawer-tab ${tab === 1 ? 'active' : ''}" onclick="App.switchDrawerTab(1)">Alerts</button>
+                <button class="drawer-tab ${tab === 2 ? 'active' : ''}" onclick="App.switchDrawerTab(2)">Process Tree</button>
                 <button class="drawer-tab ${tab === 3 ? 'active' : ''}" onclick="App.switchDrawerTab(3)">Ağ Haritası</button>
                 <button class="drawer-tab ${tab === 4 ? 'active' : ''}" onclick="App.switchDrawerTab(4)">Aksiyonlar</button>
             `;
@@ -2570,7 +2586,7 @@ const App = {
                             <span class="info-value">${this.esc(device.location || '—')}</span>
                             <span class="info-label">İlk Görülme</span>
                             <span class="info-value">${this.formatTime(device.first_seen)}</span>
-                            <span class="info-label">Son Görülme</span>
+                            <span class="info-label">Last Seen</span>
                             <span class="info-value">${this.formatTime(device.last_seen)}</span>
                             <span class="info-label">Risk Skoru</span>
                             <span class="info-value">
@@ -2588,8 +2604,8 @@ const App = {
                         <div class="drawer-section-title">Hızlı Aksiyonlar <span class="badge badge-warning" style="margin-left: 8px;">SİMÜLASYON</span></div>
                         <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3);">
                             ${state.isolated ? 
-                                `<button class="btn btn-secondary btn-sm" onclick="App.performEdrAction('${this.esc(deviceId)}', 'release')">İzolasyonu Kaldır</button>` :
-                                `<button class="btn btn-danger btn-sm" onclick="App.performEdrAction('${this.esc(deviceId)}', 'isolate')">İzole Et</button>`
+                                `<button class="btn btn-secondary btn-sm" onclick="App.performEdrAction('${this.esc(deviceId)}', 'release')">Release Isolation</button>` :
+                                `<button class="btn btn-danger btn-sm" onclick="App.performEdrAction('${this.esc(deviceId)}', 'isolate')">Isolate</button>`
                             }
                             <button class="btn btn-secondary btn-sm" onclick="App.performEdrAction('${this.esc(deviceId)}', 'scan')">AV Taraması</button>
                             <button class="btn btn-secondary btn-sm" onclick="App.performEdrAction('${this.esc(deviceId)}', 'collect')">Paket Topla</button>
@@ -2600,7 +2616,7 @@ const App = {
                 const deviceAlerts = this.state.data.alerts?.filter(a => a.device === device.hostname || a.affected_device === device.hostname) || [];
                 body.innerHTML = `
                     <div class="drawer-section">
-                        <div class="drawer-section-title">Cihaz Uyarıları (${deviceAlerts.length})</div>
+                        <div class="drawer-section-title">Device Alerts (${deviceAlerts.length})</div>
                         ${deviceAlerts.map(a => `
                             <div style="padding: var(--space-3); margin-bottom: var(--space-2); background: var(--bg-surface-2); border-radius: var(--radius-md); cursor: pointer;" onclick="App.openDrawer('alert', '${this.esc(a.alert_id || a.id)}')">
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -2646,9 +2662,9 @@ const App = {
                             <span class="info-value">${this.renderSeverityBadge(caseData.severity)}</span>
                             <span class="info-label">Durum</span>
                             <span class="info-value">${this.renderStatusBadge(caseData.status)}</span>
-                            <span class="info-label">Başlangıç</span>
-                            <span class="info-value">${this.formatTime(caseData.start_ts)}</span>
-                            <span class="info-label">Etkilenen</span>
+                            <span class="info-label">Created</span>
+                            <span class="info-value">${this.formatTime(caseData.created_at)}</span>
+                            <span class="info-label">Affected</span>
                             <span class="info-value">${(caseData.affected_users || []).join(', ') || '—'}</span>
                         </div>
                     </div>
@@ -2666,7 +2682,7 @@ const App = {
                                 <div style="font-weight: 500;">${this.esc(a.alert_name || a.name)}</div>
                                 <div style="font-size: var(--text-xs); color: var(--text-muted);">${this.formatTime(a.timestamp || a.ts)}</div>
                             </div>
-                        `).join('') || '<p>Uyarı yok</p>'}
+                        `).join('') || '<p>No alerts</p>'}
                     </div>
                 `;
             } else if (tab === 2) {
@@ -2703,13 +2719,13 @@ const App = {
             title.textContent = event.event_type || 'Olay Detayı';
             subtitle.textContent = this.formatTime(event.ts || event.timestamp);
             tabs.innerHTML = `
-                <button class="drawer-tab active">Ham Veri</button>
+                <button class="drawer-tab active">Raw Data</button>
             `;
             
             body.innerHTML = `
                 <div class="drawer-section">
                     <div class="info-grid">
-                        <span class="info-label">Kaynak</span>
+                        <span class="info-label">Source</span>
                         <span class="info-value">${this.esc(event.source || '—')}</span>
                         <span class="info-label">Tip</span>
                         <span class="info-value">${this.esc(event.event_type || '—')}</span>
@@ -2888,7 +2904,7 @@ const App = {
     runPlaybook(playbookId, caseId) {
         const playbook = this.state.data.playbooks?.find(p => p.id === playbookId);
         if (!playbook) {
-            this.toast('Playbook bulunamadı', 'error');
+            this.toast('Playbook not found', 'error');
             return;
         }
         
@@ -2933,7 +2949,7 @@ const App = {
         
         // Add war room note
         if (run.case_id) {
-            this.addWarRoomNoteInternal(run.case_id, `Playbook "${run.playbook_name}" tamamlandı`);
+            this.addWarRoomNoteInternal(run.case_id, `Playbook "${run.playbook_name}" completed`);
         }
     },
 
@@ -2951,9 +2967,9 @@ const App = {
                         <thead>
                             <tr>
                                 <th>Playbook</th>
-                                <th>Vaka</th>
-                                <th>Durum</th>
-                                <th>Adımlar</th>
+                                <th>Case</th>
+                                <th>Status</th>
+                                <th>Steps</th>
                                 <th>Başlangıç</th>
                                 <th>Bitiş</th>
                                 <th></th>
@@ -2987,9 +3003,9 @@ const App = {
     renderRunStatus(status) {
         const statuses = {
             pending: '<span class="badge badge-neutral">Bekliyor</span>',
-            running: '<span class="badge badge-info">Çalışıyor</span>',
-            waiting_approval: '<span class="badge badge-warning">Onay Bekliyor</span>',
-            completed: '<span class="badge badge-low">Tamamlandı</span>',
+            running: '<span class="badge badge-info">Running</span>',
+            waiting_approval: '<span class="badge badge-warning">Waiting Approval</span>',
+            completed: '<span class="badge badge-low">Completed</span>',
             failed: '<span class="badge badge-critical">Başarısız</span>'
         };
         return statuses[status] || statuses.pending;
@@ -3085,7 +3101,7 @@ const App = {
         return `
             <div class="main-view" style="padding: var(--space-5);">
                 <div style="text-align: center; padding: var(--space-7);">
-                    <h3 style="color: var(--text-primary); margin-bottom: var(--space-3);">Playbook Seçin</h3>
+                    <h3 style="color: var(--text-primary); margin-bottom: var(--space-3);">Select Playbook</h3>
                     <p style="color: var(--text-muted); margin-bottom: var(--space-5);">Görselleştirmek istediğiniz playbook'u aşağıdan seçin</p>
                     
                     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: var(--space-4); max-width: 800px; margin: 0 auto;">
@@ -3094,7 +3110,7 @@ const App = {
                                 <div class="integration-icon">${this.esc(p.name.charAt(0))}</div>
                                 <div class="integration-info">
                                     <div class="integration-name">${this.esc(p.name)}</div>
-                                    <div class="integration-status">${p.steps?.length || 0} adım • ${this.esc(p.category || 'Genel')}</div>
+                                    <div class="integration-status">${p.steps?.length || 0} steps • ${this.esc(p.category || 'General')}</div>
                                 </div>
                             </div>
                         `).join('')}
@@ -3324,7 +3340,7 @@ const App = {
     exportIOCs() {
         const iocs = this.state.data.iocs || [];
         const csv = [
-            ['Gösterge', 'Tip', 'Güven', 'Etiketler', 'İlk Görülme', 'Son Görülme'].join(','),
+            ['Indicator', 'Type', 'Confidence', 'Tags', 'First Seen', 'Last Seen'].join(','),
             ...iocs.map(i => [
                 i.indicator, i.type, i.confidence, (i.tags || []).join(';'), i.first_seen, i.last_seen
             ].join(','))
@@ -3447,11 +3463,11 @@ const App = {
             info: 'badge-neutral'
         };
         const labels = {
-            critical: 'Kritik',
-            high: 'Yüksek',
-            medium: 'Orta',
-            low: 'Düşük',
-            info: 'Bilgi'
+            critical: 'Critical',
+            high: 'High',
+            medium: 'Medium',
+            low: 'Low',
+            info: 'Info'
         };
         const cls = classes[severity] || 'badge-neutral';
         const lbl = labels[severity] || severity || 'N/A';
@@ -3467,11 +3483,11 @@ const App = {
             closed: 'badge-neutral'
         };
         const labels = {
-            new: 'Yeni',
-            in_progress: 'İnceleniyor',
-            investigating: 'İnceleniyor',
-            contained: 'Kontrol Altında',
-            closed: 'Kapatıldı'
+            new: 'New',
+            in_progress: 'In Progress',
+            investigating: 'Investigating',
+            contained: 'Contained',
+            closed: 'Closed'
         };
         const cls = classes[status] || 'badge-neutral';
         const lbl = labels[status] || status || 'N/A';
@@ -3543,7 +3559,7 @@ const App = {
         if (body) {
             body.innerHTML = `
                 <div class="drawer-section">
-                    <div class="drawer-section-title">Genel Bilgi</div>
+                    <div class="drawer-section-title">General Info</div>
                     <div class="detail-grid">
                         <div class="detail-row">
                             <span class="detail-label">Olay ID</span>
@@ -3597,7 +3613,7 @@ const App = {
                             <code class="detail-value">${this.esc(device.hostname)}</code>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">İşletim Sistemi</span>
+                            <span class="detail-label">Operating System</span>
                             <span class="detail-value">${this.esc(device.os || '—')}</span>
                         </div>
                     </div>
@@ -3626,7 +3642,7 @@ const App = {
 
                 ${process.name ? `
                 <div class="drawer-section">
-                    <div class="drawer-section-title">Süreç</div>
+                    <div class="drawer-section-title">Process</div>
                     <div class="detail-grid">
                         <div class="detail-row">
                             <span class="detail-label">İsim</span>
@@ -3638,7 +3654,7 @@ const App = {
                         </div>
                         ${process.parent_name ? `
                         <div class="detail-row">
-                            <span class="detail-label">Üst Süreç</span>
+                            <span class="detail-label">Parent Process</span>
                             <code class="detail-value">${this.esc(process.parent_name)}</code>
                         </div>
                         ` : ''}
@@ -3657,7 +3673,7 @@ const App = {
 
                 ${event.raw ? `
                 <div class="drawer-section">
-                    <div class="drawer-section-title">Ham Veri (Önizleme)</div>
+                    <div class="drawer-section-title">Raw Data (Preview)</div>
                     <pre class="raw-data">${this.esc(JSON.stringify(event.raw, null, 2).substring(0, 1000))}</pre>
                 </div>
                 ` : ''}

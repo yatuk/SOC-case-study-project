@@ -1,0 +1,1282 @@
+{
+  "edges": [
+    {
+      "source": "oguz.tekin@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "fatma.sahin@anadolufinans.example.tr",
+      "target": "192.168.1.1",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "elif.yilmaz@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "ahmet.yildiz@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "burak.polat@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "elif.yilmaz@anadolufinans.example.tr",
+      "target": "192.168.1.1",
+      "type": "user_ip",
+      "weight": 9
+    },
+    {
+      "source": "selin.aksoy@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 8
+    },
+    {
+      "source": "oguz.tekin@anadolufinans.example.tr",
+      "target": "192.168.1.1",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "ayse.demir@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 9
+    },
+    {
+      "source": "ceren.erdogan@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "selin.aksoy@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 10
+    },
+    {
+      "source": "elif.yilmaz@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 8
+    },
+    {
+      "source": "fatma.sahin@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "ceren.erdogan@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "gulsen.dogan@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 8
+    },
+    {
+      "source": "ali.ozturk@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "deniz.aydin@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "burak.polat@anadolufinans.example.tr",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "selin.aksoy@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 10
+    },
+    {
+      "source": "zeynep.celik@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "ceren.erdogan@anadolufinans.example.tr",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "ceren.erdogan@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "ahmet.yildiz@anadolufinans.example.tr",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "fatma.sahin@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "ahmet.yildiz@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "zeynep.celik@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "ceren.erdogan@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "fatma.sahin@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "ayse.demir@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "burak.polat@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "mehmet.kaya@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "ayse.demir@anadolufinans.example.tr",
+      "target": "198.51.100.45",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "mehmet.kaya@anadolufinans.example.tr",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "mehmet.kaya@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "ali.ozturk@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "deniz.aydin@anadolufinans.example.tr",
+      "target": "192.168.1.1",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "ali.ozturk@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "selin.aksoy@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "deniz.aydin@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "selin.aksoy@anadolufinans.example.tr",
+      "target": "192.168.1.1",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "ayse.demir@anadolufinans.example.tr",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "selin.aksoy@anadolufinans.example.tr",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "ceren.erdogan@anadolufinans.example.tr",
+      "target": "192.168.1.1",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "ceren.erdogan@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "ali.ozturk@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "fatma.sahin@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "burak.polat@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "ayse.demir@anadolufinans.example.tr",
+      "target": "192.168.1.1",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "mehmet.kaya@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "fatma.sahin@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "emre.korkmaz@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "oguz.tekin@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "deniz.aydin@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "burak.polat@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "burak.polat@anadolufinans.example.tr",
+      "target": "192.168.1.1",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "deniz.aydin@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "emre.korkmaz@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "mehmet.kaya@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "gulsen.dogan@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "zeynep.celik@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "gulsen.dogan@anadolufinans.example.tr",
+      "target": "192.168.1.1",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "emre.korkmaz@anadolufinans.example.tr",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "ali.ozturk@anadolufinans.example.tr",
+      "target": "192.168.1.1",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "elif.yilmaz@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "selin.aksoy@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "oguz.tekin@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "ali.ozturk@anadolufinans.example.tr",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "oguz.tekin@anadolufinans.example.tr",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 8
+    },
+    {
+      "source": "ahmet.yildiz@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "mustafa.arslan@anadolufinans.example.tr",
+      "target": "192.168.1.1",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "mehmet.kaya@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 6
+    },
+    {
+      "source": "mehmet.kaya@anadolufinans.example.tr",
+      "target": "203.0.113.180",
+      "type": "user_ip",
+      "weight": 12
+    },
+    {
+      "source": "elif.yilmaz@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "mustafa.arslan@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "oguz.tekin@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "emre.korkmaz@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "gulsen.dogan@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "oguz.tekin@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "mustafa.arslan@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 7
+    },
+    {
+      "source": "ayse.demir@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "mustafa.arslan@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "ali.ozturk@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "elif.yilmaz@anadolufinans.example.tr",
+      "target": "198.51.100.91",
+      "type": "user_ip",
+      "weight": 18
+    },
+    {
+      "source": "gulsen.dogan@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "mustafa.arslan@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "burak.polat@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "ahmet.yildiz@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "elif.yilmaz@anadolufinans.example.tr",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "zeynep.celik@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "zeynep.celik@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "deniz.aydin@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "gulsen.dogan@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "deniz.aydin@anadolufinans.example.tr",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "emre.korkmaz@anadolufinans.example.tr",
+      "target": "192.0.2.101",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "ayse.demir@anadolufinans.example.tr",
+      "target": "203.0.113.195",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "mehmet.kaya@anadolufinans.example.tr",
+      "target": "203.0.113.195",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "elif.yilmaz@anadolufinans.example.tr",
+      "target": "203.0.113.195",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "mustafa.arslan@anadolufinans.example.tr",
+      "target": "203.0.113.195",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "zeynep.celik@anadolufinans.example.tr",
+      "target": "203.0.113.195",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "ali.ozturk@anadolufinans.example.tr",
+      "target": "203.0.113.195",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "emre.korkmaz@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 5
+    },
+    {
+      "source": "mustafa.arslan@anadolufinans.example.tr",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "zeynep.celik@anadolufinans.example.tr",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "fatma.sahin@anadolufinans.example.tr",
+      "target": "198.51.100.54",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "fatma.sahin@anadolufinans.example.tr",
+      "target": "172.16.0.1",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "ayse.demir@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "zeynep.celik@anadolufinans.example.tr",
+      "target": "203.0.113.78",
+      "type": "user_ip",
+      "weight": 10
+    },
+    {
+      "source": "emre.korkmaz@anadolufinans.example.tr",
+      "target": "192.168.1.1",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "ayse.demir@anadolufinans.example.tr",
+      "target": "10.10.2.100",
+      "type": "user_ip",
+      "weight": 4
+    },
+    {
+      "source": "mustafa.arslan@anadolufinans.example.tr",
+      "target": "10.10.1.51",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "ahmet.yildiz@anadolufinans.example.tr",
+      "target": "203.0.113.195",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "elif.yilmaz@anadolufinans.example.tr",
+      "target": "192.0.2.100",
+      "type": "user_ip",
+      "weight": 3
+    },
+    {
+      "source": "zeynep.celik@anadolufinans.example.tr",
+      "target": "192.168.1.1",
+      "type": "user_ip",
+      "weight": 2
+    },
+    {
+      "source": "ahmet.yildiz@anadolufinans.example.tr",
+      "target": "10.10.1.50",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "ahmet.yildiz@anadolufinans.example.tr",
+      "target": "192.168.1.1",
+      "type": "user_ip",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0001",
+      "target": "ALR-0001-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0001",
+      "target": "ALR-0001-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0001",
+      "target": "ALR-0001-003",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0002",
+      "target": "ALR-0002-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0002",
+      "target": "ALR-0002-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0003",
+      "target": "ALR-0003-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0003",
+      "target": "ALR-0003-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0004",
+      "target": "ALR-0004-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0004",
+      "target": "ALR-0004-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0005",
+      "target": "ALR-0005-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0005",
+      "target": "ALR-0005-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0006",
+      "target": "ALR-0006-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0006",
+      "target": "ALR-0006-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0006",
+      "target": "ALR-0006-003",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0007",
+      "target": "ALR-0007-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0007",
+      "target": "ALR-0007-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0008",
+      "target": "ALR-0008-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0008",
+      "target": "ALR-0008-002",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "CASE-2026-0009",
+      "target": "ALR-0009-001",
+      "type": "case_alert",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0001-001",
+      "target": "EVT-000001",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0001-001",
+      "target": "EVT-000002",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0001-001",
+      "target": "EVT-000003",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0001-002",
+      "target": "EVT-000004",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0001-003",
+      "target": "EVT-000005",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-001",
+      "target": "EVT-000006",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-001",
+      "target": "EVT-000007",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000008",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000009",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000010",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000011",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000012",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000013",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000014",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000015",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000016",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000017",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000018",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0002-002",
+      "target": "EVT-000019",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000020",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000021",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000022",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000023",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000024",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000025",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000026",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000027",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000028",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000029",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000030",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000031",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000032",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000033",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-001",
+      "target": "EVT-000034",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-002",
+      "target": "EVT-000035",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-002",
+      "target": "EVT-000036",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0003-002",
+      "target": "EVT-000037",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-001",
+      "target": "EVT-000038",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-001",
+      "target": "EVT-000039",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-001",
+      "target": "EVT-000040",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-001",
+      "target": "EVT-000041",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-001",
+      "target": "EVT-000042",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-001",
+      "target": "EVT-000043",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-002",
+      "target": "EVT-000044",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-002",
+      "target": "EVT-000045",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0004-002",
+      "target": "EVT-000046",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0005-001",
+      "target": "EVT-000047",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0005-001",
+      "target": "EVT-000048",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0005-001",
+      "target": "EVT-000049",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0005-002",
+      "target": "EVT-000050",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-001",
+      "target": "EVT-000051",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-001",
+      "target": "EVT-000052",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-001",
+      "target": "EVT-000053",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-001",
+      "target": "EVT-000054",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-002",
+      "target": "EVT-000055",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000056",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000057",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000058",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000059",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000060",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000061",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000062",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000063",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000064",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0006-003",
+      "target": "EVT-000065",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0007-001",
+      "target": "EVT-000066",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0007-001",
+      "target": "EVT-000067",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0007-002",
+      "target": "EVT-000068",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0008-001",
+      "target": "EVT-000069",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0008-001",
+      "target": "EVT-000070",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0008-001",
+      "target": "EVT-000071",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0008-001",
+      "target": "EVT-000072",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0008-001",
+      "target": "EVT-000073",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0008-002",
+      "target": "EVT-000074",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0009-001",
+      "target": "EVT-000075",
+      "type": "alert_evidence",
+      "weight": 1
+    },
+    {
+      "source": "ALR-0009-001",
+      "target": "EVT-000076",
+      "type": "alert_evidence",
+      "weight": 1
+    }
+  ],
+  "patterns": [
+    {
+      "name": "phishing_chain",
+      "description": "Oltalama e-postası → tıklama → kimlik bilgisi hırsızlığı"
+    },
+    {
+      "name": "impossible_travel",
+      "description": "Uzak konumlardan girişler"
+    },
+    {
+      "name": "mfa_fatigue",
+      "description": "Çoklu MFA push'ları ardından onay"
+    },
+    {
+      "name": "c2_beacon",
+      "description": "C2'ye periyodik giden bağlantılar"
+    }
+  ]
+}

@@ -8,7 +8,16 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { useDataStore, useUIStore, useSettingsStore } from '@/store'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { SimulationToggle } from '@/components/dashboard/SimulationToggle'
+import { useDataStore, useUIStore } from '@/store'
 import { useTheme } from '@/hooks/useTheme'
 import {
   Search,
@@ -30,7 +39,6 @@ export function Topbar({ title = 'SOC Dashboard' }: TopbarProps) {
   const navigate = useNavigate()
   const { isLoading, error, lastLoaded, alerts } = useDataStore()
   const { searchQuery, setSearchQuery } = useUIStore()
-  const { settings } = useSettingsStore()
   const { isDark, toggleTheme } = useTheme()
   const [isSearchFocused, setIsSearchFocused] = useState(false)
 
@@ -100,6 +108,9 @@ export function Topbar({ title = 'SOC Dashboard' }: TopbarProps) {
 
       {/* Right - Actions */}
       <div className="flex items-center gap-2">
+        {/* Simulation Toggle */}
+        <SimulationToggle />
+
         {/* Status Indicator */}
         <Tooltip>
           <TooltipTrigger asChild>
@@ -135,24 +146,69 @@ export function Topbar({ title = 'SOC Dashboard' }: TopbarProps) {
         </Tooltip>
 
         {/* Notifications */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative"
+            >
               <Bell className="h-5 w-5" />
               {criticalCount > 0 && (
                 <Badge
                   variant="critical"
-                  className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px]"
+                  className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px] pulse-green"
                 >
                   {criticalCount > 9 ? '9+' : criticalCount}
                 </Badge>
               )}
             </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            {criticalCount} kritik uyarı
-          </TooltipContent>
-        </Tooltip>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-80">
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">Bildirimler</p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {criticalCount} kritik, toplam {alerts.length} uyarı
+                </p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {alerts
+              .filter(a => a.severity === 'critical' || a.severity === 'high')
+              .slice(0, 5)
+              .map((alert) => (
+                <DropdownMenuItem 
+                  key={alert.alert_id}
+                  className="flex flex-col items-start gap-1 p-3 cursor-pointer"
+                  onClick={() => navigate(`/cases/${alert.alert_id}`)}
+                >
+                  <div className="flex items-center gap-2 w-full">
+                    <div className={`h-2 w-2 rounded-full ${alert.severity === 'critical' ? 'bg-red-500' : 'bg-orange-500'}`} />
+                    <span className="font-medium truncate flex-1">{alert.title || alert.alert_name || 'Uyarı'}</span>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                      {new Date(alert.timestamp || alert.ts || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground line-clamp-1">
+                    {alert.src_ip || alert.device || 'Bilinmeyen Cihaz'} {alert.user ? `• ${alert.user}` : ''}
+                  </p>
+                </DropdownMenuItem>
+              ))}
+            {alerts.filter(a => a.severity === 'critical' || a.severity === 'high').length === 0 && (
+              <div className="p-4 text-center text-sm text-muted-foreground">
+                Kritik veya yüksek öncelikli uyarı yok.
+              </div>
+            )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="w-full justify-center text-primary cursor-pointer font-medium"
+              onClick={() => navigate('/alerts')}
+            >
+              Tüm Uyarıları Gör
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Refresh */}
         <Tooltip>

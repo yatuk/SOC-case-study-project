@@ -1,6 +1,6 @@
 # Teknik Olay Analiz Raporu
 
-**Olusturulma:** 2026-01-22 18:12:08
+**Olusturulma:** 2026-01-23 22:01:46
 
 ## Algilama Genel Bakisi
 

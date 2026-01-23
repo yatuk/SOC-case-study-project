@@ -1,175 +1,176 @@
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useState } from 'react'
+import { 
+  Card, 
+  Title, 
+  Text, 
+  Grid, 
+  Metric, 
+  Flex, 
+  BadgeDelta,
+  DonutChart,
+  BarChart,
+  List,
+  ListItem,
+  Icon,
+} from '@tremor/react'
 import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
-import { FileText, Download, Printer } from 'lucide-react'
-
-// Simple markdown renderer
-function renderMarkdown(md: string): string {
-  let html = md
-    // Escape HTML
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    // Headers
-    .replace(/^### (.*$)/gim, '<h3 class="text-lg font-semibold mt-6 mb-2">$1</h3>')
-    .replace(/^## (.*$)/gim, '<h2 class="text-xl font-semibold mt-8 mb-3">$1</h2>')
-    .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold mt-8 mb-4">$1</h1>')
-    // Bold & Italic
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    // Code blocks
-    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre class="bg-muted p-4 rounded-lg my-4 overflow-x-auto font-mono text-sm"><code>$2</code></pre>')
-    // Inline code
-    .replace(/`(.+?)`/g, '<code class="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">$1</code>')
-    // Lists
-    .replace(/^\s*[-*] (.*)$/gim, '<li class="ml-4">$1</li>')
-    .replace(/(<li.*<\/li>\n?)+/g, '<ul class="list-disc list-inside my-4 space-y-1">$&</ul>')
-    // Numbered lists
-    .replace(/^\d+\. (.*)$/gim, '<li class="ml-4">$1</li>')
-    // Links
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary hover:underline">$1</a>')
-    // Horizontal rule
-    .replace(/^---$/gim, '<hr class="my-6 border-border" />')
-    // Paragraphs
-    .replace(/\n\n/g, '</p><p class="my-4">')
-
-  return `<p class="my-4">${html}</p>`
-}
+import { DateRangePicker } from '@tremor/react'
+import { Download, Printer, ShieldAlert, CheckCircle, Activity, Server } from 'lucide-react'
+import { useDataStore } from '@/store'
+import { format } from 'date-fns'
+import { tr } from 'date-fns/locale'
 
 export default function Reports() {
-  const [execReport, setExecReport] = useState<string>('')
-  const [techReport, setTechReport] = useState<string>('')
-  const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState('executive')
+  const { alerts, devices } = useDataStore()
+  const [dateRange, setDateRange] = useState<any>({
+    from: new Date(new Date().setDate(new Date().getDate() - 7)),
+    to: new Date(),
+  })
 
-  useEffect(() => {
-    const loadReports = async () => {
-      setLoading(true)
-      try {
-        const [execRes, techRes] = await Promise.allSettled([
-          fetch('./dashboard_data/report_executive.md'),
-          fetch('./dashboard_data/report_technical.md'),
-        ])
-
-        if (execRes.status === 'fulfilled' && execRes.value.ok) {
-          setExecReport(await execRes.value.text())
-        }
-        if (techRes.status === 'fulfilled' && techRes.value.ok) {
-          setTechReport(await techRes.value.text())
-        }
-      } catch (error) {
-        console.error('Failed to load reports:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadReports()
-  }, [])
-
-  const handleDownload = (content: string, filename: string) => {
-    const blob = new Blob([content], { type: 'text/markdown' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = filename
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+  // Mock data derivation for Reports
+  const severityCounts = {
+    critical: alerts.filter(a => a.severity === 'critical').length,
+    high: alerts.filter(a => a.severity === 'high').length,
+    medium: alerts.filter(a => a.severity === 'medium').length,
+    low: alerts.filter(a => a.severity === 'low').length,
   }
+
+  const chartData = [
+    { name: 'Kritik', value: severityCounts.critical },
+    { name: 'Yüksek', value: severityCounts.high },
+    { name: 'Orta', value: severityCounts.medium },
+    { name: 'Düşük', value: severityCounts.low },
+  ]
 
   const handlePrint = () => {
     window.print()
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 pb-20">
+      {/* Header & Controls */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <Title className="text-2xl font-bold">Raporlama Merkezi</Title>
+          <Text>Güvenlik olayları ve sistem durum raporları</Text>
+        </div>
+        <div className="flex items-center gap-2">
+           <DateRangePicker 
+              className="max-w-sm" 
+              value={dateRange}
+              onValueChange={setDateRange}
+              enableSelect={false}
+              locale={tr}
+           />
+           <Button variant="outline" onClick={handlePrint}>
+             <Printer className="h-4 w-4 mr-2" />
+             Yazdır / PDF
+           </Button>
+           <Button>
+             <Download className="h-4 w-4 mr-2" />
+             Dışa Aktar (CSV)
+           </Button>
+        </div>
+      </div>
+
+      {/* KPI Cards */}
+      <Grid numItems={1} numItemsSm={2} numItemsLg={4} className="gap-6">
+        <Card decoration="top" decorationColor="rose">
+          <Flex justifyContent="start" className="space-x-4">
+            <Icon icon={ShieldAlert} variant="light" size="xl" color="rose" />
+            <div className="truncate">
+              <Text>Kritik Tehditler</Text>
+              <Metric>{severityCounts.critical}</Metric>
+            </div>
+          </Flex>
+          <BadgeDelta deltaType="increase" className="mt-2">
+             Geçen haftaya göre +23%
+          </BadgeDelta>
+        </Card>
+        <Card decoration="top" decorationColor="orange">
+            <Flex justifyContent="start" className="space-x-4">
+            <Icon icon={Activity} variant="light" size="xl" color="orange" />
+            <div className="truncate">
+              <Text>Toplam Olay</Text>
+              <Metric>{alerts.length}</Metric>
+            </div>
+          </Flex>
+        </Card>
+        <Card decoration="top" decorationColor="blue">
+            <Flex justifyContent="start" className="space-x-4">
+            <Icon icon={Server} variant="light" size="xl" color="blue" />
+            <div className="truncate">
+              <Text>İzlenen Varlık</Text>
+              <Metric>{devices.length}</Metric>
+            </div>
+          </Flex>
+        </Card>
+        <Card decoration="top" decorationColor="emerald">
+            <Flex justifyContent="start" className="space-x-4">
+            <Icon icon={CheckCircle} variant="light" size="xl" color="emerald" />
+            <div className="truncate">
+              <Text>Çözülen Vakalar</Text>
+              <Metric>142</Metric>
+            </div>
+          </Flex>
+        </Card>
+      </Grid>
+
+      {/* Charts Section */}
+      <Grid numItems={1} numItemsLg={2} className="gap-6">
+        <Card>
+          <Title>Olay Şiddet Dağılımı</Title>
+          <DonutChart
+            className="mt-6"
+            data={chartData}
+            category="value"
+            index="name"
+            colors={["rose", "orange", "yellow", "emerald"]}
+            variant="pie"
+          />
+        </Card>
+        <Card>
+          <Title>Günlük Olay Aktivitesi</Title>
+          <BarChart
+            className="mt-6"
+            data={[
+              { date: 'Pzt', 'Olaylar': 12 },
+              { date: 'Sal', 'Olaylar': 15 },
+              { date: 'Çar', 'Olaylar': 8 },
+              { date: 'Per', 'Olaylar': 24 },
+              { date: 'Cum', 'Olaylar': 18 },
+              { date: 'Cmt', 'Olaylar': 5 },
+              { date: 'Paz', 'Olaylar': 7 },
+            ]}
+            index="date"
+            categories={['Olaylar']}
+            colors={['blue']}
+          />
+        </Card>
+      </Grid>
+
+      {/* Critical Incidents List */}
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            Olay Raporları
-          </CardTitle>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() =>
-                handleDownload(
-                  activeTab === 'executive' ? execReport : techReport,
-                  activeTab === 'executive'
-                    ? 'executive_report.md'
-                    : 'technical_report.md'
-                )
-              }
-            >
-              <Download className="h-4 w-4 mr-2" />
-              İndir
-            </Button>
-            <Button variant="outline" size="sm" onClick={handlePrint}>
-              <Printer className="h-4 w-4 mr-2" />
-              Yazdır
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList>
-              <TabsTrigger value="executive">Yönetici Özeti</TabsTrigger>
-              <TabsTrigger value="technical">Teknik Rapor</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="executive" className="mt-6">
-              {loading ? (
-                <div className="space-y-4">
-                  <Skeleton className="h-8 w-3/4" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-2/3" />
-                  <Skeleton className="h-32 w-full" />
+        <Title>Son Kritik İhlaller</Title>
+        <List className="mt-4">
+          {alerts
+            .filter(a => a.severity === 'critical')
+            .slice(0, 5)
+            .map((alert) => (
+            <ListItem key={alert.alert_id}>
+              <div className="flex items-center gap-2">
+                <div className="bg-rose-500/20 p-1 rounded">
+                   <ShieldAlert className="h-4 w-4 text-rose-500" />
                 </div>
-              ) : execReport ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="prose prose-invert max-w-none"
-                  dangerouslySetInnerHTML={{ __html: renderMarkdown(execReport) }}
-                />
-              ) : (
-                <div className="text-center text-muted-foreground py-12">
-                  Yönetici raporu bulunamadı
+                <div>
+                   <Text className="font-medium text-white">{alert.title}</Text>
+                   <Text className="text-xs">{alert.src_ip} &rarr; {alert.device}</Text>
                 </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="technical" className="mt-6">
-              {loading ? (
-                <div className="space-y-4">
-                  <Skeleton className="h-8 w-3/4" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-2/3" />
-                  <Skeleton className="h-64 w-full" />
-                </div>
-              ) : techReport ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="prose prose-invert max-w-none"
-                  dangerouslySetInnerHTML={{ __html: renderMarkdown(techReport) }}
-                />
-              ) : (
-                <div className="text-center text-muted-foreground py-12">
-                  Teknik rapor bulunamadı
-                </div>
-              )}
-            </TabsContent>
-          </Tabs>
-        </CardContent>
+              </div>
+              <Text>{alert.timestamp ? format(new Date(alert.timestamp), 'dd MMM HH:mm') : '-'}</Text>
+            </ListItem>
+          ))}
+        </List>
       </Card>
     </div>
   )

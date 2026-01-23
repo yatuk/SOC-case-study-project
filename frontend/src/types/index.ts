@@ -89,16 +89,15 @@ export interface ConnectionInfo {
 }
 
 export interface IOC {
-  indicator?: string
-  value?: string
-  domain?: string
-  type: string
-  confidence?: string | number
+  type: 'ip' | 'domain' | 'hash' | 'url' | 'email' | string
+  value: string
+  severity?: 'critical' | 'high' | 'medium' | 'low' | string
+  confidence?: number
   tags?: string[]
-  label?: string
-  first_seen?: string
-  last_seen?: string
   source?: string
+  first_seen?: string
+  description?: string
+  last_seen?: string
 }
 
 export interface Playbook {

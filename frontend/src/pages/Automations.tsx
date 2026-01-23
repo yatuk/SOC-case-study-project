@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useDataStore, useSOARStore } from '@/store'
-import { KPICard } from '@/components/dashboard/KPICard'
+import { PlaybookMetrics } from '@/components/soar/PlaybookMetrics'
+import { PlaybookRunDetail } from '@/components/soar/PlaybookRunDetail'
 import { formatTime, generateId } from '@/lib/utils'
 import {
   Play,
@@ -15,6 +16,7 @@ import {
   Zap,
   ArrowRight,
   RefreshCw,
+  Eye,
 } from 'lucide-react'
 import type { Playbook, PlaybookRun } from '@/types'
 
@@ -22,10 +24,8 @@ export default function Automations() {
   const { playbooks, isLoading } = useDataStore()
   const { runs, addRun, updateRun } = useSOARStore()
   const [runningPlaybook, setRunningPlaybook] = useState<string | null>(null)
-
-  const totalRuns = runs.length
-  const completedRuns = runs.filter((r) => r.status === 'completed').length
-  const activeRuns = runs.filter((r) => r.status === 'running').length
+  const [selectedRun, setSelectedRun] = useState<PlaybookRun | null>(null)
+  const [detailOpen, setDetailOpen] = useState(false)
 
   const runPlaybook = async (playbook: Playbook) => {
     setRunningPlaybook(playbook.id)
@@ -40,16 +40,21 @@ export default function Automations() {
     }
 
     addRun(newRun)
-    toast.info(`${playbook.name} başlatıldı`)
+    toast.info(`🤖 ${playbook.name} başlatıldı`)
 
-    // Simulate step execution
+    // Simulate step execution with real-time updates
     const steps = playbook.steps || []
     for (let i = 0; i < steps.length; i++) {
+      // Mark step as running
+      const runningSteps = [...(newRun.steps || [])]
+      runningSteps[i] = { ...runningSteps[i], status: 'running' }
+      updateRun(newRun.id, { steps: runningSteps })
+
       await new Promise((resolve) => setTimeout(resolve, 800 + Math.random() * 500))
       
-      const updatedSteps = [...(newRun.steps || [])]
+      // Mark as completed
+      const updatedSteps = [...runningSteps]
       updatedSteps[i] = { ...updatedSteps[i], status: 'completed' }
-      
       updateRun(newRun.id, { steps: updatedSteps })
     }
 
@@ -60,7 +65,7 @@ export default function Automations() {
       finished_at: new Date().toISOString(),
     })
 
-    toast.success(`${playbook.name} tamamlandı`)
+    toast.success(`✅ ${playbook.name} tamamlandı`)
     setRunningPlaybook(null)
   }
 
@@ -74,42 +79,27 @@ export default function Automations() {
     return icons[type] || Zap
   }
 
+  const handleRunClick = (run: PlaybookRun) => {
+    setSelectedRun(run)
+    setDetailOpen(true)
+  }
+
   return (
     <div className="space-y-6">
-      {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <KPICard
-          title="Toplam Playbook"
-          value={playbooks.length}
-          icon={Play}
-          iconColor="text-blue-400"
-          loading={isLoading}
-        />
-        <KPICard
-          title="Toplam Çalıştırma"
-          value={totalRuns}
-          icon={Zap}
-          iconColor="text-purple-400"
-        />
-        <KPICard
-          title="Tamamlanan"
-          value={completedRuns}
-          icon={CheckCircle}
-          iconColor="text-green-400"
-        />
-        <KPICard
-          title="Aktif"
-          value={activeRuns}
-          icon={Clock}
-          iconColor="text-orange-400"
-        />
+      {/* Metrics Dashboard */}
+      <div>
+        <h2 className="text-2xl font-bold mb-4">SOAR Automation</h2>
+        <PlaybookMetrics />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Playbooks */}
         <Card>
           <CardHeader>
-            <CardTitle>Playbook Kütüphanesi</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Zap className="h-5 w-5 text-primary" />
+              Playbook Kütüphanesi
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -125,11 +115,11 @@ export default function Automations() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="p-4 rounded-lg border bg-card hover:bg-muted/50 transition-colors"
+                  className="p-4 rounded-lg border bg-card hover:bg-muted/50 transition-all hover:shadow-lg hover:border-primary/30"
                 >
                   <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <h3 className="font-medium">{playbook.name}</h3>
+                    <div className="space-y-1 flex-1">
+                      <h3 className="font-medium text-primary">{playbook.name}</h3>
                       <p className="text-sm text-muted-foreground">
                         {playbook.description || 'Açıklama yok'}
                       </p>
@@ -140,7 +130,8 @@ export default function Automations() {
                           </Badge>
                         )}
                         {playbook.steps && (
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-xs text-muted-foreground flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
                             {playbook.steps.length} adım
                           </span>
                         )}
@@ -150,33 +141,37 @@ export default function Automations() {
                       size="sm"
                       onClick={() => runPlaybook(playbook)}
                       disabled={runningPlaybook === playbook.id}
+                      className="ml-4 terminal-glow"
                     >
                       {runningPlaybook === playbook.id ? (
                         <RefreshCw className="h-4 w-4 animate-spin mr-2" />
                       ) : (
                         <Play className="h-4 w-4 mr-2" />
                       )}
-                      Çalıştır
+                      {runningPlaybook === playbook.id ? 'Çalışıyor...' : 'Çalıştır'}
                     </Button>
                   </div>
 
-                  {/* Steps preview */}
+                  {/* Visual Workflow Steps */}
                   {playbook.steps && playbook.steps.length > 0 && (
-                    <div className="mt-4 flex items-center gap-2 overflow-x-auto pb-2">
-                      {playbook.steps.map((step, i) => {
-                        const Icon = getStepIcon(step.type)
-                        return (
-                          <div key={step.id} className="flex items-center gap-2">
-                            <div className="flex items-center gap-1 px-2 py-1 rounded bg-secondary text-xs whitespace-nowrap">
-                              <Icon className="h-3 w-3" />
-                              {step.name}
+                    <div className="mt-4 p-3 rounded bg-muted/30 border border-dashed">
+                      <p className="text-xs text-muted-foreground mb-2 font-mono">WORKFLOW:</p>
+                      <div className="flex items-center gap-2 overflow-x-auto pb-2">
+                        {playbook.steps.map((step, i) => {
+                          const Icon = getStepIcon(step.type)
+                          return (
+                            <div key={step.id} className="flex items-center gap-2 shrink-0">
+                              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-card border text-xs whitespace-nowrap font-mono">
+                                <Icon className="h-3.5 w-3.5 text-primary" />
+                                <span>{step.name}</span>
+                              </div>
+                              {i < (playbook.steps?.length || 0) - 1 && (
+                                <ArrowRight className="h-3.5 w-3.5 text-primary shrink-0" />
+                              )}
                             </div>
-                            {i < (playbook.steps?.length || 0) - 1 && (
-                              <ArrowRight className="h-3 w-3 text-muted-foreground shrink-0" />
-                            )}
-                          </div>
-                        )
-                      })}
+                          )
+                        })}
+                      </div>
                     </div>
                   )}
                 </motion.div>
@@ -185,13 +180,16 @@ export default function Automations() {
           </CardContent>
         </Card>
 
-        {/* Run History */}
+        {/* Run History with enhanced interactivity */}
         <Card>
           <CardHeader>
-            <CardTitle>Çalıştırma Geçmişi</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5 text-orange-400" />
+              Çalıştırma Geçmişi
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {runs.length === 0 && (
                 <p className="text-center text-muted-foreground py-8">
                   Henüz çalıştırma yok
@@ -208,7 +206,8 @@ export default function Automations() {
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="flex items-center justify-between p-3 rounded-lg border"
+                    className="group flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 hover:border-primary/30 transition-all cursor-pointer"
+                    onClick={() => handleRunClick(run)}
                   >
                     <div className="flex items-center gap-3">
                       {run.status === 'running' ? (
@@ -221,7 +220,7 @@ export default function Automations() {
                         <Clock className="h-4 w-4 text-orange-400" />
                       )}
                       <div>
-                        <p className="text-sm font-medium">
+                        <p className="text-sm font-medium font-mono">
                           {run.playbook_name || run.playbook_id}
                         </p>
                         <p className="text-xs text-muted-foreground">
@@ -229,29 +228,32 @@ export default function Automations() {
                         </p>
                       </div>
                     </div>
-                    <Badge
-                      variant={
-                        run.status === 'completed'
-                          ? 'low'
-                          : run.status === 'failed'
-                            ? 'critical'
-                            : 'medium'
-                      }
-                    >
-                      {run.status === 'completed'
-                        ? 'Tamamlandı'
-                        : run.status === 'running'
-                          ? 'Çalışıyor'
-                          : run.status === 'failed'
-                            ? 'Başarısız'
-                            : 'Bekliyor'}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant={
+                          run.status === 'completed' ? 'low' :
+                          run.status === 'failed' ? 'critical' : 'medium'
+                        }
+                      >
+                        {run.status === 'completed' ? 'Tamamlandı' :
+                         run.status === 'running' ? 'Çalışıyor' :
+                         run.status === 'failed' ? 'Başarısız' : 'Bekliyor'}
+                      </Badge>
+                      <Eye className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
                   </motion.div>
                 ))}
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Run Detail Modal */}
+      <PlaybookRunDetail
+        run={selectedRun}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+      />
     </div>
   )
 }

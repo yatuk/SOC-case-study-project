@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn, formatTime, numToSeverity, getSeverityLabel } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
@@ -12,7 +13,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useUIStore } from '@/store'
 import type { Alert, Severity } from '@/types'
 import {
   Search,
@@ -34,7 +34,7 @@ export function AlertsTable({
   loading = false,
   pageSize = 10,
 }: AlertsTableProps) {
-  const { openDrawer } = useUIStore()
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [severityFilter, setSeverityFilter] = useState<string>('all')
   const [currentPage, setCurrentPage] = useState(1)
@@ -68,7 +68,7 @@ export function AlertsTable({
   )
 
   const handleAlertClick = (alert: Alert) => {
-    openDrawer('alert', alert)
+    navigate(`/cases/${alert.alert_id || '10234'}`)
   }
 
   if (loading) {

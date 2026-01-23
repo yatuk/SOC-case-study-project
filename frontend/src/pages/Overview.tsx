@@ -18,13 +18,14 @@ import {
 } from 'lucide-react'
 
 export default function Overview() {
-  const { alerts, cases, isLoading } = useDataStore()
+  const { alerts, isLoading } = useDataStore()
   const {
     totalEvents,
     totalAlerts,
     criticalAlerts,
     openCases,
     totalDevices,
+    isolatedDevices,
     severityCounts,
     topSources,
   } = useComputedData()
@@ -62,8 +63,13 @@ export default function Overview() {
 
   return (
     <div className="space-y-6">
-      {/* KPI Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+      {/* KPI Cards - EDR & SIEM Metrics */}
+      <motion.div 
+        className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <KPICard
           title="Toplam Olay"
           value={totalEvents}
@@ -72,7 +78,7 @@ export default function Overview() {
           loading={isLoading}
         />
         <KPICard
-          title="Toplam Uyarı"
+          title="Aktif Uyarılar"
           value={totalAlerts}
           icon={ShieldAlert}
           iconColor="text-orange-400"
@@ -83,8 +89,6 @@ export default function Overview() {
           value={criticalAlerts}
           icon={AlertTriangle}
           iconColor="text-red-400"
-          trend={criticalAlerts > 5 ? 'up' : 'neutral'}
-          trendValue={criticalAlerts > 0 ? 'Dikkat' : ''}
           loading={isLoading}
         />
         <KPICard
@@ -95,13 +99,22 @@ export default function Overview() {
           loading={isLoading}
         />
         <KPICard
-          title="Cihazlar"
-          value={totalDevices}
+          title="İzole Cihazlar"
+          value={isolatedDevices}
           icon={Monitor}
+          iconColor="text-yellow-400"
+          trend={isolatedDevices > 0 ? 'up' : 'neutral'}
+          trendValue={isolatedDevices > 0 ? 'Karantina' : 'Normal'}
+          loading={isLoading}
+        />
+        <KPICard
+          title="Aktif Cihazlar"
+          value={totalDevices}
+          icon={Users}
           iconColor="text-cyan-400"
           loading={isLoading}
         />
-      </div>
+      </motion.div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Incident Narrative */}
