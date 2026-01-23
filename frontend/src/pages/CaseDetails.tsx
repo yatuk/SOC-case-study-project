@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Card, Title, Text, Grid, Col, Metric, Badge, Flex, Tab, TabList, TabGroup, TabPanels, TabPanel } from '@tremor/react'
 import { Shield, AlertTriangle, Cpu, Globe, ArrowLeft, Activity, FileText } from 'lucide-react'

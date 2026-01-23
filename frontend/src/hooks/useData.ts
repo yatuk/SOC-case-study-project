@@ -68,7 +68,7 @@ export function useData() {
       let successCount = 0
       results.forEach((result, index) => {
         if (result.status === 'fulfilled' && result.value !== null) {
-          store.setData(FILES[index].prop as keyof Parameters<typeof store.setData>[0], result.value)
+          store.setData(FILES[index].prop as any, result.value)
           successCount++
         }
       })

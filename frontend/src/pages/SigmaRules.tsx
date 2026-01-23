@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Editor from '@monaco-editor/react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -54,7 +54,7 @@ level: medium`
 ]
 
 export default function SigmaRules() {
-  const [rules, setRules] = useState(MOCK_RULES)
+  const [rules] = useState(MOCK_RULES)
   const [selectedRule, setSelectedRule] = useState(MOCK_RULES[0])
   const [editorContent, setEditorContent] = useState(MOCK_RULES[0].yaml)
   const [isTestRunning, setIsTestRunning] = useState(false)

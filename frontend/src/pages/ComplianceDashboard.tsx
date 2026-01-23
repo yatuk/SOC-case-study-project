@@ -1,12 +1,10 @@
 import { Card, Title, Text, ProgressCircle, CategoryBar, Table, TableHead, TableRow, TableHeaderCell, TableBody, TableCell, Badge } from '@tremor/react'
 import { generateComplianceScores } from '@/lib/mockData'
-import { useDataStore } from '@/store'
 import { useComputedData } from '@/hooks/useData'
 import { CheckCircle, AlertTriangle, XCircle, Clock } from 'lucide-react'
 
 export default function ComplianceDashboard() {
   const complianceScores = generateComplianceScores()
-  const { alerts } = useDataStore()
   const { totalAlerts, criticalAlerts } = useComputedData()
 
   // Overall compliance score (average of all frameworks)

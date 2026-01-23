@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Sidebar } from '@/components/layout/Sidebar'

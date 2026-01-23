@@ -16,7 +16,7 @@ import {
   CheckCircle,
   X,
 } from 'lucide-react'
-import type { Device, ProcessInfo, ConnectionInfo } from '@/types'
+import type { Device } from '@/types'
 
 interface DeviceDetailModalProps {
   device: Device | null

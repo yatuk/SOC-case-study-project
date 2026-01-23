@@ -15,7 +15,7 @@ export function SimulationToggle() {
       // No toast - too noisy at 1 event/sec
     })
 
-    return unsubscribe
+    return () => { unsubscribe() }
   }, [addSimulatedEvent])
 
   useEffect(() => {

@@ -9,7 +9,7 @@ export function PlaybookMetrics() {
 
   const metrics = useMemo(() => {
     const completed = runs.filter(r => r.status === 'completed')
-    const failed = runs.filter(r => r.status === 'failed')
+    // failed variable removed as unused
     
     const avgExecutionTime = completed.length > 0
       ? completed.reduce((acc, run) => {
