@@ -16,7 +16,6 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
-import type { IOC } from '@/types'
 
 export default function Intel() {
   const { iocs, normalizedIocs, isLoading } = useDataStore()
