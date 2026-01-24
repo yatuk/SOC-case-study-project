@@ -2,7 +2,7 @@ import { useEffect, useCallback } from 'react'
 import { useDataStore } from '@/store'
 import { parseJSONL } from '@/lib/utils'
 
-const DATA_BASE_PATH = '/dashboard_data'
+const DATA_BASE_PATH = './dashboard_data'
 
 interface FileConfig {
   file: string
