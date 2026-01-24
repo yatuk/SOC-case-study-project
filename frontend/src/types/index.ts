@@ -91,8 +91,13 @@ export interface ConnectionInfo {
 export interface IOC {
   type: 'ip' | 'domain' | 'hash' | 'url' | 'email' | string
   value: string
+  // Optional aliases often used in different datasets
+  indicator?: string
+  domain?: string
+  label?: string
+  
   severity?: 'critical' | 'high' | 'medium' | 'low' | string
-  confidence?: number
+  confidence?: number | string
   tags?: string[]
   source?: string
   first_seen?: string
