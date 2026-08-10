@@ -42,7 +42,7 @@ export default function Playbooks() {
             {definitions.map((pb) => {
               const stats = playbookStats[pb.playbook_id]
               return (
-                <Link key={pb.playbook_id} to={`/playbooks/${pb.playbook_id}`} className="flex flex-col p-4 rounded-lg border border-border hover:border-primary/30 hover:bg-accent transition-all group">
+                <Link key={pb.playbook_id} to={`/playbooks/${pb.playbook_id}`} className="flex flex-col p-4 rounded-lg border border-border hover:border-border hover:bg-muted/30 transition-colors group">
                   <div className="flex items-start gap-3 mb-3">
                     <Play className="w-4 h-4 text-primary mt-0.5 shrink-0" aria-hidden="true" />
                     <div className="min-w-0">

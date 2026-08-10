@@ -121,10 +121,10 @@ export default function Mitre() {
           </div>
           {/* View toggle */}
           <div className="inline-flex items-center rounded-md border border-border bg-muted/30 p-0.5">
-            <button onClick={() => setViewMode('grid')} className={`px-2 py-1 rounded-sm transition-colors ${viewMode === 'grid' ? 'bg-card text-foreground shadow-sm border border-border' : 'text-muted-foreground hover:text-foreground'}`} aria-label={t('mitre.gridView')}>
+            <button onClick={() => setViewMode('grid')} className={`px-2 py-1 rounded-sm transition-colors ${viewMode === 'grid' ? 'bg-card text-foreground border border-border' : 'text-muted-foreground hover:text-foreground'}`} aria-label={t('mitre.gridView')}>
               <Grid3X3 className="w-3.5 h-3.5" />
             </button>
-            <button onClick={() => setViewMode('treemap')} className={`px-2 py-1 rounded-sm transition-colors ${viewMode === 'treemap' ? 'bg-card text-foreground shadow-sm border border-border' : 'text-muted-foreground hover:text-foreground'}`} aria-label={t('mitre.treemapView')}>
+            <button onClick={() => setViewMode('treemap')} className={`px-2 py-1 rounded-sm transition-colors ${viewMode === 'treemap' ? 'bg-card text-foreground border border-border' : 'text-muted-foreground hover:text-foreground'}`} aria-label={t('mitre.treemapView')}>
               <LayoutTemplate className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -168,15 +168,15 @@ export default function Mitre() {
                         key={tech.technique_id}
                         onClick={() => tech.is_covered && setSelectedTech(tech)}
                         disabled={!tech.is_covered}
-                        className={`w-full text-left px-2 py-2 transition-all border border-transparent ${
+                        className={`w-full text-left px-2 py-2 transition-[filter] border border-transparent ${
                           tech.is_covered ? 'hover:brightness-110 cursor-pointer' : 'opacity-30 cursor-default'
                         } ${isSelected ? 'ring-2 ring-primary z-10 relative' : ''}`}
                         style={{ background: color }}
                         aria-label={`${tech.technique_id}: ${tech.name} (${score}%)`}
                         title={`${tech.technique_id}: ${tech.name} — ${score}% coverage, ${tech.alert_count} alerts`}
                       >
-                        <div className="font-mono font-bold text-2xs leading-tight text-white drop-shadow-sm">{tech.technique_id}</div>
-                        <div className="text-2xs leading-tight mt-0.5 text-white/90 line-clamp-2">{tech.name}</div>
+                        <div className="font-mono font-bold text-2xs leading-tight">{tech.technique_id}</div>
+                        <div className="text-2xs leading-tight mt-0.5 line-clamp-2">{tech.name}</div>
                         {tech.alert_count > 0 && (
                           <span className="inline-block mt-1.5 text-2xs bg-white/20 text-white px-1 rounded font-medium">{tech.alert_count}</span>
                         )}

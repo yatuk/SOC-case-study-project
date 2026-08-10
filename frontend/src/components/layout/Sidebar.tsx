@@ -57,7 +57,7 @@ export function Sidebar() {
 
       <aside
         className={cn(
-          'fixed left-0 top-0 z-40 h-screen bg-card border-r border-border flex flex-col transition-transform duration-200',
+          'fixed left-0 top-0 z-40 h-screen bg-background border-r border-border/50 flex flex-col transition-[transform,width] duration-200',
           'lg:translate-x-0',
           collapsed ? '-translate-x-full lg:w-14 lg:translate-x-0' : 'translate-x-0 w-56'
         )}
@@ -66,16 +66,16 @@ export function Sidebar() {
         aria-expanded={!collapsed}
       >
         {/* Logo */}
-        <div className="flex items-center justify-between h-14 px-3 border-b border-border shrink-0">
+        <div className="flex items-center justify-between h-12 px-3 border-b border-border/50 shrink-0">
           <div className="flex items-center gap-2">
-            <Shield className="w-6 h-6 text-primary shrink-0" aria-hidden="true" />
+            <Shield className="w-5 h-5 text-primary shrink-0" aria-hidden="true" />
             {!collapsed && (
-              <span className="font-semibold text-sm whitespace-nowrap">{t('app.title')}</span>
+              <span className="font-semibold text-sm tracking-tight whitespace-nowrap">{t('app.title')}</span>
             )}
           </div>
           <button
             onClick={toggle}
-            className="lg:hidden p-1 rounded hover:bg-accent transition-colors"
+            className="lg:hidden p-1 rounded hover:bg-muted transition-colors"
             aria-label={t('app.menuClose')}
           >
             <X className="w-4 h-4" />
@@ -83,7 +83,7 @@ export function Sidebar() {
         </div>
 
         {/* Nav links */}
-        <nav className="flex-1 py-2 overflow-y-auto">
+        <nav className="flex-1 py-1.5 overflow-y-auto">
           {links.map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
@@ -94,11 +94,11 @@ export function Sidebar() {
               }}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center h-9 mx-2 px-2 rounded-md text-sm transition-colors',
+                  'flex items-center h-8 mx-2 px-2 rounded-sm text-xs transition-none',
                   collapsed && 'lg:justify-center',
                   isActive
-                    ? 'bg-primary/10 text-primary font-medium'
-                    : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                    ? 'bg-primary/10 text-primary font-semibold border-l-2 border-primary -ml-[6px] pl-[6px]'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground border-l-2 border-transparent -ml-[6px] pl-[6px]'
                 )
               }
               aria-label={label}
@@ -112,7 +112,7 @@ export function Sidebar() {
 
         <button
           onClick={toggle}
-          className="hidden lg:flex items-center justify-center h-10 border-t border-border text-muted-foreground hover:text-foreground transition-colors shrink-0"
+          className="hidden lg:flex items-center justify-center h-9 border-t border-border/50 text-muted-foreground hover:text-foreground transition-colors shrink-0"
           aria-label={collapsed ? t('app.menuExpand') : t('app.menuCollapse')}
           aria-expanded={!collapsed}
         >

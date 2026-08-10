@@ -67,7 +67,7 @@ export default function Cases() {
       ) : (
         <div className="space-y-3">
           {filtered.map(c => (
-            <div key={c.case_id} className="p-4 rounded-lg border border-border bg-card hover:border-primary/30 hover:shadow-sm transition-all">
+            <div key={c.case_id} className="p-4 rounded-lg border border-border bg-card hover:border-border hover:bg-muted/30 transition-colors">
               <div className="flex items-start justify-between mb-2">
                 <div>
                   <div className="flex items-center gap-2">

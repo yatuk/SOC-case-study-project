@@ -1,10 +1,17 @@
 import { useEffect, useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { Bell, CheckCheck } from 'lucide-react'
+import { Bell, CheckCheck, StickyNote, AlertTriangle, FileText, Play, Ruler } from 'lucide-react'
 import { loadEntity } from '@/lib/data'
 import { cn } from '@/lib/utils'
 
 interface Notification { id: string; type: string; title: string; detail?: string; link?: string; timestamp: string; unread: boolean; severity?: string }
+
+const TYPE_CONFIG: Record<string, { icon: React.ComponentType<{ className?: string }>; label: string }> = {
+  mehmet_note: { icon: StickyNote, label: 'Mehmet' },
+  alert: { icon: AlertTriangle, label: 'Uyarı' },
+  incident_change: { icon: FileText, label: 'Durum' },
+  playbook_run: { icon: Play, label: 'Playbook' },
+}
 
 const SEVERITY_BORDER: Record<string, string> = { critical: 'border-l-severity-critical', high: 'border-l-severity-high', medium: 'border-l-severity-medium', low: 'border-l-severity-low', info: 'border-l-severity-info' }
 
@@ -73,8 +80,8 @@ export function NotificationsBell() {
                 >
                   <div className="text-xs font-medium leading-tight">{n.title}</div>
                   {n.detail && <div className="text-2xs text-muted-foreground mt-0.5">{n.detail}</div>}
-                  <div className="text-2xs text-muted-foreground/60 mt-1">
-                    {n.type === 'mehmet_note' ? '🗒️ Mehmet' : n.type === 'alert' ? '🚨 Uyarı' : n.type === 'incident_change' ? '📋 Durum' : n.type === 'playbook_run' ? '▶️ Playbook' : '📐 Kural'} · {new Date(n.timestamp).toLocaleString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                  <div className="text-2xs text-muted-foreground/60 mt-1 inline-flex items-center gap-1">
+                    {(() => { const cfg = TYPE_CONFIG[n.type]; if (cfg) return <><cfg.icon className="w-3 h-3" /><span>{cfg.label}</span></>; return <><Ruler className="w-3 h-3" /><span>Kural</span></> })()} · {new Date(n.timestamp).toLocaleString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </Link>
               ))

@@ -101,7 +101,7 @@ export function AiSummary({ data, isLoading }: Props) {
       {phase === 'loading' && (
         <div className="space-y-1.5">
           {LOADING_STEPS.map((step, i) => (
-            <div key={i} className={`text-xs transition-all duration-200 ${i <= loadingStep ? 'text-purple-300/80' : 'text-muted-foreground/30'}`}>
+            <div key={i} className={`text-xs transition-colors duration-300 ${i <= loadingStep ? 'text-primary/70' : 'text-muted-foreground/30'}`}>
               {i <= loadingStep ? '▸' : '○'} {step}
               {i === loadingStep && <span className="animate-pulse ml-1">▌</span>}
             </div>
@@ -114,7 +114,7 @@ export function AiSummary({ data, isLoading }: Props) {
         <>
           <div className="text-xs leading-relaxed text-foreground/85 whitespace-pre-line">
             {displayed}
-            {phase === 'typing' && <span className="animate-pulse text-purple-400">▌</span>}
+            {phase === 'typing' && <span className="animate-pulse text-primary/70">▌</span>}
           </div>
 
           {phase === 'done' && (

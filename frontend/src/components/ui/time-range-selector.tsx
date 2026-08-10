@@ -25,7 +25,7 @@ export function TimeRangeSelector({ value, onChange, className }: TimeRangeSelec
           className={cn(
             'px-2.5 py-1 text-xs font-medium rounded-sm transition-colors',
             value === key
-              ? 'bg-card text-foreground shadow-sm border border-border'
+              ? 'bg-card text-foreground border border-border'
               : 'text-muted-foreground hover:text-foreground'
           )}
           role="radio"

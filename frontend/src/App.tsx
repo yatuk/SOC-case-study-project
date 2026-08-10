@@ -78,7 +78,7 @@ function App() {
         <main
           id="main-content"
           className={cn(
-            'min-h-screen transition-all duration-200',
+            'min-h-screen transition-[margin] duration-200',
             collapsed ? 'ml-14' : 'ml-56'
           )}
         >
@@ -110,7 +110,7 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
-          <footer className="border-t border-border py-3 px-6 text-xs text-muted-foreground" role="contentinfo">
+          <footer className="border-t border-border/50 py-2 px-6 text-[10px] text-muted-foreground" role="contentinfo">
             {t('app.footer')}
           </footer>
         </main>

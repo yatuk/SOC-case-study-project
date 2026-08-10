@@ -48,7 +48,7 @@ export function RecentIncidents({ incidents, isLoading }: Props) {
           <Link
             key={inc.incident_id}
             to={`/incidents/${inc.incident_id}`}
-            className="flex items-start gap-3 p-3 rounded-lg border border-border bg-card hover:border-primary/20 hover:bg-accent transition-all group"
+            className="flex items-start gap-3 p-3 rounded-lg border border-border/40 hover:border-border hover:bg-muted/30 transition-colors group"
           >
             <div className="shrink-0 mt-0.5">
               <div className={`w-2 h-2 rounded-full ${inc.severity === 'critical' ? 'bg-severity-critical' : inc.severity === 'high' ? 'bg-severity-high' : 'bg-severity-medium'}`} />

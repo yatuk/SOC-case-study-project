@@ -41,7 +41,7 @@ export function KpiCards({ kpi, isLoading }: Props) {
         const clickable = !!route
         const klik = () => { if (route) navigate(route) }
         return (
-        <div key={label} onClick={clickable ? klik : undefined} className={`rounded-lg border border-border bg-card p-4 ${clickable ? 'cursor-pointer hover:border-primary/30 hover:-translate-y-0.5 transition-all group' : ''}`}>
+        <div key={label} onClick={clickable ? klik : undefined} className={`rounded-lg border border-border bg-card p-4 ${clickable ? 'cursor-pointer hover:border-primary/30 hover:-translate-y-0.5 transition-[transform,border-color] group' : ''}`}>
           <div className="flex items-center gap-2 text-muted-foreground mb-2">
             <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
             <span className="text-xs truncate">

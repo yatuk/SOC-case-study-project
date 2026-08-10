@@ -30,27 +30,27 @@ export function Topbar() {
   const title = pageTitles[path] || t('app.title')
 
   return (
-    <header className="sticky top-0 z-30 flex items-center h-14 px-4 bg-card/80 backdrop-blur border-b border-border">
+    <header className="sticky top-0 z-30 flex items-center h-12 px-4 bg-background/95 border-b border-border/50">
       <div className="flex items-center gap-3 flex-1 min-w-0">
         <button
           onClick={toggleSidebar}
-          className="lg:hidden p-1 rounded hover:bg-accent"
+          className="lg:hidden p-1 rounded hover:bg-muted transition-colors"
           aria-label="Menu"
         >
-          <Menu className="w-5 h-5" />
+          <Menu className="w-4 h-4" />
         </button>
-        <h1 className="text-sm font-semibold truncate">{title}</h1>
+        <h1 className="text-sm font-semibold tracking-tight truncate">{title}</h1>
       </div>
 
       <div className="flex items-center gap-2 shrink-0">
         <button
           onClick={toggleCmdPalette}
-          className="flex items-center gap-2 h-8 px-3 rounded-md border border-border bg-muted/50 text-muted-foreground text-xs hover:bg-muted transition-colors"
+          className="flex items-center gap-2 h-7 px-2.5 rounded text-muted-foreground text-xs hover:bg-muted hover:text-foreground transition-colors"
           aria-label="Open command palette (Ctrl+K)"
         >
-          <Search className="w-3.5 h-3.5" />
+          <Search className="w-3 h-3" />
           <span className="hidden sm:inline">{t('common.search')}</span>
-          <kbd className="hidden md:inline text-xs px-1 rounded bg-background border border-border ml-4">
+          <kbd className="hidden md:inline text-[10px] px-1 rounded bg-muted border border-border/50 ml-2">
             Ctrl+K
           </kbd>
         </button>
@@ -61,7 +61,7 @@ export function Topbar() {
           onClick={() =>
             updateSetting('theme', settings.theme === 'dark' ? 'light' : 'dark')
           }
-          className="p-1.5 rounded-md hover:bg-accent transition-colors"
+          className="p-1 rounded hover:bg-muted transition-colors"
           aria-label={settings.theme === 'dark' ? t('settings.themeLight') : t('settings.themeDark')}
         >
           {settings.theme === 'dark' ? (
@@ -72,7 +72,7 @@ export function Topbar() {
         </button>
 
         <div
-          className="w-7 h-7 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-xs font-bold text-primary"
+          className="w-7 h-7 rounded-full bg-primary/15 border border-primary/25 flex items-center justify-center text-[10px] font-bold text-primary"
           aria-label="User: Emre Korkmaz"
           role="img"
         >

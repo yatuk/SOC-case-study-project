@@ -45,7 +45,7 @@ export default function ThreatActors() {
           const Icon = ICON_MAP[a.glyph.icon] ?? Shield
           const matchCount = a.matched_incidents?.length ?? 0
           return (
-            <Link key={a.id} to={`/threat-actors/${a.id}`} className="flex flex-col p-4 rounded-lg border border-border bg-card hover:border-primary/20 hover:bg-accent transition-all group">
+            <Link key={a.id} to={`/threat-actors/${a.id}`} className="flex flex-col p-4 rounded-lg border border-border bg-card hover:bg-muted/30 transition-colors group">
               <div className="flex items-start gap-3 mb-2">
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{backgroundColor:`${a.glyph.color}15`,color:a.glyph.color}}>
                   <Icon className="w-5 h-5" />

@@ -4,7 +4,7 @@ import ReactFlow, { Background, Controls, MiniMap, useNodesState, useEdgesState,
 import 'reactflow/dist/style.css'
 import { loadEntity } from '@/lib/data'
 import { SkeletonChart } from '@/components/ui/skeleton-card'
-import { X } from 'lucide-react'
+import { X, User, Monitor, Globe, AlertTriangle, ClipboardList, ShieldAlert, FileText } from 'lucide-react'
 
 interface CorrEdge {
   source: string
@@ -21,14 +21,14 @@ interface NodeDetail {
 
 type NodeKind = 'user' | 'device' | 'ip' | 'alert' | 'case' | 'incident' | 'event'
 
-const NODE_TYPES: Record<NodeKind, { color: string; icon: string; label: string }> = {
-  user:     { color: '#58a6ff', icon: '👤', label: 'User' },
-  device:   { color: '#3fb950', icon: '🖥️', label: 'Device' },
-  ip:       { color: '#f0883e', icon: '🌐', label: 'IP' },
-  alert:    { color: '#f85149', icon: '🚨', label: 'Alert' },
-  case:     { color: '#8b5cf6', icon: '📋', label: 'Case' },
-  incident: { color: '#f59e0b', icon: '⚠️', label: 'Incident' },
-  event:    { color: '#8b949e', icon: '📄', label: 'Event' },
+const NODE_TYPES: Record<NodeKind, { color: string; icon: React.ComponentType<{ className?: string }>; label: string }> = {
+  user:     { color: '#58a6ff', icon: User, label: 'User' },
+  device:   { color: '#3fb950', icon: Monitor, label: 'Device' },
+  ip:       { color: '#f0883e', icon: Globe, label: 'IP' },
+  alert:    { color: '#f85149', icon: AlertTriangle, label: 'Alert' },
+  case:     { color: '#8b5cf6', icon: ClipboardList, label: 'Case' },
+  incident: { color: '#f59e0b', icon: ShieldAlert, label: 'Incident' },
+  event:    { color: '#8b949e', icon: FileText, label: 'Event' },
 }
 
 const EDGE_COLORS: Record<string, string> = {
@@ -162,10 +162,10 @@ export default function Correlations() {
             <button
               key={kind}
               onClick={() => toggleKind(kind)}
-              className={`inline-flex items-center gap-1 px-2 py-1 rounded-md transition-colors border ${active ? 'bg-card border-border text-foreground shadow-sm' : 'border-transparent text-muted-foreground/40 line-through'}`}
+              className={`inline-flex items-center gap-1 px-2 py-1 rounded-md transition-colors border ${active ? 'bg-card border-border text-foreground' : 'border-transparent text-muted-foreground/40 line-through'}`}
             >
               <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: t.color }} />
-              <span>{t.icon}</span>
+              {<t.icon className="w-3 h-3" />}
               <span>{t.label}</span>
               {count > 0 && <span className="text-muted-foreground">({count})</span>}
             </button>
@@ -200,10 +200,10 @@ export default function Correlations() {
       {selectedNode && (
         <>
           <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onClick={() => setSelectedNode(null)} onKeyDown={(e) => e.key === 'Escape' && setSelectedNode(null)} role="button" tabIndex={0} aria-label="Kapat" />
-          <aside className="fixed right-0 top-0 z-50 h-full w-80 bg-card border-l border-border shadow-2xl overflow-y-auto animate-slide-in-right" role="dialog" aria-modal="true">
+          <aside className="fixed right-0 top-0 z-50 h-full w-80 bg-card border-l border-border overflow-y-auto animate-slide-in-right" role="dialog" aria-modal="true">
             <div className="flex items-center justify-between h-14 px-4 border-b border-border sticky top-0 bg-card z-10">
               <div className="flex items-center gap-2">
-                <span>{NODE_TYPES[selectedNode.kind as NodeKind]?.icon}</span>
+                {(() => { const Icon = NODE_TYPES[selectedNode.kind as NodeKind]?.icon; return Icon ? <Icon className="w-3.5 h-3.5" /> : null })()}
                 <span className="text-sm font-semibold">{NODE_TYPES[selectedNode.kind as NodeKind]?.label}</span>
               </div>
               <button onClick={() => setSelectedNode(null)} className="p-1 rounded hover:bg-accent" aria-label="Kapat"><X className="w-4 h-4" /></button>
@@ -224,7 +224,7 @@ export default function Correlations() {
                     const t = NODE_TYPES[rKind]
                     return (
                       <div key={`${r.id}-${i}`} className="flex items-center gap-2 p-2 rounded-lg border border-border text-xs hover:bg-accent transition-colors">
-                        <span>{t.icon}</span>
+                        {<t.icon className="w-3 h-3 shrink-0" />}
                         <span className="font-mono text-xs truncate flex-1">{r.id}</span>
                         <span className="text-2xs text-muted-foreground bg-muted px-1 rounded">{r.type.replace(/_/g, ' ')}</span>
                       </div>

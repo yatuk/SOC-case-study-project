@@ -8,8 +8,8 @@ interface ChartShellProps {
 
 export function ChartShell({ title, children, className }: ChartShellProps) {
   return (
-    <div className={cn('rounded-lg border border-border bg-card p-4', className)}>
-      <h3 className="text-xs font-semibold mb-3">{title}</h3>
+    <div className={cn('rounded-lg border border-border/60 bg-card p-4', className)}>
+      <h3 className="text-xs font-semibold tracking-tight mb-3">{title}</h3>
       {children}
     </div>
   )
